@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>backend and lock | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20200622.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20200617.html" title="github" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="backend and lock">
+<meta property="og:url" content="https://mnod.github.io/posts/20200622.html">
+<meta property="og:description" content='create S3 bucket and DynamoDB table
+At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control
+resource "aws_s3_bucket" "terraform_state" {
+  bucket ='>
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-06-22T00:00:00Z">
+<meta property="article:tag" content="terraform">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">backend and lock</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-22T00:00:00Z" itemprop="datePublished" title="2020-06-22 00:00">2020-06-22 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p><em>create S3 bucket and DynamoDB table</em></p>
+<p>At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control</p>
+<pre><code>resource "aws_s3_bucket" "terraform_state" {
+  bucket = "mybucketname"
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
+  tags = {
+    Name = "terraform_backend"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.bucket
+
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name = "terraform_state_lock"
+  read_capacity = 1
+  write_capacity = 1
+  hash_key = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
+variable "region" {
+  default = "ap-northeast-1"
+}
+
+provider "aws" {
+  region = var.region
+  version = "~&gt; 2.61.0"
+}
+
+terraform {
+  required_version = "&gt;= 0.12.26"
+#  backend "s3" {
+#    bucket = "mybucketname"
+#    key    = "network/terraform.tfstate"
+#    region = "ap-northeast-1"
+#    dynamodb_table = "terraform_state_lock"
+#  }
+}
+</code></pre>
+<p>then initialize </p>
+<pre><code>terraform init 
+terraform show
+</code></pre>
+<p>at last create bucket and table</p>
+<pre><code>terraform plan -out terraform.plan -no-color 
+terraform apply "terraform.plan" -no-color 
+terraform show
+</code></pre>
+<p><em>change backend to S3</em></p>
+<p>at first edit tf file to enable S3 backend</p>
+<pre><code>terraform {
+  required_version = "&gt;= 0.12.26"
+  backend "s3" {
+    bucket = "mybucketname"
+    key    = "network/terraform.tfstate"
+    region = "ap-northeast-1"
+    dynamodb_table = "terraform_state_lock"
+  }
+}
+</code></pre>
+<p>then initialize</p>
+<pre><code>terraform init -no-color 
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+</code></pre>
+<p><em>then you can use S3 backend</em></p>
+<p>add tf file content to build aws resource </p>
+<pre><code>variable "cidr_block" {
+  default = "10.0.0.0/16"
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+</code></pre>
+<p>plan and apply as usual</p>
+<pre><code>terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+</code></pre>
+<p><em>remove all reosources other than S3 bucket and DynamoDB table</em></p>
+<p>before change backend from S3 to local again, remove all other resources.</p>
+<p>at first remove all aws resources from tf file other than S3 bucket for backend and DynamoDB table for lock control.
+then plan and apply</p>
+<pre><code>terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+</code></pre>
+<p><em>change backend from S3 to local</em></p>
+<p>comment out or remove backend from tf file</p>
+<pre><code>    terraform {
+      required_version = "&gt;= 0.12.26"
+    #  backend "s3" {
+    #    bucket = "mybucketname"
+    #    key    = "network/terraform.tfstate"
+    #    region = "ap-northeast-1"
+    #    dynamodb_table = "terraform_state_lock"
+    #  }
+    }
+</code></pre>
+<p>then initialize.</p>
+<pre><code>terraform init -no-color 
+ls -l terraform.tfstate
+</code></pre>
+<p><em>remove S3 tables and DynamoDB table</em></p>
+<p>before remove them, make sure S3 bucket empty</p>
+<pre><code>aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix network/terraform.tfstate \
+--query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
+aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
+
+terraform destroy 
+terraform show
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/terraform.html" rel="tag">terraform</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20200617.html" rel="prev" title="github">Previous post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

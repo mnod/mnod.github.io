@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>apigateway | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20191110.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20191101.html" title="sns" type="text/html">
+<link rel="next" href="20191228.html" title="lvm" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="apigateway">
+<meta property="og:url" content="https://mnod.github.io/posts/20191110.html">
+<meta property="og:description" content="create rest-api
+$ aws apigateway get-rest-apis
+$ aws apigateway create-rest-api --name &lt;API Name&gt;
+$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
+
+create resource
+$ aws apigateway get-resources -">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2019-11-10T00:00:00Z">
+<meta property="article:tag" content="aws">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">apigateway</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2019-11-10T00:00:00Z" itemprop="datePublished" title="2019-11-10 00:00">2019-11-10 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p><em>create rest-api</em></p>
+<pre><code>$ aws apigateway get-rest-apis
+$ aws apigateway create-rest-api --name &lt;API Name&gt;
+$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
+</code></pre>
+<p><em>create resource</em></p>
+<pre><code>$ aws apigateway get-resources --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-resource --rest-api-id &lt;API ID&gt; --parent-id &lt;Parent Resource ID&gt; --path-part subpath
+$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+</code></pre>
+<p><em>put method</em></p>
+<pre><code>$ aws apigateway put-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --authorization-type none --http-method get 
+$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>put integration response</em></p>
+<pre><code>$ aws apigateway put-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json":"{\"json\":\"template\"}"}'
+$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>put method response</em></p>
+<pre><code>$ aws apigateway put-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --response-models '{"text/plain":"Empty"}'
+$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>update integration</em></p>
+<pre><code>$ jq '.' test.json
+[
+  {
+    "op": "add",
+    "path": "/requestTemplates/application~1json",
+    "value": "{\"example\":\"json\"}"
+  }
+]
+$ aws apigateway update-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations file://test.json
+</code></pre>
+<p><em>create deployment</em></p>
+<pre><code>$ aws apigateway get-deployments --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-deployment --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+</code></pre>
+<p><em>create stage</em></p>
+<pre><code>$ aws apigateway get-stages --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt; --deployment-id &lt;Deployment ID&gt;
+$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+</code></pre>
+<p><em>test invoke method</em></p>
+<pre><code>$ aws apigateway test-invoke-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+  --http-method [GET|POST|DELETE|...]
+  --path-with-query-string "/"
+  --body "bodystring"
+</code></pre>
+<p><em>create api key</em></p>
+<pre><code>$ aws apigateway get-api-keys
+$ aws apigateway create-api-key --name testkey
+$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
+$ aws apigateway get-api-key --api-key &lt;Key ID&gt; --include-value
+</code></pre>
+<p><em>update api key</em></p>
+<pre><code>$ aws apigateway update-api-key --api-key &lt;Key ID&gt; --patch-operations '{ "op":"replace", "path":"/enabled", "value":"true" }'
+</code></pre>
+<p><em>create usage plan</em></p>
+<pre><code>$ aws apigateway get-usage-plans
+$ aws apigateway create-usage-plan --name myusageplan --api-stages '{"apiId":"&lt;API ID&gt;","stage":"&lt;Stage Name&gt;"}' --throttle '{ "burstLimit": 2, "rateLimit": 1.0 }' --quota '{ "limit": 320, "offset": 0, "period": "DAY" }'
+$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+</code></pre>
+<p><em>associate usage-plan and key</em></p>
+<pre><code>$ aws apigateway get-usage-plan-keys --usage-plan-id &lt;Usage Plan ID&gt;
+$ aws apigateway create-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt; --key-type API_KEY
+$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+</code></pre>
+<p><em>update method</em></p>
+<pre><code>$ aws apigateway update-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations op='replace',path='/apiKeyRequired',value='true'
+$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>test run with api-key</em></p>
+<pre><code>$ curl https://&lt;API ID&gt;.execute-api.&lt;Region Name&gt;.amazonaws.com/&lt;Stage Name&gt; --header "x-api-key:&lt;API Key Value&gt;"
+</code></pre>
+<p><em>diassociate usage-plan and key</em></p>
+<pre><code>$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+$ aws apigateway delete-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+</code></pre>
+<p><em>delete stage</em></p>
+<pre><code>$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+$ aws apigateway delete-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+</code></pre>
+<p><em>delete deployment</em></p>
+<pre><code>$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+$ aws apigateway delete-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+</code></pre>
+<p><em>delete usage-plan</em></p>
+<pre><code>$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+$ aws apigateway delete-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+</code></pre>
+<p><em>delete api key</em></p>
+<pre><code>$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
+$ aws apigateway delete-api-key --api-key &lt;Key ID&gt;
+</code></pre>
+<p><em>delete integration response</em></p>
+<pre><code>$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+$ aws apigateway delete-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>delete method response</em></p>
+<pre><code>$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+$ aws apigateway delete-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>delete integration</em></p>
+<pre><code>$ aws apigateway get-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+$ aws apigateway delete-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>delete method</em></p>
+<pre><code>$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+$ aws apigateway delete-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>delete resource</em></p>
+<pre><code>$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+$ aws apigateway delete-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+</code></pre>
+<p><em>delete rest-api</em></p>
+<pre><code>$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
+$ aws apigateway delete-rest-api --rest-api-id &lt;API ID&gt;
+</code></pre>
+<p><em>cloudformation sample template</em></p>
+<pre><code>    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: "ApiGatewayRestApi"
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    ApiGatewayResourceSubject:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+        PathPart: "{subject}"
+        RestApiId: !Ref ApiGatewayRestApi
+    TestLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt TestLambda.Arn
+        Action: lambda:InvokeFunction
+        Principal: apigateway.amazonaws.com
+    ApiGatewayGET:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: "GET"
+        RestApiId: !Ref ApiGatewayRestApi
+        ResourceId: !Ref ApiGatewayResourceSubject
+        RequestParameters:
+          "method.request.path.string": true
+          "method.request.path.year": true
+        AuthorizationType: "NONE"
+        MethodResponses:
+            - StatusCode: 200
+              ResponseModels:
+                application/json;charset=UTF-8: Empty
+        Integration:
+          Type: "AWS_PROXY"
+          IntegrationHttpMethod: "POST"
+          RequestParameters:
+            "integration.request.path.string": "method.request.path.string"
+            "integration.request.path.year": "method.request.path.year"
+          Uri: !Sub &gt;-
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestLambda.Arn}/invocations
+          RequestTemplates:
+            application/json: "{ \"statusCode\" : 200 }"
+    DeployDevel:
+      DependsOn: ApiGatewayGET
+      Type: 'AWS::ApiGateway::Deployment'
+      Properties:
+        RestApiId: !Ref ApiGatewayRestApi
+        StageName: "devel"
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/aws.html" rel="tag">aws</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20191101.html" rel="prev" title="sns">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20191228.html" rel="next" title="lvm">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

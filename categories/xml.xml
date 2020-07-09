@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about xml)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/xml.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>svg</title><link>https://mnod.github.io/posts/20160915.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;SVGはベクター図を記述するための言語です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.w3.org/TR/SVG/"&gt;https://www.w3.org/TR/SVG/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;W3Cが取りまとめているので、特定の企業が権利を主張しはじめたりするような心配がなく、安心して利用できます。&lt;/p&gt;
+&lt;p&gt;XML形式なので、座標の計算さえできれば、テキストエディタでもさくさく作図できると思います。&lt;/p&gt;
+&lt;p&gt;単一のSVGファイルとして扱うほか、htmlやxhtmlファイル等の内部に記述することができます。
+最近のWebブラウザはちゃんと解釈して図として表示してくれます。&lt;/p&gt;
+&lt;p&gt;また、githubでは、svgファイルのプレビュー表示機能や、図の差分を表示する機能があったりするようです。
+gistでは、markdown に埋め込まれたsvgでは、title、description、text のみの表示となるようです。&lt;/p&gt;
+&lt;p&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" width="320px" height="64px"&gt;
+&lt;title&gt;test figure&lt;/title&gt;
+&lt;desc&gt;マークダウン内にsvgを記載するテスト&lt;/desc&gt;
+&lt;defs&gt;&lt;circle id="router" r="16" fill="none" stroke="black"&gt;&lt;/circle&gt;&lt;/defs&gt;
+&lt;defs&gt;&lt;rect id="switch" width="32" height="24" fill="none" stroke="black"&gt;&lt;/rect&gt;&lt;/defs&gt;
+&lt;use xlink:href="#router" x="48" y="32"&gt;&lt;/use&gt;
+&lt;text x="36" y="36"&gt;RT1&lt;/text&gt;
+&lt;use xlink:href="#router" x="272" y="32"&gt;&lt;/use&gt;
+&lt;text x="260" y="36"&gt;RT2&lt;/text&gt;
+&lt;text x="12" y="28"&gt;e0&lt;/text&gt;
+&lt;line x1="12" y1="32" x2="32" y2="32" stroke="black"&gt;&lt;/line&gt;
+&lt;line x1="64" y1="32" x2="256" y2="32" stroke="black"&gt;&lt;/line&gt;
+&lt;text x="68" y="28"&gt;S0&lt;/text&gt;
+&lt;text x="68" y="44"&gt;.253&lt;/text&gt;
+&lt;text x="112" y="44"&gt;192.168.1.252/30&lt;/text&gt;
+&lt;text x="232" y="28"&gt;S0&lt;/text&gt;
+&lt;text x="232" y="44"&gt;.254&lt;/text&gt;
+&lt;text x="292" y="28"&gt;e0&lt;/text&gt;
+&lt;line x1="288" y1="32" x2="308" y2="32" stroke="black"&gt;&lt;/line&gt;
+&lt;/svg&gt;&lt;/p&gt;
+&lt;p&gt;ここではmarkdown形式ファイル内にsvgを直接記述しており、Text::Markdown(Debian wheezyのlibtext-markdown-perlパッケージ)を使用して(x)htmlに変換しています。&lt;/p&gt;&lt;/div&gt;</description><category>svg</category><category>xml</category><guid>https://mnod.github.io/posts/20160915.html</guid><pubDate>Thu, 15 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

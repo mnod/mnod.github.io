@@ -1,0 +1,36 @@
+body {
+    margin: 0em;
+    font-size: medium;
+    padding: 0.5em;
+}
+#container {
+    margin: 0.5em;
+    max-width: 100%;
+}
+pre {
+    color: #eeeeee;
+    background-color: #222222;
+    padding: 0.5em 1em;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: thin;
+    border-style: solid;
+    padding: 0.2em;
+}
+td.js-line-number {
+    border: none;
+}
+em {
+    font-weight: bold;
+}
+.postpromonav .tags {
+    text-align: right;
+}	
+.metadata p::before, .postpromonav .tags li::before, .postlist .listdate::after, .translationslist p::before {
+    content: " ";
+}

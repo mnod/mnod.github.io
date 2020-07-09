@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>iam | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20200112.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20200109.html" title="sqs" type="text/html">
+<link rel="next" href="20200119.html" title="vpc" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="iam">
+<meta property="og:url" content="https://mnod.github.io/posts/20200112.html">
+<meta property="og:description" content="user
+$ aws iam list-users --query 'Users[?UserName==`&lt;username&gt;`]'
+$ aws iam get-user --user-name &lt;username&gt;
+
+$ aws iam create-user --user-name &lt;username&gt;
+$ aws iam tag-user --user-name &lt;username&gt; --t">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-01-12T00:00:00Z">
+<meta property="article:tag" content="aws">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">iam</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-12T00:00:00Z" itemprop="datePublished" title="2020-01-12 00:00">2020-01-12 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p><em>user</em></p>
+<pre><code>$ aws iam list-users --query 'Users[?UserName==`&lt;username&gt;`]'
+$ aws iam get-user --user-name &lt;username&gt;
+
+$ aws iam create-user --user-name &lt;username&gt;
+$ aws iam tag-user --user-name &lt;username&gt; --tags '{"Key":"name","Value":"test"}'
+
+$ aws iam delete-user --user-name &lt;username&gt;
+</code></pre>
+<p><em>login profile</em></p>
+<pre><code>$ aws iam get-login-profile --user-name &lt;username&gt;
+$ aws iam create-login-profile --generate-cli-skeleton &gt; create-login-profile.json
+
+$ jq '.' create-login-profile.json
+{
+  "UserName": "&lt;username&gt;",
+  "Password": "&lt;initialpassword&gt;",
+  "PasswordResetRequired": true
+}
+$ aws iam create-login-profile --user-name &lt;username&gt; --cli-input-json file://create-login-profile.json
+</code></pre>
+<p><em>group</em></p>
+<pre><code>$ aws iam list-groups  --query 'Groups[?GroupName==`&lt;groupname&gt;`]'
+$ aws iam create-group --group-name &lt;groupname&gt;
+
+$ aws iam delete-group --group-name &lt;groupname&gt;
+</code></pre>
+<p><em>policy</em></p>
+<pre><code>$ aws iam list-policies --query 'Policies[?PolicyName==`&lt;policyname&gt;`]'
+$ aws iam get-policy --policy-arn &lt;policyarn&gt;
+
+$ jq . policy.json 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+
+$ aws iam create-policy --policy-name &lt;policyname&gt; --policy-document file://policy.json
+
+$ aws iam list-policy-versions --policy-arn &lt;policyarn&gt;
+$ aws iam get-policy-version --policy-arn &lt;policyarn&gt; --version-id v1
+$ aws iam create-policy-version --policy-arn &lt;policyarn&gt; --policy-document file://policy_v2.json
+$ aws iam set-default-policy-version --policy-arn &lt;policyarn&gt; --version-id v1
+
+$ aws iam delete-policy-version --policy-arn &lt;policyarn&gt; --version-id v2
+$ aws iam delete-policy --policy-arn &lt;policyarn&gt;
+</code></pre>
+<p>sample policy for allow change password</p>
+<pre><code>$ jq '.' policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetAccountPasswordPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ChangePassword",
+      "Resource": "&lt;userarn&gt;"
+    }
+  ]
+}
+</code></pre>
+<p><em>add user to group</em></p>
+<pre><code>$ aws iam list-groups-for-user --user-name &lt;username&gt;
+$ aws iam add-user-to-group --group-name &lt;groupname&gt; --user-name &lt;username&gt;
+
+$ aws iam remove-user-from-group --group-name &lt;groupname&gt; --user-name &lt;username&gt;
+</code></pre>
+<p><em>attach policy to user</em></p>
+<pre><code>$ aws iam list-attached-user-policies --user-name &lt;username&gt;
+$ aws iam attach-user-policy --user-name &lt;username&gt; --policy-arn "&lt;policyarn&gt;"
+$ aws iam detach-user-policy --user-name &lt;username&gt; --policy-arn "&lt;policyarn&gt;"
+</code></pre>
+<p><em>attach policy to group</em></p>
+<pre><code>$ aws iam list-attached-group-policies --group-name &lt;groupname&gt;
+$ aws iam attach-group-policy --group-name &lt;groupname&gt; --policy-arn "&lt;policyarn&gt;"
+$ aws iam detach-group-policy --group-name &lt;groupname&gt; --policy-arn "&lt;policyarn&gt;"
+</code></pre>
+<p><em>role</em></p>
+<pre><code>$ aws iam list-roles --query 'Roles[?RoleName==`&lt;rolename&gt;`]'
+$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+$ aws iam create-role --role-name &lt;rolename&gt; --assume-role-policy-document file://assumepolicy.json
+</code></pre>
+<p>(Before you delte role, you must remove roles from instance profile.)</p>
+<pre><code>$ aws iam delete-role --role-name &lt;rolename&gt;
+</code></pre>
+<p><em>attach policy to role</em></p>
+<pre><code>$ aws iam list-attached-role-policies --role-name &lt;rolename&gt;
+$ aws iam attach-role-policy --role-name &lt;rolename&gt; --policy-arn &lt;policyarn&gt;
+$ aws iam detach-role-policy --role-name &lt;rolename&gt; --policy-arn &lt;policyarn&gt;
+</code></pre>
+<p><em>add role to instance profile</em></p>
+<pre><code>$ aws iam list-instance-profiles-for-role --role-name &lt;rolename&gt;
+$ aws iam add-role-to-instance-profile --instance-profile-name &lt;rolename&gt; --role-name &lt;rolename&gt;
+$ aws iam remove-role-from-instance-profile --instance-profile-name &lt;rolename&gt; --role-name &lt;rolename&gt;
+</code></pre>
+<p><em>associate iam instance profile</em></p>
+<pre><code>$ aws ec2 describe-iam-instance-profile-associations 
+$ aws ec2 associate-iam-instance-profile --iam-instance-profile '{"Arn":"&lt;rolearn&gt;","Name":"&lt;rolename&gt;"}' --instance-id &lt;instanceid&gt;
+$ aws ec2 disassociate-iam-instance-profile --association-id &lt;associationid&gt;
+</code></pre>
+<p><em>access key</em></p>
+<pre><code>$ aws iam list-access-keys --user-name &lt;user-name&gt;
+$ aws iam get-access-key-last-used --access-key-id &lt;access-key-id&gt;
+
+$ aws iam create-access-key --user-name &lt;user-name&gt;
+$ aws iam update-access-key --user-name &lt;user-name&gt; --access-key-id &lt;access-key-id&gt; --status Inactive
+$ aws iam delete-access-key --user-name &lt;user-name&gt; --access-key-id &lt;access-key-id&gt;
+</code></pre>
+<p><em>cloudformation sample template</em></p>
+<pre><code>    TestLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    AllowAccessDynamoDBTable:
+      Type: "AWS::IAM::Policy"
+      Properties:
+        PolicyName: "AllowAccessDynamoDBTable"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+              Resource: !GetAtt TestDynamoDBTable.Arn
+        Roles:
+          - !Ref TestLambdaRole
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/aws.html" rel="tag">aws</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20200109.html" rel="prev" title="sqs">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20200119.html" rel="next" title="vpc">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about android)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/android.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+&lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
+&lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
+(物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
+未来永劫手元に残らなくてもよい本なら、サービスを利用する価値があるのではないかと思う。資格関連本など、墓場まで持っていかなくてもよいタイプの本は、意外と多いはず。
+中期から短期的にサービスを受けることができる有料サービスで、優れたコンテンツを手軽に持ち運んで読むことができると捉えれば、電子書籍は合理的なのではないだろうか。&lt;/p&gt;
+&lt;p&gt;電子書籍では書き込みができないという短所もあるが、本当に必要なところだけノートに書き写すなりすればよいのではないかと思う。本に書き込んだことを繰り返し参照するという運用が、本当に効率的なのであれば、紙の本を使えばいいし、そうでないなら電子書籍で充分ではないかと思う。&lt;/p&gt;
+&lt;p&gt;電子書籍には紙の手触りがない、紙の本なら直感的にどのあたりに何が書いてあったか覚える、という意見がある。
+例えばkindle の場合、好きなページに好きなだけしおりを設定することができる。電子書籍でも、自分で設定したしおりを頼りにすれば、好きなところに比較的簡単にたどり着けるのではないかと思う。&lt;/p&gt;
+&lt;p&gt;紙の本を全否定するのではないが、雑誌を切り抜いてスクラップしたりハードカバーの本を手元におきたいなど、紙の本がどうしても必要だという事情がないのなら、電子書籍を活用しないのはもったいない。
+紙の本だと人に貸すこともできるし、不要になれば売り払うこともできる。&lt;/p&gt;
+&lt;p&gt;お菓子を食べながら読んでも、コーヒーをこぼしても、電子書籍コンテンツ自体は汚れることはない。
+電子書籍端末は、気に入る端末が限られるので、大切に使わないと代わりになるものに出会えなくなる可能性もある。(買いたくなるような7インチタブレットがなかなか出てこない)&lt;/p&gt;
+&lt;p&gt;電子端末の持ち込みが制限される職場には持ち込むことができない可能性がある。&lt;/p&gt;
+&lt;p&gt;自分の場合、荷物を増やしたくないので、雑誌も書籍も物理的な本はあまり買わず、短期間で読みきるタイプの本の場合は図書館を積極的に利用するようにしている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.amazon.kindle"&gt;kindle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;最大手のサービスなら、そう簡単にサービスが終わることはないと考え、自分はAmazon を利用している。
+(極東の島国の企業に買収されるようなサービスでは安心して利用できない)&lt;/p&gt;
+&lt;p&gt;kindleは、専用端末は必ずしも必要ではなく、Androidやiosの普通に売られてるスマホやタブレットにアプリを入れて使うことができる。また、一つのアカウントで複数の端末を使うことができる。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.adobe.reader"&gt;Adobe Acrobat Reader&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;オープンソースソフトウェアに限らず様々な製品のドキュメントがPDF 形式で配布されている。
+タブレット端末に入れて持ち運ぶと、手軽にどこでも快適に読むことができ、とても重宝する。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.zlibrary.ui.android"&gt;FBReader&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.fbreader.plugin.pdf"&gt;PDF plugin&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;epubをはじめ、様々な形式に対応したドキュメントリーダー。
+２つのPDF ファイルを切り替えながら読むためにAdobe リーダーとあわせて使っている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.mizushimanet.AozoraProvider"&gt;青空プロバイダ&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.example.android.npn2SC1815J.VerticalTextViewer"&gt;縦書きビューア&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;自分は青空文庫の本を読むのにこれらを使っている。&lt;/p&gt;
+&lt;p&gt;かつて紙の文庫本を買って読んだ古典が(全てではないが)無償で読めるのは、感慨深い。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer"&gt;Perfect Viewer&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;様々な形式に対応したドキュメントリーダー。
+電子書籍だけでなく、画像ファイルの閲覧にも対応している。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20180826.html</guid><pubDate>Sun, 26 Aug 2018 00:00:00 GMT</pubDate></item><item><title>remote access tool on android</title><link>https://mnod.github.io/posts/20160918.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Androidで動作するリモート接続ツールのご紹介。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=org.connectbot"&gt;ConnectBot&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのターミナルエミュレータです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、ssh。&lt;/li&gt;
+&lt;li&gt;ポート転送に対応。&lt;/li&gt;
+&lt;li&gt;鍵認証に対応(ed25519対応)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;7インチ以上のタブレットを使用して横画面にして使えば、ソフトウェアキーボードを使うストレスはあるにしても、実用に耐えるのではないかと思います。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=lysesoft.andftp"&gt;AndFtp&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのftpクライアントです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ftpだけでなくsftp、scpでの接続も可能。&lt;/li&gt;
+&lt;li&gt;鍵認証にも対応。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;リモートとローカルファイルシステムの画面を簡単に切り替えながら作業することができます。
+ワイルドカード表記を利用して表示するファイルを絞りこむ機能があり、同一ディレクトリに沢山のファイルがある場合にはすごく便利です。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.estrongs.android.pop"&gt;ESファイルエクスプローラ&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのファイル管理ツール(エクスプローラ)です。&lt;/p&gt;
+&lt;p&gt;ローカルファイルだけでなく、(s)ftp、samba、webdav等、ネットワークファイルシステムにもアクセスできます。
+自分は使ってませんが、Dropbox等のクラウドサービスに接続する機能もあります。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;[リモートデスクトップツール]&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;タブレットには、rdpやvncのクライアントも入れてますが、ほとんど使うことがありません。使うようなことがあれば、書き足したいと思います。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>software</category><guid>https://mnod.github.io/posts/20160918.html</guid><pubDate>Sun, 18 Sep 2016 00:00:00 GMT</pubDate></item><item><title>development tools on android</title><link>https://mnod.github.io/posts/20160917.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Androidで動作する開発関連ツールのご紹介。&lt;/p&gt;
+&lt;p&gt;*&lt;a href="https://mnod.github.io/posts/20160917.html"&gt;Termux&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Android で動作する terminal ソフト。bash
+各種ソフトをインストールすることができる。
+Pythonを入れることができる。
+Android端末だけであれこれできる。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.manichord.mgit"&gt;MGit&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;下記 SGit の開発は終了したようです。非常にありがたいプロジェクトなので残念でした。
+その後を引き継いで別の方が開発を続けているものが MGit です。&lt;/p&gt;
+&lt;p&gt;sshを使う場合、パスフレーズつきの秘密鍵にも対応しているようです。&lt;/p&gt;
+&lt;p&gt;基本的な事柄ですが、commit等する前に、アプリの設定でユーザ名とメールアドレスの設定を済ませておかないとエラーとなります。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=me.sheimi.sgit"&gt;SGit&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのgitクライアントです。&lt;/p&gt;
+&lt;p&gt;Androidタブレット端末でこのサイトのメンテナンスをする際などに利用しています。&lt;/p&gt;
+&lt;p&gt;gitでできる全てのことに対応しているわけではないようですが、clone → add → commit → pushといった基本的なことは一通り実行できます。&lt;/p&gt;
+&lt;p&gt;https、sshなどに対応してます。
+ssh鍵について、&lt;a href="https://github.com/sheimi/SGit"&gt;ソースコード&lt;/a&gt;をざっと眺めてみたところ、使っているライブラリの関係で、(本稿執筆時点では)dsaかrsaしか使えないようです。
+また、パスフレーズについては対応予定となっており、今のところはパスフレーズ無しのものだけの対応のようです。ssh鍵を使う方は注意して確認してみてください。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=jp.sblo.pandora.jota"&gt;Jota Text Editor&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのテキストエディタです。&lt;/p&gt;
+&lt;p&gt;現在は開発を終了しており、機能追加等の予定はないとのことですが、現状で問題なく使えるようになってます。&lt;/p&gt;
+&lt;p&gt;100万文字程度まで対応とありますが、「Alphabetで1MBytes」だそうで、通常はファイルサイズ制限で困ることは少ないのではないかと思います。
+よく使う機能をボタンに割り当てることができます。初期状態では、コピペ系やアンドゥ、リドゥなどが割り当てられてます。&lt;/p&gt;
+&lt;p&gt;コードの色分け表示や自動インデント機能などはありますが、一方、デスクトップのエディタにあるような便利な機能はありません。
+デスクトップと同じ作業をこなすことはできない可能性がありますが、簡易な作業なら充分対応可能だと思います。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>software</category><guid>https://mnod.github.io/posts/20160917.html</guid><pubDate>Sat, 17 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

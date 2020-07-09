@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about windows | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/windows.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag windows" hreflang="en" href="windows.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about windows</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="windows.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170930.html" class="u-url">windows script host by jscript</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170930.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-30T00:00:00Z" itemprop="datePublished" title="2017-09-30 00:00">2017-09-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>スクリプトの呼び出し。
+アイコンのダブルクリックや、アイコンへのドラッグ&amp;ドロップでも起動できる。</p>
+<pre><code>cscript script.js //Nologo
+wscript script.js //Nologo
+</code></pre>
+<p>メッセージの表示。cscript ... で実行するとターミナルに表示される。</p>
+<pre><code>WScript.Echo( "メッセージ" + foo);
+</code></pre>
+<p>バッチファイルを呼び出す</p>
+<pre><code>var openssl     = "C:\\Users\\public\\Documents\\bin\\openssl.exe";
+var shell   = WScript.CreateObject("WScript.Shell");
+
+try {
+  oExec = shell.Exec( openssl + " version" );
+  //oExec = shell.Exec( openssl + " --help" );
+  while ( ! oExec.StdOut.AtEndOfStream ) {
+    WScript.Echo(oExec.StdOut.readline());
+  }
+  while ( ! oExec.StdErr.AtEndOfStream ) {
+    WScript.Echo(oExec.StdErr.readline());
+  }
+}
+catch (e){ 
+  WScript.Echo(e)
+}
+</code></pre>
+<p>引数のぶんだけ繰り返して実行する</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+    fin = fso.OpenTextFile(file, 1, false);
+    while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+    }
+    fin.Close();
+  }
+  catch (e) {
+    WScript.Echo(e);
+  }
+}
+</code></pre>
+<p>ファイルを開き一行ずつ読み込んで処理。</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+var fin;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+  }
+  catch(e) {
+    WScript.Echo(e);
+    continue;
+  }
+  fin = fso.OpenTextFile(file, 1, false);
+  while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+  }
+  fin.Close();
+}
+</code></pre>
+<p>アクセスファイルを開き、マクロを呼び出す。</p>
+<pre><code>var dbfile='C:\\Users\\public\\Documents\\Database1.accdb';
+var timeout = 500; // milliseconds
+try {
+  var AccessApp = new ActiveXObject( "Access.Application" );
+  // AccessApp.Visible = true;
+  WScript.Sleep( timeout );
+
+  try {
+    AccessApp.OpenCurrentDatabase( dbfile );
+    WScript.Sleep( timeout );
+    // マクロを実行する例
+    // AccessApp.DoCmd.RunMacro( "マクロ名" );
+  }
+  catch(e) {
+    WScript.Echo(e);
+  }
+  finally {
+    AccessApp.CloseCurrentDatabase();
+  }
+}
+catch(e) {
+    WScript.Echo(e);
+}
+finally {
+  AccessApp.Quit();
+  AccessApp = null;
+}
+</code></pre>
+<p>excel</p>
+<pre><code>var excelfile = "c:\\users\\public\\documents\\test.xlsm"
+var updatelinks = true;
+var readonly = true;
+
+try {
+  var ExcelApp = new ActiveXObject("Excel.Application");
+  // ExcelApp.Visible = true;
+  // ExcelApp.DisplayAlerts = true;
+
+  try {
+    // var book = ExcelApp.Workbooks.Open(excelfile);
+    var book = ExcelApp.Workbooks.Open(excelfile, updatelinks, readonly);
+    // マクロを実行する例
+    ExcelApp.Run("マクロ名")
+
+    // シートに記入して保存する例
+    // var sheet = book.sheets(1);
+    // sheet.Cells(2, 1).value = "message...";
+    // book.Save();
+  }
+  catch(e) {
+    WScript.Echo(e)
+  }
+  finally {
+    book.Close();
+  }
+}
+catch(e) {
+  WScript.Echo(e)
+}
+finally {
+  ExcelApp.Quit();
+}
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170318.html" class="u-url">ms windows commands</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170318.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-18T00:00:00Z" itemprop="datePublished" title="2017-03-18 00:00">2017-03-18 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
+<pre><code>for /r . %i in (*txt) do type "%i" | sort
+    バッチの中では%%のようにする。
+    doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
+    doの中にパイプを含むことができる。
+</code></pre>
+<p>複数のファイルを、指定したディレクトリに問い合わせ無しでコピーする。</p>
+<pre><code>xcopy /y *.txt distdir
+</code></pre>
+<p>ファイルのハッシュ値表示</p>
+<pre><code>certutil -hashfile ファイル名 [MD5|SHA1|SHA256]
+</code></pre>
+<p>base64エンコード/デコード</p>
+<pre><code>certutil -encode infile file.b64
+    エンコードすると、pem形式のファイル(ヘッダ・フッタあり)が得られる。
+certutil -decode file.b64 outfile
+    デコードするファイルは、pem形式ではないものでOK。
+</code></pre>
+<p>シンボリックリンクの作成</p>
+<pre><code>コマンドプロンプトを「管理者で実行」で開いて実行
+ディレクトリのリンクの作成と削除
+mklink /d &lt;link&gt; &lt;original&gt;
+rmdir &lt;link&gt;
+</code></pre>
+<p>共有ドライブのマウント、アンマウント</p>
+<pre><code>net use y:
+net use y: \\server\share
+永続設定 
+net use y: \\server\share\dir /persistent:yes
+net use y: /delete
+</code></pre>
+<p>date変数の部分文字列を切り出す例</p>
+<pre><code>set YYYYMMDD=%date:~0,4%%date:~5,2%%date:~8,2%
+</code></pre>
+<p><em>その他稀にしか使わないけど便利なコマンド</em></p>
+<p>画面解像度</p>
+<pre><code>desk.cpl
+</code></pre>
+<p>ネットワーク接続</p>
+<pre><code>ncpa.cpl
+</code></pre>
+<p>送るメニューを開く</p>
+<pre><code>start shell:sendto
+</code></pre>
+<p>スタートアップを開く</p>
+<pre><code>start shell:startup
+</code></pre>
+<p>IME2010ユーザ辞書ツール</p>
+<pre><code>C:\Program Files\Common Files\microsoft shared\IME14\IMEJP\IMJPDCT.EXE
+</code></pre>
+<p>時刻同期</p>
+<pre><code>w32tm /query /status /verbose
+</code></pre>
+<p>ディレクトリバックアップバッチ例</p>
+<pre><code>if exist z:\. net use z: /delete
+if not exist z:\. net use z: \\backupserver\backupvol
+set logfile=c:\log\copyall.log
+xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160910.html" class="u-url">my favorite desktop tools for windows</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160910.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-10T00:00:00Z" itemprop="datePublished" title="2016-09-10 00:00">2016-09-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。</p>
+<p><em><a href="http://www2s.biglobe.ne.jp/~geoph/">Clock Launcher</a></em></p>
+<p>Clock Launcherは、たくさんの機能が付属したフリーのランチャーアプリです。</p>
+<p>ランチャー機能以外に、自分は以下のような機能を使用しています。</p>
+<ul>
+<li>クリップボード管理</li>
+<li>デスクトップ付箋</li>
+<li>カレンダー</li>
+<li>デジタル時計</li>
+<li>タイマー</li>
+</ul>
+<p>ランチャー本体を操作してもランチャーメニューを表示できますが、
+自分は、デスクトップの何もないところをダブルクリックするとランチャーメニューが起動するように設定しています。</p>
+<p>普通のアプリケーションだけでなく、ユーザ辞書ツール(imjpdct.exe)や、自家製バッチ等を登録する等、とても便利に使わせてもらってます。</p>
+<p><em><a href="http://salt.car.coocan.jp/VD.htm">Virtual Desktop for Win32</a></em></p>
+<p>Virtual Desktopはフリーの仮想デスクトップソフトです。</p>
+<p>現在の最新バージョン(0.95)では、Windows7までの対応となっています。</p>
+<p>デスクトップの拡張だけでなく、いくつか便利な機能があります。</p>
+<ul>
+<li>指定したウィンドウの半透明化。</li>
+<li>ウィンドウの位置やサイズを数値で表示。</li>
+<li>ウィンドウのスナップ。</li>
+</ul>
+<p>広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160904.html" class="u-url">WinMerge</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160904.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-04T00:00:00Z" itemprop="datePublished" title="2016-09-04 00:00">2016-09-04 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>お気に入りの差分表示ツール、WinMergeのご紹介です。</p>
+<p>WinMergeは、Windowsで動作する、フリーの差分表示、マージツールです。が、自分は差分表示機能しか使いこなしておりません。</p>
+<ul>
+<li><a href="http://winmerge.org/">http://winmerge.org/</a></li>
+</ul>
+<p>こちらも、<a href="http://portableapps.com/">PortableApps</a> で、<a href="http://portableapps.com/apps/utilities/winmerge_portable">WinMerge Portable</a> としても配布されています。</p>
+<p>日本語化している方がいらっしゃるので、私は、日本語版のほうを使用しています。</p>
+<ul>
+<li><a href="http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html">http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html</a></li>
+</ul>
+<p>次のような機能、特徴があります。</p>
+<ul>
+<li>3ファイル(ディレクトリ)の比較も可能。</li>
+<li>シンタックスハイライト。</li>
+<li>各種文字コードに対応。</li>
+<li>プラグインによるエクセルファイルの比較。</li>
+<li>バッチファイル出力機能。</li>
+</ul>
+<p>以前は別のツールを使用していたのですが、諸事情あって、乗り換えることになりました。空白や改行コードの違い等を無視するか、比較するか、必要に応じて細かく指定することができるので、とても便利です。</p>
+<p>差分表示をGitHub同様のカラースキーマに設定することができます。GitHubに慣れている方には良いのではないでしょうか。(自分はGitHubを使いこなしてはいませんが、自分には見やすいです。)</p>
+<p>エクセルファイルの比較は思った以上に便利です。お勧めです。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160903.html" class="u-url">PuTTY</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160903.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-03T00:00:00Z" itemprop="datePublished" title="2016-09-03 00:00">2016-09-03 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。</p>
+<p>PuTTYは、Windowsまたは、Un<em>xで動作するフリーのターミナルエミュレータです。(ここではWindows版についての情報を掲載します。Un</em>x版については触れません。)</p>
+<ul>
+<li><a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/">http://www.chiark.greenend.org.uk/%7Esgtatham/putty/</a></li>
+</ul>
+<p><a href="http://portableapps.com/">PortableApps</a> で、 <a href="http://portableapps.com/apps/internet/putty_portable">PuTTY Portable</a> としても配布されています。
+(PortableAppsは、アプリをUSBメモリ等にインストールして持ち運んで、いつもと異なる端末でも、いつもと同じような環境で作業できるようにするというプロジェクトです。)</p>
+<p>日本語化している方がいらっしゃるので、私は、日本語版(PuTTYjp)を使用しています。</p>
+<p>(私ごとですが、よく見かける"有志の方がxxしている"という表現がどうにも好きではありません。酸っぱいスメルを感じてぞわぞわします。)</p>
+<ul>
+<li><a href="http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html">http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html</a></li>
+</ul>
+<p>次のような機能、特徴があります。</p>
+<ul>
+<li>telnet、シリアル、ssh接続等。</li>
+<li>GUIのPuTTY本体(putty.exe)だけでなく、コマンドライン用のsshクライアント(plink.exe)が付属している。</li>
+<li>scp(pscp.exe)、sftp(psftp.exe)等のコマンドラインツールが付属している。</li>
+<li>フルスクリーン表示ができる。
+(スクロールやタイトルバー等が表示されなくなり、画面全体でターミナル画面を表示するようになる)</li>
+</ul>
+<p>特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。</p>
+<p>TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
+(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160902.html" class="u-url">TeraTerm</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160902.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-02T00:00:00Z" itemprop="datePublished" title="2016-09-02 00:00">2016-09-02 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。</p>
+<ul>
+<li><a href="https://ttssh2.osdn.jp/">https://ttssh2.osdn.jp/</a></li>
+<li><a href="https://osdn.jp/projects/ttssh2/">https://osdn.jp/projects/ttssh2/</a></li>
+</ul>
+<p>TeraTermは、Windowsで動作するフリーのターミナルエミュレータです。</p>
+<p>ネットワーク・コンピュータ関連業界界隈の方だったら使ったことが無い人はいないのではないか、というくらいの定番ですね。毎日のようにお世話になっております。</p>
+<p>次のような機能、特徴があります。</p>
+<ul>
+<li>telnet、シリアル、ssh接続等。</li>
+<li>sshポート転送。</li>
+<li>scpによるファイル転送。</li>
+<li>各種日本語文字コードに対応</li>
+<li>非常に高機能なマクロ機能。</li>
+<li>作業ログ保存</li>
+</ul>
+<p>後述する予定のPuTTyも便利ではあるのですが、ログの保存が思ったようにできないことがあるため、使用する場面が限られてしまいます。</p>
+<p>一方、こちらのTeraTermは、自分にとっては、非の打ちどころがほとんどありません。</p>
+<p>機能追加の希望があるとすれば、Linux等のターミナルソフトでよくあるような、タブ切り替え機能が標準で使えるようになると嬉しいかもしれません。</p>
+<p><em>ペースト(貼り付け)操作について</em></p>
+<p>TeraTermでは、ペーストのショートカットはAlt+Vになっています。</p>
+<p>Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？</p>
+<p>Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。</p>
+<p>また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。</p>
+<p>是非試してみてください。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160628.html" class="u-url">sakura editor</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160628.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-08-28T00:00:00Z" itemprop="datePublished" title="2016-08-28 00:00">2016-08-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。</p>
+<ul>
+<li><a href="http://sakura-editor.sourceforge.net">http://sakura-editor.sourceforge.net</a></li>
+<li><a href="https://sourceforge.net/projects/sakura-editor/">https://sourceforge.net/projects/sakura-editor/</a></li>
+</ul>
+<p>サクラエディタは、Windows で動作するタブ式のテキストエディタです。</p>
+<p>次のような機能、特徴があります。</p>
+<ul>
+<li>多様な文字コード、改行コードに対応。
+(un*xで作成したテキストファイルも問題なく編集することができます。)</li>
+<li>正規表現による検索。置換。
+("行頭が#で始まる行(#の前に空白があるものも含む)"などといった、複雑な指定が可能)</li>
+<li>grep機能。タグジャンプ機能。
+(複数のファイルから検索。みつけた場所にワンキーで移動可能)</li>
+<li>指定したキーワードの色分け。</li>
+<li>矩形編集。</li>
+<li>キーボードマクロ。
+(一連のキー操作の記録、保存。呼び出し。)</li>
+<li>選択範囲のソート、重複排除など。
+(シェルを使わずに、エディタ内でsort | uniq ができる)</li>
+<li>動作が比較的軽い。</li>
+</ul>
+<p>サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。</p>
+<p>いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。</p>
+<p>是非テキストエディタの活用をおすすめします。</p>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

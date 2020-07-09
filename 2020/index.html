@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="tech log">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts for year 2020 | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/2020/">
+<link rel="next" href="index-2.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts for year 2020</h1>
+        
+
+        <div class="metadata">
+            
+                <p class="feedlink">
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200622.html" class="u-url">backend and lock</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200622.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-22T00:00:00Z" itemprop="datePublished" title="2020-06-22 00:00">2020-06-22 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create S3 bucket and DynamoDB table</em></p>
+<p>At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control</p>
+<pre><code>resource "aws_s3_bucket" "terraform_state" {
+  bucket = "mybucketname"
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
+  tags = {
+    Name = "terraform_backend"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.bucket
+
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name = "terraform_state_lock"
+  read_capacity = 1
+  write_capacity = 1
+  hash_key = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
+variable "region" {
+  default = "ap-northeast-1"
+}
+
+provider "aws" {
+  region = var.region
+  version = "~&gt; 2.61.0"
+}
+
+terraform {
+  required_version = "&gt;= 0.12.26"
+#  backend "s3" {
+#    bucket = "mybucketname"
+#    key    = "network/terraform.tfstate"
+#    region = "ap-northeast-1"
+#    dynamodb_table = "terraform_state_lock"
+#  }
+}
+</code></pre>
+<p>then initialize </p>
+<pre><code>terraform init 
+terraform show
+</code></pre>
+<p>at last create bucket and table</p>
+<pre><code>terraform plan -out terraform.plan -no-color 
+terraform apply "terraform.plan" -no-color 
+terraform show
+</code></pre>
+<p><em>change backend to S3</em></p>
+<p>at first edit tf file to enable S3 backend</p>
+<pre><code>terraform {
+  required_version = "&gt;= 0.12.26"
+  backend "s3" {
+    bucket = "mybucketname"
+    key    = "network/terraform.tfstate"
+    region = "ap-northeast-1"
+    dynamodb_table = "terraform_state_lock"
+  }
+}
+</code></pre>
+<p>then initialize</p>
+<pre><code>terraform init -no-color 
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+</code></pre>
+<p><em>then you can use S3 backend</em></p>
+<p>add tf file content to build aws resource </p>
+<pre><code>variable "cidr_block" {
+  default = "10.0.0.0/16"
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+</code></pre>
+<p>plan and apply as usual</p>
+<pre><code>terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+</code></pre>
+<p><em>remove all reosources other than S3 bucket and DynamoDB table</em></p>
+<p>before change backend from S3 to local again, remove all other resources.</p>
+<p>at first remove all aws resources from tf file other than S3 bucket for backend and DynamoDB table for lock control.
+then plan and apply</p>
+<pre><code>terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+</code></pre>
+<p><em>change backend from S3 to local</em></p>
+<p>comment out or remove backend from tf file</p>
+<pre><code>    terraform {
+      required_version = "&gt;= 0.12.26"
+    #  backend "s3" {
+    #    bucket = "mybucketname"
+    #    key    = "network/terraform.tfstate"
+    #    region = "ap-northeast-1"
+    #    dynamodb_table = "terraform_state_lock"
+    #  }
+    }
+</code></pre>
+<p>then initialize.</p>
+<pre><code>terraform init -no-color 
+ls -l terraform.tfstate
+</code></pre>
+<p><em>remove S3 tables and DynamoDB table</em></p>
+<p>before remove them, make sure S3 bucket empty</p>
+<pre><code>aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix network/terraform.tfstate \
+--query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
+aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
+
+terraform destroy 
+terraform show
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200617.html" class="u-url">github</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200617.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-17T00:00:00Z" itemprop="datePublished" title="2020-06-17 00:00">2020-06-17 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>adding ssh public key</em></p>
+<p>You can use github without ssh key. 
+But when you add ssh key and you use ssh private key without passphrase, it is convinient for scripting.</p>
+<p>Login and follow menu like below:
+<a href="https://github.com/settings/profile">Settings</a> &gt; <a href="https://github.com/settings/keys">SSH and GPG keys</a> &gt; <a href="https://github.com/settings/ssh/new">New SSH key</a>
+Then register name and content of your ssh public key.</p>
+<p>edit ssh config file</p>
+<pre><code>cat &lt;&lt; END | tee -a .ssh/config
+Host github.com
+    IdentityFile    ~/.ssh/id_rsa.mykey
+    User            git
+Host *.github.com
+    IdentityFile    ~/.ssh/id_rsa.mykey
+    User            git
+END
+</code></pre>
+<p>test ssh connection. add -v to see debug messages</p>
+<pre><code>ssh -T github.com
+</code></pre>
+<p>When you've already work with any github repository, if you want to use git protocol instad of https, you can use it.</p>
+<pre><code>git config --global url.git@github.com:.insteadOf https://github.com/
+git config --global url.git@gist.github.com:.insteadOf https://gist.github.com/
+</code></pre>
+<p><em>After <a href="https://github.com/new">Create a new repository</a></em></p>
+<p>when you don't have ever created a git repository</p>
+<pre><code>git init
+git add README.md
+git commit -m "first commit"
+</code></pre>
+<p>after that add remote to the repository, and push it.</p>
+<pre><code>git remote add origin git@github.com:username/myrepositoryname.git
+git remote -v
+git push -u origin master
+</code></pre>
+<p>To .gitignore file, add list of files which you don't want to add to the git repository </p>
+<pre><code>cat &lt;&lt; END | tee -a .gitignore
+id_rsa
+END
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200616.html" class="u-url">screen and tmux</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200616.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-16T00:00:00Z" itemprop="datePublished" title="2020-06-16 00:00">2020-06-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<table>
+<tr>
+<th>command</th>
+<th>screen</th>
+<th>tmux</th>
+</tr>
+<tr>
+<th>list</th>
+<td>-ls</td>
+<td>ls</td>
+</tr>
+<tr>
+<th>with name</th>
+<td>-S name</td>
+<td>new -s name</td>
+</tr>
+<tr>
+<th>attach</th>
+<td>-r [title]</td>
+<td>a [-t title]</td>
+</tr>
+<tr>
+<th>prefix</th>
+<td>Ctrl+a</td>
+<td>Ctrl+b</td>
+</tr>
+<tr>
+<th>new</th>
+<td>prefix+c</td>
+<td>prefix+c</td>
+</tr>
+<tr>
+<th>switch</th>
+<td>prefix+num</td>
+<td>prerix+num</td>
+</tr>
+<tr>
+<th>list screen</th>
+<td>prefix+"</td>
+<td>prerix+w</td>
+</tr>
+<tr>
+<th>copy mode</th>
+<td>prefix+esc</td>
+<td>prefix+[</td>
+</tr>
+</table>
+<p><em>screen</em></p>
+<p>it can connect to serial port. default baud is 9600</p>
+<pre><code>screen /dev/ttyS0 [baud rate]
+</code></pre>
+<p>it can create a new window which executes a specific program</p>
+<pre><code>screen watch -n 5 ntpq -pn
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200615.html" class="u-url">chrony</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200615.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-15T00:00:00Z" itemprop="datePublished" title="2020-06-15 00:00">2020-06-15 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>chrony is an implementation of Network Time Protocol</p>
+<p>install</p>
+<pre><code>apt install chrony
+</code></pre>
+<p>sample config
+specify ntp server at <code>server</code> or ntp server pool for <code>pool</code></p>
+<pre><code>$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+</code></pre>
+<p>reload configuration</p>
+<pre><code>systemctl status chronyd
+journalctl -u chrony -f
+systemctl force-reload chrony
+</code></pre>
+<p>show system track performance</p>
+<pre><code>chronyc tracking
+</code></pre>
+<p>show current time sources</p>
+<pre><code>chronyc sources
+</code></pre>
+<p>show information about drift rate and offset estimation process</p>
+<pre><code>chronyc sourcestats
+</code></pre>
+<p>show the last valid measurement and other information</p>
+<pre><code>chronyc ntpdata
+</code></pre>
+<p><em>server</em></p>
+<p>For server settings, at least add a <code>allow</code> line.
+<code>cmdallow</code> and <code>bindcmdaddress</code> lines are optional which is for monitoring access</p>
+<pre><code>$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+allow 192.168.xxx.0/24
+cmdallow 192.168.xxx.0/24
+bindcmdaddress 127.0.0.1
+bindcmdaddress 192.168.xxx.xxx
+</code></pre>
+<p>show list of clients</p>
+<pre><code>chronyc clients
+</code></pre>
+<p>specify a remote host to which chronyd is to be connected (using udp/323)
+default is localhost</p>
+<pre><code>cronyc -h 192.168.xxx.xxx
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200614.html" class="u-url">ntpd</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200614.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-14T00:00:00Z" itemprop="datePublished" title="2020-06-14 00:00">2020-06-14 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>install</p>
+<pre><code>apt install ntp
+</code></pre>
+<p>sample config
+specify ntp server at <code>server</code></p>
+<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
+driftfile /var/lib/ntp/ntp.drift
+leapfile /usr/share/zoneinfo/leap-seconds.list
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+server 192.168.xxx.xxx iburst
+restrict -4 default ignore
+restrict -6 default ignore
+restrict 127.0.0.1
+restrict ::1
+</code></pre>
+<p>reload configuration</p>
+<pre><code>systemctl status ntp
+journalctl -u ntp -f
+systemctl force-reload ntp
+</code></pre>
+<p>confirm commands</p>
+<pre><code>ntpq -pn
+ntpq -c readlist
+</code></pre>
+<p><em>server</em></p>
+<p>For server settings, at lease a <code>restrict &lt;client address&gt;</code> line to allow ntp clients access.
+If you don't add <code>noquery</code>, you allow the client to query your ntpd status.</p>
+<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
+driftfile /var/lib/ntp/ntp.drift
+leapfile /usr/share/zoneinfo/leap-seconds.list
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+server 192.168.xxx.xxx iburst
+restrict -4 default ignore
+restrict -6 default ignore
+restrict 127.0.0.1
+restrict ::1
+restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
+</code></pre>
+<p>confirm commands</p>
+<pre><code>ntpq -pn &lt;address&gt;
+ntpq -c readlist &lt;address&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200613.html" class="u-url">journalctl</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200613.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-13T00:00:00Z" itemprop="datePublished" title="2020-06-13 00:00">2020-06-13 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>show all messages</p>
+<pre><code>journalctl
+</code></pre>
+<p>show all messages from boot</p>
+<pre><code>journalctl -b
+</code></pre>
+<p>show messages with explanations</p>
+<pre><code>journalctl -x
+</code></pre>
+<p>show kernel ring buffer</p>
+<pre><code>journalctl -k
+</code></pre>
+<p>show messages of limitted time span</p>
+<pre><code>journalctl --since "2020-06-11"
+journalctl --since "20 min ago"
+journalctl --since "2020-06-11 00:00:00" --untill "2020-06-11 23:59:59"
+</code></pre>
+<p>show specific messages by unit, executable or process</p>
+<pre><code>journalctl -u networking
+journalctl /usr/bin/sudo
+journalctl _PID=1
+</code></pre>
+<p>show specific messages by priority or syslog facility</p>
+<pre><code>journalctl -p 5
+journalctl -p 0..5
+journalctl SYSLOG_FACILITY=10
+</code></pre>
+<p>follow new messages</p>
+<pre><code>journalctl -f
+</code></pre>
+<p>don't pipe output to a pager</p>
+<pre><code>journalctl --no-pager
+</code></pre>
+<p>Basically journal messages exist under /run/log/journal/ which is volatile directory.
+Below commands move journal messages directory to directory under /var/log/journal/.</p>
+<pre><code>echo "Storage=persistent" | sudo tee -a /etc/systemd/journald.conf
+systemctl force-reload systemd-journald
+</code></pre>
+<p>You can specify directory in which journal messages saved.
+It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.</p>
+<pre><code>journalctl -D /mnt/var/log/journal -x
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200612.html" class="u-url">systemctl</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200612.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-12T00:00:00Z" itemprop="datePublished" title="2020-06-12 00:00">2020-06-12 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>show system status</p>
+<pre><code>systemctl status
+</code></pre>
+<p>show running or failed units</p>
+<pre><code>systemctl list-units
+systemctl
+systemctl --failed
+</code></pre>
+<p>show installed unit files</p>
+<pre><code>systemctl list-unit-files
+ls -l /usr/lib/systemd/system /etc/systemd/system
+</code></pre>
+<p>start, stop, restart or reload a unit</p>
+<pre><code>systemctl start unit
+systemctl stop unit
+systemctl restart unit
+systemctl reload unit
+</code></pre>
+<p>show status of a unit</p>
+<pre><code>systemctl status unit
+</code></pre>
+<p>enable or disable a unit to be started on bootstrap</p>
+<pre><code>systemctl enable unit
+systemctl disable unit
+</code></pre>
+<p>check whether a unit is enabled or not</p>
+<pre><code>systemctl is-enabled unit
+</code></pre>
+<p>mask or unmask a unit to make it impossible to start it</p>
+<pre><code>systemctl mask unit
+systemctl unmask unit
+</code></pre>
+<p>reboot or poweroff the system</p>
+<pre><code>systemctl reboot
+systemctl poweroff
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200516.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-16T00:00:00Z" itemprop="datePublished" title="2020-05-16 00:00">2020-05-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Dockerfile</p>
+<pre><code>From centos:centos8
+
+ARG VERSION=0.12.25
+RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
+    yum clean all &amp;&amp; \
+    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;&amp; \
+    unzip terraform.zip &amp;&amp; \
+    rm terraform.zip &amp;&amp; \
+    mv terraform /usr/local/bin &amp;&amp; \
+    pip2 install ansible boto boto3 awscli &amp;&amp; \
+    ln -s /usr/bin/python2.7 /usr/bin/python &amp;&amp; \
+    mkdir /tmp/terraform &amp;&amp; \
+    useradd -m docker
+
+VOLUME ["/tmp/terraform"]
+USER "docker"
+WORKDIR "/tmp/terraform"
+CMD ["/bin/bash"]
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
+$ sudo docker tag terraform:0.12.25 terraform:latest
+</code></pre>
+<p>test the image</p>
+<pre><code>$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
+</code></pre>
+<p>create variable file /mydir/credentials </p>
+<pre><code>AWS_ACCESS_KEY_ID=xxxx
+AWS_SECRET_ACCESS_KEY=xxxx
+AWS_DEFAULT_REGION=xxxx
+</code></pre>
+<p>create wrapper script infradeploy.sh</p>
+<pre><code>docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
+</code></pre>
+<p>test terraform and ansible work</p>
+<pre><code>$ sudo sh infradeploy.sh terraform show
+$ sudo sh infradeploy.sh ./ec2.py --list
+$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
+$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
+</code></pre>
+<p>As described at <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html">this site</a> we can use ec2.py and ec2.ini(optional) for dynamic inventory
+When I ran ec2.py I got <code>ImportError: No module named ansible.module_utils</code> in the case I installed ansible from ubuntu repository.
+It seems ansible should be installed with pip if you want to use ec2.py</p>
+<p>playbook sample</p>
+<pre><code>- name: test playbook
+  hosts: tag_Name_tagname
+  remote_user: admin
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "./id_rsa.mykey"
+  tasks:
+    - name: install some packages
+      apt:
+        name: ['make','screen']
+        state: present
+        install_recommends: no
+      when: ansible_pkg_mgr == 'apt'
+      tags: packages
+
+    - name: create a directory
+      file:
+        path: /my/direcoty
+        state: directory
+        owner: admin
+        mode: '0755'
+
+$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
+$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200510.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-10T00:00:00Z" itemprop="datePublished" title="2020-05-10 00:00">2020-05-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>install</em></p>
+<pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
+$ unzip terraform_x.xx.xx_linux_amd64.zip
+$ cp terraform /usr/local/bin
+</code></pre>
+<p><em>sample varible file</em></p>
+<p>terraform.tfvars </p>
+<pre><code># region   = "ap-northeast-2"
+# az = {
+#   zone0    = "ap-northeast-2a"
+#   zone1    = "ap-northeast-2b"
+# }
+# ami     = "ami-0d79f772de48b11f7"
+cidr_block   = "172.16.0.0/16"
+cidr_subnet0 = "172.16.0.0/24"
+cidr_subnet1 = "172.16.10.0/24"
+</code></pre>
+<p><em>sample tf file</em></p>
+<p>test.tf</p>
+<pre><code>variable "region" {
+  default = "ap-northeast-1"
+}
+variable "az" {
+  default = {
+    zone0 = "ap-northeast-1a"
+    zone1 = "ap-northeast-1c"
+  }
+}
+variable "ami" {
+  default = "ami-03a1ce3bba6d67270"
+}
+variable "instance_type" {
+  default = "t3.nano"
+}
+variable "cidr_block" {}
+variable "cidr_subnet0" {}
+variable "cidr_subnet1" {}
+variable "operation_addr" {}
+variable "key_name" {}
+variable "private_key" {}
+
+provider "aws" {
+  region = var.region
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet0" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet0
+  availability_zone = var.az.zone0
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet1" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet1
+  availability_zone = var.az.zone1
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_internet_gateway" "terraform_test_igw" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table" "terraform_test_route" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.terraform_test_igw.id
+  }
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table_association" "terraform_test_subnet0" {
+  subnet_id      = aws_subnet.terraform_test_subnet0.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_route_table_association" "terraform_test_subnet1" {
+  subnet_id      = aws_subnet.terraform_test_subnet1.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_security_group" "sg_ssh_web" {
+  name = "terraform_test_security_group"
+  description = "allow inbound ssh and web traffic"
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [var.operation_addr]
+  }
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "ec2_public" {
+    ami           = var.ami
+    instance_type = var.instance_type
+    key_name      = var.key_name
+    vpc_security_group_ids = [
+      aws_security_group.sg_ssh_web.id,
+    ]
+    subnet_id = aws_subnet.terraform_test_subnet0.id
+    associate_public_ip_address = "true"
+    user_data = file("userdata.sh")
+    connection {
+      user = "admin"
+      host = self.public_ip
+      private_key = file(var.private_key)
+    }
+    provisioner "file" {
+      source      = "index.html"
+      destination = "~/index.html"
+    }
+    provisioner "remote-exec" {
+      inline = [
+        "sudo apt update",
+        "sudo apt install -y nginx",
+        "sudo mv ~/index.html /var/www/html"
+      ]
+    }
+
+    tags = {
+        Name = "terraform_test"
+    }
+}
+
+output "public_dns" {
+  value = aws_instance.ec2_public.public_dns
+}
+</code></pre>
+<p><em>ininialize</em></p>
+<p>install plugin file under the current directory</p>
+<pre><code>$ terraform init
+</code></pre>
+<p><em>validate tf file</em></p>
+<pre><code>$ terraform validate
+</code></pre>
+<p><em>apply</em></p>
+<pre><code>$ terraform plan -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+$ terraform apply -auto-approve "apply.plan"
+</code></pre>
+<p>or when destroy</p>
+<pre><code>$ terraform plan -destroy -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey' -target aws_instance.web1
+$ terraform apply -auto-approve "destroy.plan"
+</code></pre>
+<p>confirm result</p>
+<pre><code>$ terraform show
+</code></pre>
+<p><em>destroy</em></p>
+<pre><code>$ terraform destroy -auto-approve -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+</code></pre>
+<p><em>sample ansible playbook</em></p>
+<p>apply.playbook</p>
+<pre><code>- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform plan
+      terraform:
+        project_path: './'
+        state: planned
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+
+    - name: terraform apply
+      terraform:
+        project_path: './'
+        state: present
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+</code></pre>
+<p>destroy.playbook</p>
+<pre><code>- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform destroy
+      terraform:
+        project_path: './'
+        state: absent
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+</code></pre>
+<p>apply and destroy with ansible</p>
+<pre><code>$ jq . extravars.json
+{
+  "operation_addr": "xxx.xxx.xxx.xxx/xx",
+  "key_name": "mykey",
+  "private_key": "id_rsa.mykey"
+}
+$ ansible-playbook --check -e @extravars.json apply.playbook
+$ ansible-playbook -e @extravars.json apply.playbook
+$ ansible-playbook --check -e @extravars.json destroy.playbook
+$ ansible-playbook -e @extravars.json destroy.playbook
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200506.html" class="u-url">other tips for scripting</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200506.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-06T00:00:00Z" itemprop="datePublished" title="2020-05-06 00:00">2020-05-06 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>remove all carriage returns</em></p>
+<pre><code>cat file | tr -d '\n'
+</code></pre>
+<p><em>url encoding and decoding</em></p>
+<pre><code>echo 'http://example.com' | nkf -WwMQ | sed 's/=$//g' | tr = % | tr -d '\n'
+
+echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="next">
+                <a href="index-2.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

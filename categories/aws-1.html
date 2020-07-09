@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about aws (old posts, page 1) | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/aws-1.html">
+<link rel="prev" href="aws.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag aws" hreflang="en" href="aws.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about aws (old posts, page 1)</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="aws.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191005.html" class="u-url">Lambda</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191005.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-10-05T00:00:00Z" itemprop="datePublished" title="2019-10-05 00:00">2019-10-05 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>list functions</em></p>
+<pre><code>aws lambda list-functions
+aws lambda get-function --function-name hello-world-python
+</code></pre>
+<p>You can download the zipfile of the source code with "jq -r '.Code.Location' result.json"</p>
+<p><em>confirm CloudWatch Logs</em></p>
+<pre><code>aws logs describe-log-groups | jq .'logGroups[].logGroupName'
+aws logs describe-log-streams --log-group-name /aws/lambda/hello-world-python
+aws logs get-log-events --log-group-name /aws/lambda/hello-world-python --log-stream-name '2019/10/05/xxxxxxxx'
+</code></pre>
+<p><em>create function</em></p>
+<pre><code>aws lambda create-function --function-name hello-world-python \
+--runtime python2.7 \
+--handler lambda_function.lambda_handler \
+--role arn:aws:iam::xxxxxxxx \
+--zip-file fileb://../lambda_function.zip
+</code></pre>
+<p>modify function</p>
+<pre><code>aws lambda update-function-configuration --function-name hello-world-python --environment '{"Variables":{"key":"value"}}'
+aws lambda update-function-code --function-name hello-world-python --zip-file fileb://../lambda_function.zip
+</code></pre>
+<p><em>invocation</em></p>
+<pre><code>aws lambda invoke --function-name hello-world-python --invocation-type DryRun --payload '{"message":"a b c 1 2 3"}' outfile.tmp
+aws lambda invoke --function-name hello-world-python --payload '{"message":"a b c 1 2 3"}' outfile.tmp
+</code></pre>
+<p><em>delete function</em></p>
+<pre><code>aws lambda list-functions
+aws lambda get-function --function-name hello-world-python
+aws lambda delete-function --function-name hello-world-python
+</code></pre>
+<p><em>cloudformation sample template</em></p>
+<pre><code>    TestLambda:
+      Type: AWS::Lambda::Function
+      Properties:
+        Code:
+          S3Bucket: !Ref BucketName
+          S3Key: "lambda_function.zip"
+          S3ObjectVersion: !Ref S3ObjectVersion
+        FunctionName: "TestFunction"
+        Handler: "lambda_function.lambda_handler"
+        MemorySize: 128
+        Role: !GetAtt TestLambdaRole.Arn
+        Runtime: "python2.7"
+        Timeout: 3
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20190916.html" class="u-url">CloudFormation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20190916.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-09-16T00:00:00Z" itemprop="datePublished" title="2019-09-16 00:00">2019-09-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>sample template of CloudFormation in yaml format</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - Key: Name
+        Value: myfirststack
+</code></pre>
+<p>validate template file</p>
+<pre><code>$ aws cloudformation validate-template --template-body file://mystack.yml
+</code></pre>
+<p><em>create stack</em></p>
+<pre><code>$ aws cloudformation create-stack --stack-name mystack --template-body file://mystack.yml
+</code></pre>
+<p>confrim information of created stack</p>
+<pre><code>$ aws cloudformation list-stacks
+$ aws cloudformation describe-stacks --stack-name mystack
+$ aws cloudformation describe-stack-events --stack-name mystack --query 'StackEvents[?ResourceType==`AWS::CloudFormation::Stack`]'
+
+$ aws cloudformation describe-stack-resources --stack-name mystack
+$ aws cloudformation list-stack-resources --stack-name mystack
+
+$ aws cloudformation get-template --stack-name mystack
+$ aws cloudformation get-template --stack-name mystack | jq -r '.TemplateBody'
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - Key: Name
+        Value: first-VPC
+</code></pre>
+<p><em>update template file and validate it</em></p>
+<pre><code>$ diff -u mystack.yml{,.bak}
+--- mystack.yml 2019-09-16 11:23:04.368417527 +0900
++++ mystack.yml.bak     2019-09-16 10:51:35.053928361 +0900
+@@ -1,12 +1,9 @@
+ AWSTemplateFormatVersion: '2010-09-09'
+-Parameters:
+-  CidrBlock:
+-    Type: String
+ Resources:
+   FirstVPC:
+     Type: AWS::EC2::VPC
+     Properties:
+-      CidrBlock: !Ref CidrBlock
++      CidrBlock: 10.0.0.0/16
+       Tags:
+       - Key: Name
+-        Value: mystack-VPC
++        Value: first-VPC
+
+$ aws cloudformation validate-template --template-body file://mystack.yml
+</code></pre>
+<p><em>update the stack</em></p>
+<pre><code>$ aws cloudformation update-stack --stack-name mystack --template-body file://mystack.yml --parameters ParameterKey=CidrBlock,ParameterValue=10.0.0.0/17
+</code></pre>
+<p>confirm</p>
+<p><em>delete the stack</em></p>
+<pre><code>$ aws cloudformation delete-stack --stack-name mystack
+</code></pre>
+<p><em>create stack with ansible</em></p>
+<pre><code>$ cat mystack.yml 
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.10.0.0/16
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml 
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+
+$ ansible-playbook --syntax-check playbook.yml 
+$ ansible-playbook --list-tasks playbook.yml 
+$ ansible-playbook --check playbook.yml
+$ ansible-playbook playbook.yml
+</code></pre>
+<p><em>update stack with ansible</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  CidrBlock:
+    Type: String
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml 
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+        template_parameters:
+          CidrBlock: "10.20.0.0/16"
+
+$ ansible-playbook playbook.yml
+</code></pre>
+<p><em>variable from command line</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  CidrBlock:
+    Type: String
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+        template_parameters:
+          CidrBlock: "{{ CidrBlock }}"
+
+$ ansible-playbook -e "CidrBlock=10.30.0.0/16" playbook.yml
+</code></pre>
+<p><em>delete stack with ansible</em></p>
+<pre><code>$ cat playbook.yml
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: delete a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "absent"
+        region: "ap-northeast-1"
+
+$ ansible-playbook playbook.yml
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="aws.html" rel="prev">Newer posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

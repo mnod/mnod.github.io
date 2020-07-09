@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about terraform)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/terraform.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;resource "aws_s3_bucket" "terraform_state" {
+  bucket = "mybucketname"
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
+  tags = {
+    Name = "terraform_backend"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.bucket
+
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name = "terraform_state_lock"
+  read_capacity = 1
+  write_capacity = 1
+  hash_key = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
+variable "region" {
+  default = "ap-northeast-1"
+}
+
+provider "aws" {
+  region = var.region
+  version = "~&amp;gt; 2.61.0"
+}
+
+terraform {
+  required_version = "&amp;gt;= 0.12.26"
+#  backend "s3" {
+#    bucket = "mybucketname"
+#    key    = "network/terraform.tfstate"
+#    region = "ap-northeast-1"
+#    dynamodb_table = "terraform_state_lock"
+#  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then initialize &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform init 
+terraform show
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;at last create bucket and table&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform plan -out terraform.plan -no-color 
+terraform apply "terraform.plan" -no-color 
+terraform show
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;change backend to S3&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;at first edit tf file to enable S3 backend&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform {
+  required_version = "&amp;gt;= 0.12.26"
+  backend "s3" {
+    bucket = "mybucketname"
+    key    = "network/terraform.tfstate"
+    region = "ap-northeast-1"
+    dynamodb_table = "terraform_state_lock"
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then initialize&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform init -no-color 
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;then you can use S3 backend&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;add tf file content to build aws resource &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;variable "cidr_block" {
+  default = "10.0.0.0/16"
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;plan and apply as usual&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+
+aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;remove all reosources other than S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;before change backend from S3 to local again, remove all other resources.&lt;/p&gt;
+&lt;p&gt;at first remove all aws resources from tf file other than S3 bucket for backend and DynamoDB table for lock control.
+then plan and apply&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform plan -no-color -out terraform.plan 
+terraform apply "terraform.plan" 
+terraform show
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;change backend from S3 to local&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;comment out or remove backend from tf file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    terraform {
+      required_version = "&amp;gt;= 0.12.26"
+    #  backend "s3" {
+    #    bucket = "mybucketname"
+    #    key    = "network/terraform.tfstate"
+    #    region = "ap-northeast-1"
+    #    dynamodb_table = "terraform_state_lock"
+    #  }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then initialize.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;terraform init -no-color 
+ls -l terraform.tfstate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;remove S3 tables and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;before remove them, make sure S3 bucket empty&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
+delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix network/terraform.tfstate \
+--query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
+aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
+
+terraform destroy 
+terraform show
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>terraform</category><guid>https://mnod.github.io/posts/20200622.html</guid><pubDate>Mon, 22 Jun 2020 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;From centos:centos8
+
+ARG VERSION=0.12.25
+RUN yum install -y unzip python2-pip openssh-clients &amp;amp;&amp;amp; \
+    yum clean all &amp;amp;&amp;amp; \
+    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;amp;&amp;amp; \
+    unzip terraform.zip &amp;amp;&amp;amp; \
+    rm terraform.zip &amp;amp;&amp;amp; \
+    mv terraform /usr/local/bin &amp;amp;&amp;amp; \
+    pip2 install ansible boto boto3 awscli &amp;amp;&amp;amp; \
+    ln -s /usr/bin/python2.7 /usr/bin/python &amp;amp;&amp;amp; \
+    mkdir /tmp/terraform &amp;amp;&amp;amp; \
+    useradd -m docker
+
+VOLUME ["/tmp/terraform"]
+USER "docker"
+WORKDIR "/tmp/terraform"
+CMD ["/bin/bash"]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
+$ sudo docker tag terraform:0.12.25 terraform:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create variable file /mydir/credentials &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWS_ACCESS_KEY_ID=xxxx
+AWS_SECRET_ACCESS_KEY=xxxx
+AWS_DEFAULT_REGION=xxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create wrapper script infradeploy.sh&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test terraform and ansible work&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo sh infradeploy.sh terraform show
+$ sudo sh infradeploy.sh ./ec2.py --list
+$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
+$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As described at &lt;a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html"&gt;this site&lt;/a&gt; we can use ec2.py and ec2.ini(optional) for dynamic inventory
+When I ran ec2.py I got &lt;code&gt;ImportError: No module named ansible.module_utils&lt;/code&gt; in the case I installed ansible from ubuntu repository.
+It seems ansible should be installed with pip if you want to use ec2.py&lt;/p&gt;
+&lt;p&gt;playbook sample&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- name: test playbook
+  hosts: tag_Name_tagname
+  remote_user: admin
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "./id_rsa.mykey"
+  tasks:
+    - name: install some packages
+      apt:
+        name: ['make','screen']
+        state: present
+        install_recommends: no
+      when: ansible_pkg_mgr == 'apt'
+      tags: packages
+
+    - name: create a directory
+      file:
+        path: /my/direcoty
+        state: directory
+        owner: admin
+        mode: '0755'
+
+$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
+$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item><item><title>first step of terraform</title><link>https://mnod.github.io/posts/20200510.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;install&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
+$ unzip terraform_x.xx.xx_linux_amd64.zip
+$ cp terraform /usr/local/bin
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample varible file&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;terraform.tfvars &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# region   = "ap-northeast-2"
+# az = {
+#   zone0    = "ap-northeast-2a"
+#   zone1    = "ap-northeast-2b"
+# }
+# ami     = "ami-0d79f772de48b11f7"
+cidr_block   = "172.16.0.0/16"
+cidr_subnet0 = "172.16.0.0/24"
+cidr_subnet1 = "172.16.10.0/24"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample tf file&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;test.tf&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;variable "region" {
+  default = "ap-northeast-1"
+}
+variable "az" {
+  default = {
+    zone0 = "ap-northeast-1a"
+    zone1 = "ap-northeast-1c"
+  }
+}
+variable "ami" {
+  default = "ami-03a1ce3bba6d67270"
+}
+variable "instance_type" {
+  default = "t3.nano"
+}
+variable "cidr_block" {}
+variable "cidr_subnet0" {}
+variable "cidr_subnet1" {}
+variable "operation_addr" {}
+variable "key_name" {}
+variable "private_key" {}
+
+provider "aws" {
+  region = var.region
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet0" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet0
+  availability_zone = var.az.zone0
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet1" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet1
+  availability_zone = var.az.zone1
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_internet_gateway" "terraform_test_igw" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table" "terraform_test_route" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.terraform_test_igw.id
+  }
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table_association" "terraform_test_subnet0" {
+  subnet_id      = aws_subnet.terraform_test_subnet0.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_route_table_association" "terraform_test_subnet1" {
+  subnet_id      = aws_subnet.terraform_test_subnet1.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_security_group" "sg_ssh_web" {
+  name = "terraform_test_security_group"
+  description = "allow inbound ssh and web traffic"
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [var.operation_addr]
+  }
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "ec2_public" {
+    ami           = var.ami
+    instance_type = var.instance_type
+    key_name      = var.key_name
+    vpc_security_group_ids = [
+      aws_security_group.sg_ssh_web.id,
+    ]
+    subnet_id = aws_subnet.terraform_test_subnet0.id
+    associate_public_ip_address = "true"
+    user_data = file("userdata.sh")
+    connection {
+      user = "admin"
+      host = self.public_ip
+      private_key = file(var.private_key)
+    }
+    provisioner "file" {
+      source      = "index.html"
+      destination = "~/index.html"
+    }
+    provisioner "remote-exec" {
+      inline = [
+        "sudo apt update",
+        "sudo apt install -y nginx",
+        "sudo mv ~/index.html /var/www/html"
+      ]
+    }
+
+    tags = {
+        Name = "terraform_test"
+    }
+}
+
+output "public_dns" {
+  value = aws_instance.ec2_public.public_dns
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;ininialize&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;install plugin file under the current directory&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;validate tf file&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform validate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;apply&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform plan -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+$ terraform apply -auto-approve "apply.plan"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or when destroy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform plan -destroy -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey' -target aws_instance.web1
+$ terraform apply -auto-approve "destroy.plan"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform show
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;destroy&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ terraform destroy -auto-approve -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample ansible playbook&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;apply.playbook&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform plan
+      terraform:
+        project_path: './'
+        state: planned
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+
+    - name: terraform apply
+      terraform:
+        project_path: './'
+        state: present
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;destroy.playbook&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform destroy
+      terraform:
+        project_path: './'
+        state: absent
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;apply and destroy with ansible&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . extravars.json
+{
+  "operation_addr": "xxx.xxx.xxx.xxx/xx",
+  "key_name": "mykey",
+  "private_key": "id_rsa.mykey"
+}
+$ ansible-playbook --check -e @extravars.json apply.playbook
+$ ansible-playbook -e @extravars.json apply.playbook
+$ ansible-playbook --check -e @extravars.json destroy.playbook
+$ ansible-playbook -e @extravars.json destroy.playbook
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>terraform</category><guid>https://mnod.github.io/posts/20200510.html</guid><pubDate>Sun, 10 May 2020 00:00:00 GMT</pubDate></item></channel></rss>

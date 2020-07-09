@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>ansible | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20170827.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20170826.html" title="resource monitoring" type="text/html">
+<link rel="next" href="20170902.html" title="git" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="ansible">
+<meta property="og:url" content="https://mnod.github.io/posts/20170827.html">
+<meta property="og:description" content="エージェントレスの構成管理ツール。
+対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。
+
+Pythonが動くこと
+相手がリモートホストならsshでログインできること
+
+(ただし、使うモジュールによっては追加パッケージが必要。例:aptモジュールを使うためにはpython-aptが必要)
+「あるべき姿」をYAMLで記載する。(記載したファイル(群)をplaybo">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-08-27T00:00:00Z">
+<meta property="article:tag" content="ansible">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">ansible</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-27T00:00:00Z" itemprop="datePublished" title="2017-08-27 00:00">2017-08-27 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>エージェントレスの構成管理ツール。</p>
+<p>対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。</p>
+<ul>
+<li>Pythonが動くこと</li>
+<li>相手がリモートホストならsshでログインできること</li>
+</ul>
+<p>(ただし、使うモジュールによっては追加パッケージが必要。例:aptモジュールを使うためにはpython-aptが必要)</p>
+<p>「あるべき姿」をYAMLで記載する。(記載したファイル(群)をplaybookと呼ぶ)</p>
+<pre><code>ansible
+  -i hosts インベントリファイルを指定
+  -m ping 疎通確認
+  -m setup ファクト収集
+  -a 'command -h' 指定したコマンドを実行
+  --ask-pass ログインで必要となるパスワードを要求
+  targethost 対象ホストを指定
+</code></pre>
+<p>リポジトリファイル(hosts)の内容の例</p>
+<pre><code>[myserver]
+192.168.1.1 ansible_ssh_user=myusername
+[desktop]
+myhostname  ansible_connection=local
+</code></pre>
+<p>疎通確認の例</p>
+<pre><code>$ ansible -i hosts -m ping 192.168.1.1 --ask-pass
+$ ansible -i hosts -m ping myhostname
+    $ ansible -i hosts -m ping 192.168.1.1 --ask-pass --ssh-common-args '-o PubkeyAuthentication=no'
+
+ansible-playbook
+  -i hosts
+  --syntax-check  プレイブックの文法チェックのみ
+  --list-tasks   プレイブックのタスクをリスト表示
+  --check ドライラン
+  --ask-sudo-pass sudoで必要となるパスワードを要求
+  --ask-su-pass suで必要となるパスワードを要求
+  --ask-pass ログインで必要となるパスワードを要求
+  --diff show differences
+  --tags "tag1,tag2,..."
+  --skip-tags "tag1,tag2,..."
+  playbook.yml プレイブックを指定
+</code></pre>
+<p>プレイリストの内容確認、実行前確認、設定反映の例</p>
+<pre><code>$ ansible-playbook -i hosts --syntax-check myserver.yml
+$ ansible-playbook -i hosts --list-tasks myserver.yml 
+$ ansible-playbook -i hosts --check myserver.yml --ask-pass
+$ ansible-playbook -i hosts myserver.yml --ask-pass
+</code></pre>
+<p><em>Sample ansible playbook in a single yaml file</em></p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=playbooksingle.yml"></script>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/ansible.html" rel="tag">ansible</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20170826.html" rel="prev" title="resource monitoring">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20170902.html" rel="next" title="git">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

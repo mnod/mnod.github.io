@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;command&lt;/th&gt;&lt;th&gt;screen&lt;/th&gt;&lt;th&gt;tmux&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;list&lt;/th&gt;&lt;td&gt;-ls&lt;/td&gt;&lt;td&gt;ls&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;with name&lt;/th&gt;&lt;td&gt;-S name&lt;/td&gt;&lt;td&gt;new -s name&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;attach&lt;/th&gt;&lt;td&gt;-r [title]&lt;/td&gt;&lt;td&gt;a [-t title]&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;prefix&lt;/th&gt;&lt;td&gt;Ctrl+a&lt;/td&gt;&lt;td&gt;Ctrl+b&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;new&lt;/th&gt;&lt;td&gt;prefix+c&lt;/td&gt;&lt;td&gt;prefix+c&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;switch&lt;/th&gt;&lt;td&gt;prefix+num&lt;/td&gt;&lt;td&gt;prerix+num&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;list screen&lt;/th&gt;&lt;td&gt;prefix+"&lt;/td&gt;&lt;td&gt;prerix+w&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;copy mode&lt;/th&gt;&lt;td&gt;prefix+esc&lt;/td&gt;&lt;td&gt;prefix+[&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;em&gt;screen&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;it can connect to serial port. default baud is 9600&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;screen /dev/ttyS0 [baud rate]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;it can create a new window which executes a specific program&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;screen watch -n 5 ntpq -pn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200616.html</guid><pubDate>Tue, 16 Jun 2020 00:00:00 GMT</pubDate></item><item><title>chrony</title><link>https://mnod.github.io/posts/20200615.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;chrony is an implementation of Network Time Protocol&lt;/p&gt;
+&lt;p&gt;install&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apt install chrony
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample config
+specify ntp server at &lt;code&gt;server&lt;/code&gt; or ntp server pool for &lt;code&gt;pool&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;reload configuration&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status chronyd
+journalctl -u chrony -f
+systemctl force-reload chrony
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show system track performance&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc tracking
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show current time sources&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc sources
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show information about drift rate and offset estimation process&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc sourcestats
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show the last valid measurement and other information&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc ntpdata
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;server&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;For server settings, at least add a &lt;code&gt;allow&lt;/code&gt; line.
+&lt;code&gt;cmdallow&lt;/code&gt; and &lt;code&gt;bindcmdaddress&lt;/code&gt; lines are optional which is for monitoring access&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+allow 192.168.xxx.0/24
+cmdallow 192.168.xxx.0/24
+bindcmdaddress 127.0.0.1
+bindcmdaddress 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show list of clients&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc clients
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;specify a remote host to which chronyd is to be connected (using udp/323)
+default is localhost&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cronyc -h 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item><item><title>ntpd</title><link>https://mnod.github.io/posts/20200614.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;install&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apt install ntp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample config
+specify ntp server at &lt;code&gt;server&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/ntp.conf
+driftfile /var/lib/ntp/ntp.drift
+leapfile /usr/share/zoneinfo/leap-seconds.list
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+server 192.168.xxx.xxx iburst
+restrict -4 default ignore
+restrict -6 default ignore
+restrict 127.0.0.1
+restrict ::1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;reload configuration&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status ntp
+journalctl -u ntp -f
+systemctl force-reload ntp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm commands&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ntpq -pn
+ntpq -c readlist
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;server&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;For server settings, at lease a &lt;code&gt;restrict &amp;lt;client address&amp;gt;&lt;/code&gt; line to allow ntp clients access.
+If you don't add &lt;code&gt;noquery&lt;/code&gt;, you allow the client to query your ntpd status.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/ntp.conf
+driftfile /var/lib/ntp/ntp.drift
+leapfile /usr/share/zoneinfo/leap-seconds.list
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+server 192.168.xxx.xxx iburst
+restrict -4 default ignore
+restrict -6 default ignore
+restrict 127.0.0.1
+restrict ::1
+restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm commands&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ntpq -pn &amp;lt;address&amp;gt;
+ntpq -c readlist &amp;lt;address&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item><item><title>journalctl</title><link>https://mnod.github.io/posts/20200613.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show all messages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show all messages from boot&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show messages with explanations&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show kernel ring buffer&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -k
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show messages of limitted time span&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl --since "2020-06-11"
+journalctl --since "20 min ago"
+journalctl --since "2020-06-11 00:00:00" --untill "2020-06-11 23:59:59"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show specific messages by unit, executable or process&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -u networking
+journalctl /usr/bin/sudo
+journalctl _PID=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show specific messages by priority or syslog facility&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -p 5
+journalctl -p 0..5
+journalctl SYSLOG_FACILITY=10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;follow new messages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -f
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;don't pipe output to a pager&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl --no-pager
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Basically journal messages exist under /run/log/journal/ which is volatile directory.
+Below commands move journal messages directory to directory under /var/log/journal/.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo "Storage=persistent" | sudo tee -a /etc/systemd/journald.conf
+systemctl force-reload systemd-journald
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can specify directory in which journal messages saved.
+It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -D /mnt/var/log/journal -x
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item><item><title>systemctl</title><link>https://mnod.github.io/posts/20200612.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show system status&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show running or failed units&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-units
+systemctl
+systemctl --failed
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show installed unit files&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-unit-files
+ls -l /usr/lib/systemd/system /etc/systemd/system
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;start, stop, restart or reload a unit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl start unit
+systemctl stop unit
+systemctl restart unit
+systemctl reload unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show status of a unit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;enable or disable a unit to be started on bootstrap&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl enable unit
+systemctl disable unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;check whether a unit is enabled or not&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl is-enabled unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mask or unmask a unit to make it impossible to start it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl mask unit
+systemctl unmask unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;reboot or poweroff the system&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl reboot
+systemctl poweroff
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200612.html</guid><pubDate>Fri, 12 Jun 2020 00:00:00 GMT</pubDate></item><item><title>postfix</title><link>https://mnod.github.io/posts/20200403.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;alias&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ postconf -n | grep alias
+$ ls -l /etc/aliases*
+$ postalias hash:/etc/aliases
+$ newaliases
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;send mail or read mail of Maildir&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ apt install mailutils
+$ echo "This is body message" | mail -s "My subject" pi
+$ MAILDIR=$HOME/Maildir mail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200403.html</guid><pubDate>Fri, 03 Apr 2020 00:00:00 GMT</pubDate></item><item><title>apt-cacher-ng</title><link>https://mnod.github.io/posts/20200315.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat Dockerfile
+FROM debian:buster
+
+RUN apt-get update \
+&amp;amp;&amp;amp; apt-get install -y --no-install-recommends apt-cacher-ng \
+&amp;amp;&amp;amp; apt-get clean \
+&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/cache/apt-cacher-ng"]
+EXPOSE 3142
+
+CMD chmod 777 /var/cache/apt-cacher-ng \
+&amp;amp;&amp;amp; /etc/init.d/apt-cacher-ng start \
+&amp;amp;&amp;amp; tail -f /var/log/apt-cacher-ng/*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build -t apt-cacher-ng:buster . | tee build.log
+$ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3142:3142 -v /mnt/apt-cacher-ng:/var/cache/apt-cacher-ng apt-cacher-ng:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl 192.168.xxx.xxx:3142
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;how to use the cache server&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;specify it in a config file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END | sudo tee /etc/apt/apt.conf.d/01proxy
+&amp;gt; Acquire::http::Proxy "http://192.168.xxx.xxx:3142/";
+&amp;gt; END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;specify it in command line&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or
+    $ sudo su -
+    # http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx &lt;/p&gt;
+&lt;p&gt;for docker build&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20200315.html</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate></item><item><title>tcpdump</title><link>https://mnod.github.io/posts/20200308.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;tcpdump&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    tcpdump 
+     -w &amp;lt;output filename&amp;gt;
+     -r &amp;lt;input filename&amp;gt;
+     -i &amp;lt;interface&amp;gt;
+     -c &amp;lt;packet counts&amp;gt;
+
+     -n   # don't convert address and port to names
+     -e   # show link level header 
+     -v   # verbose output
+     -xx  # print the data of each packets with link level header in hex
+     -XX  # print the data of each packets with link level header in hex and ascii
+     -ttt # print a delta between current and previous line
+
+     arp
+     icmp
+     port &amp;lt;port number&amp;gt;
+     host &amp;lt;ip address&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;wireshark&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    wireshark 
+     -r &amp;lt;input filename&amp;gt;
+     -R "read filter"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To know detail of read filter, see man page of wireshark-filter&lt;/p&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200308.html</guid><pubDate>Sun, 08 Mar 2020 00:00:00 GMT</pubDate></item><item><title>cryptsetup</title><link>https://mnod.github.io/posts/20200127.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;luks&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;install a package&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt install cryptsetup
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;format&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cryptsetup luksFormat /dev/md0 
+$ sudo cryptsetup luksDump /dev/md0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;open&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cryptsetup open /dev/md0 cryptfs
+$ sudo cryptsetup status cryptfs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;open tcrypt device&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cryptsetup open --type tcrypt /dev/md0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;format mount&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mkfs -t ext4 /dev/mapper/cryptfs 
+$ sudo mount /dev/mapper/cryptfs /mnt
+$ df -h /mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;umount and close&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo umount /mnt 
+$ sudo cryptsetup close cryptfs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200127.html</guid><pubDate>Mon, 27 Jan 2020 00:00:00 GMT</pubDate></item><item><title>mdadm</title><link>https://mnod.github.io/posts/20200126.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;software raid&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;install mdadm package&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install mdadm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;make dummy files for test&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dd if=/dev/zero of=file.img bs=2M count=0 seek=512
+$ cp -p file.img file0.img
+$ cp -p file.img file1.img
+$ cp -p file.img file2.img
+$ cp -p file.img file3.img
+$ cp -p file.img file4.img
+$ ls -lhs file*img
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;losetup&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop0 file0.img
+$ sudo losetup /dev/loop1 file1.img
+$ sudo losetup /dev/loop2 file2.img
+$ sudo losetup /dev/loop3 file3.img
+$ sudo losetup /dev/loop4 file4.img
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;raid0&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid0 -n 2 /dev/loop0 /dev/loop1
+$ cat /proc/mdstat
+$ sudo mdadm --detail /dev/md0
+
+$ sudo mdadm --detail --scan
+$ sudo mdadm --detail --scan &amp;gt; /etc/mdadm.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mkfs and mount &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mkfs -t ext4 /dev/md0
+$ sudo mount /dev/md0 /mnt
+$ df -h /mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;stop and remove settings&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
+$ sudo mdadm --zero-superblock /dev/loop0
+$ sudo mdadm --zero-superblock /dev/loop1
+( $ sudo rm -i /etc/mdadm.conf )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;raid1&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid1 -n 2 /dev/loop0 /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;make fail&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
+$ sudo losetup -d /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;recover&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --assemble --scan -v
+$ sudo mdadm --examine /dev/loop0
+
+$ sudo mdadm --add /dev/md0 /dev/loop2
+$ sudo mdadm --detail --scan &amp;gt; /etc/mdadm.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;add extra disk&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop1 file1.img
+$ sudo mdadm --add /dev/md0 /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;make fail&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
+$ sudo losetup -d /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;recover&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --assemble --scan -v
+$ sudo mdadm --examine /dev/loop0
+$ sudo mdadm --grow /dev/md0 --raid-devices=2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;when disk alert has come.&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --fail /dev/md0 /dev/loop1
+$ sudo mdadm --remove /dev/md0 /dev/loop1
+$ sudo mdadm --add /dev/md0 /dev/loop3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;if md0 has extra disk, when disk alert has come, automatically rebuild&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop0 file0.img
+$ sudo mdadm --add /dev/md0 /dev/loop0
+$ sudo mdadm --fail /dev/md0 /dev/loop2
+$ sudo mdadm --remove /dev/md0 /dev/loop2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;raid5&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;/dev/loop3 is extra disk for spare&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid5 -n 3 /dev/loop0 /dev/loop1 /dev/loop2 -x 1 /dev/loop3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;raid10&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;/dev/loop4 is extra disk for spare&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200126.html</guid><pubDate>Sun, 26 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>

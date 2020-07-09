@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about serverside)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/serverside.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Tiny Tiny RSS</title><link>https://mnod.github.io/posts/20160926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://tt-rss.org/gitlab/fox/tt-rss/wikis/home"&gt;Tiny Tiny RSS&lt;/a&gt;は、フリーのサーバサイドRSSアグリゲータです。&lt;/p&gt;
+&lt;p&gt;利用するには、構築済みの方にアカウントを払い出してもらうか、自分でwebサーバ、dbサーバを構築・運用していく必要があります。&lt;/p&gt;
+&lt;p&gt;スマホのニュースアプリと比較して、RSSアグリゲータは、ニュースソースをお仕着せのものではなく自分で選択することができること、アプリ等が突然サービス終了して泣かされることがないことが利点です。&lt;/p&gt;
+&lt;p&gt;RSSアグリゲータといえば、数年前にgoogleのサービスが終了し、今度はYahoo!Japanのサービスが終了することになりました。
+自前でサーバを動かしていれば、サービスの終了に怯える必要がありません。&lt;/p&gt;
+&lt;p&gt;データがサーバにある利点は、複数の端末から同じデータにアクセスすることができること、クライアント端末に問題があってもデータは安全なことです。
+サーバ上のデータの安全性は、サーバの冗長度によります。&lt;/p&gt;
+&lt;p&gt;自分の場合は安価なVPSを借りて自前で構築・運用しています。もう随分前なのであやふやですが、構築自体は難しくなかったと記憶してます。再構築することがあれば、手順を記載したいと思います。&lt;/p&gt;
+&lt;p&gt;コンテンツはWebブラウザでアクセスすることもできるし、専用のクライアントソフトから見ることもできます。&lt;/p&gt;
+&lt;p&gt;スマホで動く専用のクライアントもいくつかあります。自分が使っているのは、以下の２つです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Androidの&lt;a href="https://play.google.com/store/apps/details?id=org.ttrssreader&amp;amp;hl=ja"&gt;TTRSS-Reader&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;iPhoneの&lt;a href="https://itunes.apple.com/us/app/tiny-reader-rss/id689519762?mt=8"&gt;tiny Reader RSS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。&lt;/p&gt;&lt;/div&gt;</description><category>serverside</category><category>software</category><guid>https://mnod.github.io/posts/20160926.html</guid><pubDate>Mon, 26 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

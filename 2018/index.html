@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="tech log">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts for year 2018 | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/2018/">
+<link rel="next" href="index-1.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts for year 2018</h1>
+        
+
+        <div class="metadata">
+            
+                <p class="feedlink">
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20181111.html" class="u-url">json</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20181111.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-11-11T00:00:00Z" itemprop="datePublished" title="2018-11-11 00:00">2018-11-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://www.json.org/json-en.html">json</a>(JavaScript Object Notation)</p>
+<ul>
+<li>object is unordered set of name/value pair.</li>
+<li>array is ordered set of values</li>
+<li>
+<p>value can be number, string, boolean(true or false), null, object or array.</p>
+<p>{
+  "number": 128,
+  "string": "128",
+  "boolean": true,
+  "null": null,
+  "object": {
+    "key0": "value0"
+  },
+  "array": [
+    128,
+    "128",
+    true,
+    null,
+    {
+      "key1": "value1"
+    }
+  ]
+}</p>
+</li>
+</ul>
+<p><em>jq</em></p>
+<p>jq is command line json processor.
+How to install jq in debian.</p>
+<pre><code>apt-get install jq
+</code></pre>
+<p>Here we use result of below command as a sample json file.
+Of cource I know awscli has convinience options like filter and query.</p>
+<pre><code>aws ec2 describe-images \
+--filters '[{"Name":"owner-id","Values":["136693071363"]},{"Name":"architecture","Values":["x86_64"]}]' &gt; ami.json
+</code></pre>
+<p>内容全てを整形して出力</p>
+<pre><code>$ jq '.' ami.json
+</code></pre>
+<p>Images の子要素(配列)を全て出力</p>
+<pre><code>$ jq '.Images[]' amis.json
+</code></pre>
+<p>Images の子要素のうち Description が Test のものの内容を出力</p>
+<pre><code>$ jq '.Images[] | select(.Description == "Test")' ami.json
+</code></pre>
+<p>Not condition</p>
+<pre><code>$ jq '.Images[] | select(.Description == "Test" | not)' ami.json
+</code></pre>
+<p>Startswith</p>
+<pre><code>$ jq '.Images[] | select(.Description | startswith("Debian 10"))' ami.json
+</code></pre>
+<p>contains</p>
+<pre><code>$ jq '.Images[] | select(.Description | contains("202005"))' ami.json
+</code></pre>
+<p>Images の子要素のうち Description が Test のもののNameの値を出力</p>
+<pre><code>$ jq '.Images[] | select(.Description == "Test") | .Name' ami.json
+</code></pre>
+<p>Images の子要素のうち Description が Test のものの内容を整形して出力</p>
+<pre><code>$ jq '.Images[] | select(.Description == "Test") | {"MyName":.Name, "MyDate":.CreationDate}' ami.json
+</code></pre>
+<p>jqのコマンドをファイルから読み込むことができる。</p>
+<pre><code>$ cat ami.jq
+.Images[] |
+select(.Description == "Test") |
+{
+  "MyName":.Name,
+  "MyDate":.CreationDate
+}
+
+$ jq -f ami.jq ami.json
+</code></pre>
+<p>シェバンを書けば、sed や awk のようにスクリプトとして実行することができる。</p>
+<pre><code>$ cat ami.jq
+#! /usr/bin/jq -f
+.Images[] |
+select(.Description == "Test") |
+{
+  "MyName":.Name,
+  "MyDate":.CreationDate
+}
+
+$ chmod +x ami.jq
+
+$ ./ami.jq ami.json
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180826.html" class="u-url">eBook reader</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180826.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-08-26T00:00:00Z" itemprop="datePublished" title="2018-08-26 00:00">2018-08-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>漫画は読まない。</p>
+<p>電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。</p>
+<p>よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
+(物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
+未来永劫手元に残らなくてもよい本なら、サービスを利用する価値があるのではないかと思う。資格関連本など、墓場まで持っていかなくてもよいタイプの本は、意外と多いはず。
+中期から短期的にサービスを受けることができる有料サービスで、優れたコンテンツを手軽に持ち運んで読むことができると捉えれば、電子書籍は合理的なのではないだろうか。</p>
+<p>電子書籍では書き込みができないという短所もあるが、本当に必要なところだけノートに書き写すなりすればよいのではないかと思う。本に書き込んだことを繰り返し参照するという運用が、本当に効率的なのであれば、紙の本を使えばいいし、そうでないなら電子書籍で充分ではないかと思う。</p>
+<p>電子書籍には紙の手触りがない、紙の本なら直感的にどのあたりに何が書いてあったか覚える、という意見がある。
+例えばkindle の場合、好きなページに好きなだけしおりを設定することができる。電子書籍でも、自分で設定したしおりを頼りにすれば、好きなところに比較的簡単にたどり着けるのではないかと思う。</p>
+<p>紙の本を全否定するのではないが、雑誌を切り抜いてスクラップしたりハードカバーの本を手元におきたいなど、紙の本がどうしても必要だという事情がないのなら、電子書籍を活用しないのはもったいない。
+紙の本だと人に貸すこともできるし、不要になれば売り払うこともできる。</p>
+<p>お菓子を食べながら読んでも、コーヒーをこぼしても、電子書籍コンテンツ自体は汚れることはない。
+電子書籍端末は、気に入る端末が限られるので、大切に使わないと代わりになるものに出会えなくなる可能性もある。(買いたくなるような7インチタブレットがなかなか出てこない)</p>
+<p>電子端末の持ち込みが制限される職場には持ち込むことができない可能性がある。</p>
+<p>自分の場合、荷物を増やしたくないので、雑誌も書籍も物理的な本はあまり買わず、短期間で読みきるタイプの本の場合は図書館を積極的に利用するようにしている。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.amazon.kindle">kindle</a></em></p>
+<p>最大手のサービスなら、そう簡単にサービスが終わることはないと考え、自分はAmazon を利用している。
+(極東の島国の企業に買収されるようなサービスでは安心して利用できない)</p>
+<p>kindleは、専用端末は必ずしも必要ではなく、Androidやiosの普通に売られてるスマホやタブレットにアプリを入れて使うことができる。また、一つのアカウントで複数の端末を使うことができる。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.adobe.reader">Adobe Acrobat Reader</a></em></p>
+<p>オープンソースソフトウェアに限らず様々な製品のドキュメントがPDF 形式で配布されている。
+タブレット端末に入れて持ち運ぶと、手軽にどこでも快適に読むことができ、とても重宝する。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=org.geometerplus.zlibrary.ui.android">FBReader</a>と<a href="https://play.google.com/store/apps/details?id=org.geometerplus.fbreader.plugin.pdf">PDF plugin</a></em></p>
+<p>epubをはじめ、様々な形式に対応したドキュメントリーダー。
+２つのPDF ファイルを切り替えながら読むためにAdobe リーダーとあわせて使っている。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.mizushimanet.AozoraProvider">青空プロバイダ</a>と<a href="https://play.google.com/store/apps/details?id=org.example.android.npn2SC1815J.VerticalTextViewer">縦書きビューア</a></em></p>
+<p>自分は青空文庫の本を読むのにこれらを使っている。</p>
+<p>かつて紙の文庫本を買って読んだ古典が(全てではないが)無償で読めるのは、感慨深い。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer">Perfect Viewer</a></em></p>
+<p>様々な形式に対応したドキュメントリーダー。
+電子書籍だけでなく、画像ファイルの閲覧にも対応している。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180701.html" class="u-url">weightloss</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180701.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-07-01T00:00:00Z" itemprop="datePublished" title="2018-07-01 00:00">2018-07-01 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>減量＝摂取カロリーと消費カロリーの収支をマイナスにする努力。</p>
+<p>メタボには該当しないがBMI的に標準体重の上限近いので、減量に取り組んでいる。</p>
+<p>無理をせず1週間で 300g くらいずつ減らしていき、数十週かけて標準体重の中ほどを目指している。(１日あたりカロリー収支を、300kcal 消費超過とする。)</p>
+<p>急に減量すると防御が働くそうなので、あせらず少しずつ。
+月に5%にとどめたほうがいいらしい(一週間あたり1%程度)。</p>
+<p>カロリー消費は食事誘導性熱産生、生活活動、基礎代謝 (= 1 : 2 : 7)だけ。できることをこつこつ積み重ねるしかない。</p>
+<p><em>摂取カロリーを減らす</em></p>
+<p>食欲のコントロール。満腹感を得ることを目的としない。
+軽い空腹感があったほうが集中力が高まる。</p>
+<ul>
+<li>食べる量を単純に減らす(半ライスにする。大盛りにしない。追加しない。時間をかけて食べる。)</li>
+<li>食事＝次の食事までに使う分のカロリーを摂取すること(食べるのは必要な量だけにとどめる)</li>
+<li>高カロリーを摂らない。or  低カロリーに入れ替え。
+食べるなら意識して食べる。
+(コーラ、ポカリ、栄養ドリンク。菓子パン。食後のお菓子。おやつ。マヨネーズ、ドレッシング、バター、砂糖、揚げ物。)
+お菓子を食べるなら一口ゼリー。</li>
+</ul>
+<p><em>消費カロリーを増やす</em></p>
+<ul>
+<li>いつもより[徒歩・自転車・階段]。</li>
+</ul>
+<p><em>カロリーを消費しやすく</em></p>
+<ul>
+<li>食事を抜かず三食食べる (朝しっかり、昼減らす、夜あっさり)</li>
+<li>体温を上げる (カプサイシン)</li>
+<li>筋肉を増やす (ドローイン → ストレッチ → 筋トレ)
+体脂肪が減り引き締まる。</li>
+</ul>
+<p><em>脂肪消費を進める</em></p>
+<ul>
+<li>筋肉をつけて有酸素運動</li>
+<li>運動前にプーアル茶(脂肪分解をすすめる効果があるらしい)</li>
+</ul>
+<p><em>脂肪吸収を抑える</em></p>
+<ul>
+<li>食事の際は烏龍茶(脂質吸収を抑える効果があるらしい)</li>
+<li>食後血糖値上昇を抑える(食後に運動する。デザートのお菓子をやめる)</li>
+<li>炭水化物を減らす</li>
+</ul>
+<p><em>生活習慣</em></p>
+<ul>
+<li>就寝中のカロリー消費(7～7.5h睡眠)</li>
+</ul>
+<p><em>目標設定・進捗管理</em></p>
+<ul>
+<li>体重と体脂肪率を１日２回記録する(起床後と就寝前など)。</li>
+<li>計画・実行・反省・改善を辛抱強く継続する。
+休むとリカバリが難しいので休まない。
+習慣化する。減量した状態をキープする。</li>
+<li>なぜ減量したいのか。減量して得られるものを思い描く。
+なりたい自分を目指して生活習慣を改善する。</li>
+</ul>
+<p><em>停滞期</em></p>
+<p>体重が5%くらい減ると防御が働いて、数週間体重が減らなくなる。この間も辛抱してがんばる。</p>
+<p>心が折れそうなときは
+「怠惰な豚でいたくない。でぶは自己管理できないことの表れ。みっともない。」と言い聞かせてがんばる。</p>
+<p>何事も始めるのに遅すぎるということはない。変化を恐れず、常に自分を変えて成長する。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180630.html" class="u-url">stop smoking</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180630.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-30T00:00:00Z" itemprop="datePublished" title="2018-06-30 00:00">2018-06-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>数年前に禁煙成功し、それ以来完全にやめることができた。
+その時に考えたこと、やったことなど。</p>
+<p>禁煙 = 一度決めたことを継続する心の強さこそが力
+禁煙できれば何でもできる。禁煙すらできなければ何もできない。</p>
+<p>意志があれば禁煙外来に行かなくても、禁煙ガム・禁煙パッチがなくても禁煙できる。意思がなければ、何をやってもやめられるわけがない。</p>
+<p><em>考え方を変える</em></p>
+<p>煙草を吸い続ける価値はない、煙草を吸わないのが合理的であると覚悟する。</p>
+<p>煙草による不都合。</p>
+<ul>
+<li>くさいので、嫌がられる。迷惑になる。迷惑をかけていることに無自覚。</li>
+<li>味や臭いに鈍感になる。</li>
+<li>食事・休憩できるところが限られる。</li>
+<li>煙草代。</li>
+<li>将来の医療費がかかる。他人への健康被害。</li>
+<li>吸ってる時間が無駄。余命が短い。</li>
+<li>火の不始末の心配。煙草やライターの在庫の心配。</li>
+</ul>
+<p>禁煙で得られるもの。</p>
+<ul>
+<li>くさくないので、嫌がられない。迷惑にならない。</li>
+<li>味や臭いが判るようになる。</li>
+<li>どこでも飲食できる。(むしろ喫煙席の近くは臭いと感じるようになる)</li>
+<li>煙草代がかからない。</li>
+<li>将来の医療費がかかる可能性が下がる。</li>
+<li>無駄な時間が減る。余命が短くなくなる。</li>
+<li>心配事が減る。</li>
+<li>自信。</li>
+</ul>
+<p>煙草を吸う人がかっこいいというのは幻想にすぎない。
+自分では気づかないだけで、世間の人は喫煙者をこう見てる。</p>
+<ul>
+<li>煙で他人に迷惑をかけておきながら自分がかっこいいと勘違いしている痛い人。</li>
+<li>煙で他人に迷惑をかけても気にしないタイプの人。</li>
+<li>自分を律することができないタイプの人。</li>
+<li>ゴミをポイ捨てして灰をちらかす人と同族。ところ構わず歩き煙草する人と同族</li>
+<li>臭い人。(匂いで頭痛を起こす人がいる)</li>
+</ul>
+<p>迷惑行為を他の誰かがやっているから自分もやっていいというのは、言い訳にもならない。</p>
+<p><em>客観視と減煙</em></p>
+<p>失敗してもあきらめない。最初は間引きから入ってもいい。</p>
+<ul>
+<li>何故吸っているのか、どんなときに吸っているのかを自覚する。
+惰性で吸わない。本当に吸いたい気持ちがあるのか自問して、吸いたい気持ちがあるときにだけ吸う。</li>
+<li>何気なく吸わない。付き合いで吸わない。吸いたい気持ちが少ないのなら吸わない。</li>
+<li>煙草を吸うのが習慣となっている場合、それをやめてみる
+食事前後だから吸う。お風呂上りだから吸う、などというのはやめる。</li>
+<li>吸いたくなるポイントで吸わないようにできるか試してみる
+起床後。朝食の前後。午前中。昼食前後。午後。夕食前後。お風呂前後。就寝まで。</li>
+<li>連続で吸わない。
+一度に吸うのは1本だけ。煙草の間隔を数時間開ける</li>
+<li>イライラしたから吸いたい? 緊張したから吸いたい?
+煙草は甘えや逃避でしかない。感情を制御できるようにする。
+ (煙草を吸わない人は、煙草を吸わなくてもイライラや緊張と付き合ってる)</li>
+</ul>
+<p><em>実践</em></p>
+<ul>
+<li>禁煙を初めて最初の2週間は心が折れそうになっても、強い決意で吸わない。</li>
+<li>1か月経って自信がついたとしても、ここまでの辛い思いを無駄にしないように吸わない。</li>
+<li>数か月経ってふと吸いたくなることがあっても、ここまで煙草無しで生活することができているので吸わない。</li>
+<li>1年経つと疾病可能性が下がってきているので、せっかくなので吸わない。</li>
+</ul>
+<p>吸いたいイライラに負けない。周囲の人に当たらない。</p>
+<p>吸いたくなるのは数分間だけであり、それを我慢できればしばらくは大丈夫。
+最初は吸いたくなる欲求が強いが、数か月かけてだんだん下がってくる。
+吸いたくなる間隔もだんだん開いてくる。
+その様子を客観的に観察してモチベーションとする。記録する。</p>
+<p>吸いたくなる数分間を我慢できなくなりそうな時
+何か飲み物を飲む。タブレット菓子を食べる。席を立つ。気分転換をする。ストレッチ。瞑想。深呼吸。</p>
+<p>何度も禁煙に失敗してもあきらめない。
+甘えを捨てて、自分には厳しく。周囲の人には感謝。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180604.html" class="u-url">perl</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180604.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-04T00:00:00Z" itemprop="datePublished" title="2018-06-04 00:00">2018-06-04 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>リストの内容だけ繰り返す</p>
+<pre><code>#! /usr/bin/perl
+
+@list = (' item1 ', ' item2 ');
+
+foreach $val (@list) {
+  s/ //g;
+  print "$val\n";
+}
+</code></pre>
+<p>リストの内容だけ繰り返す(特殊変数を使用)</p>
+<pre><code>#! /usr/bin/perl
+
+@list = (' item1 ', ' item2 ');
+
+foreach (@list) {
+  s/ //g;
+  print "$_\n";
+}
+
+#! /usr/bin/perl
+
+@list = ('item1', 'item2');
+myfunction(@list);
+
+sub myfunction {
+  foreach ( @_ ) {
+    print "$_\n";
+  }
+}
+</code></pre>
+<p>標準入力から入ったものをそのまま出力1</p>
+<pre><code>#! /usr/bin/perl
+
+foreach (&lt;&gt;) {
+  print $_;
+}
+</code></pre>
+<p>while</p>
+<pre><code>while (&lt;&gt;) {
+  s/[\r\n]//g;                  # 改行コードを除去。
+  next if ( $_ eq "" );         # 空行ならスキップ
+  next if ( /^#/ );             # コメント行はスキップ
+  my ($var1, $var2) = split( /\s+/, $_);
+  :
+}
+</code></pre>
+<p>ファイルハンドラ</p>
+<pre><code>#!/usr/bin/perl
+
+$filename = "filename.txt";
+
+open(my $fh, "&lt;", $filename) 
+  or die "cannot open &lt; ".$filename.": $!";
+
+while ( &lt;$fh&gt; ) {
+  s/[\r\n]//g;                  # 改行コードを除去。
+  next if ( $_ eq "" );         # 空行ならスキップ
+  next if ( /^\s*#/ );          # コメント行ならスキップ
+
+  :
+  :
+
+ }
+
+close($fh)
+  or warn "close failed: $!";;
+</code></pre>
+<p>引数の利用</p>
+<pre><code>#! /usr/bin/perl
+
+my $count = @ARGV;
+if ( $count == 0 ) {
+  print "引数がないっす";
+}
+
+foreach (@ARGV) {
+  print "$_\n";
+}
+</code></pre>
+<p>オプションと引数</p>
+<pre><code>#! /usr/bin/perl
+
+use Getopt::Std;
+
+my $flg=0;
+getopts("f:tdh", \%opts);
+
+if ($opts{'f'}) {
+  $flg = $flg + 1;
+  print $opts{f};
+  print "\n";
+}
+if ($opts{'t'}) {
+  $flg = $flg + 2;
+}
+if ($opts{'d'}) {
+  $flg = $flg + 4;
+}
+usage() if ($opts{'h'}) ;
+
+print "$flg\n";
+
+my $count = @ARGV;
+print "$count\n";
+foreach (@ARGV) {
+  print "$_\n";
+}
+
+sub usage {
+  print "help message...\n";
+}
+</code></pre>
+<p>http</p>
+<pre><code>#!/usr/bin/perl
+
+use LWP::UserAgent;
+use HTTP::Request;
+use HTTP::Response;
+
+$url='http://xxx.xxx.xxx.xxx/xxx.html';
+
+my $proxy = new LWP::UserAgent;
+my $req = HTTP::Request-&gt;new('GET' =&gt; $URL);
+my $res = $proxy-&gt;request($req);
+
+$source = $res-&gt;content;
+$source =~ s/&lt;.*?&gt;//g;
+</code></pre>
+<p>日付について1</p>
+<pre><code>#! /usr/bin/perl
+
+my @week = qw(Sun Mon Tue Wed Thu Fri Sat);
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+#my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+
+$year = $year + 1900;
+$mon  = $mon + 1;
+$yday = $yday + 1;
+
+print "$year-$mon-$mday $hour:$min:$sec\n";
+print "$year-D$yday $week[$wday]\n";
+if ( $isdst ) { print "summer time\n"; }
+</code></pre>
+<p>日付について2</p>
+<pre><code>#! /usr/bin/perl
+
+use POSIX;
+
+my $isleap = 0;
+my @mdays  = (31,28,31,30,31,30,31,31,30,31,30,31);
+my $ydays;
+my $message;
+
+my ( $year, $month, $day, $dow, $downum, $doy, $woy ) = split( /\,/, strftime( "%Y,%m,%d,%A,%w,%j,%W", localtime() ) );
+
+if ( ( $year % 4 ) == 0 ) {
+  if ( ( ($year % 100) != 0 ) || ( ($year % 400) == 0 ) ) {
+    $isleap = 1;
+    $mdays[1] = 29;
+  }
+}
+
+$ydays  += $_ for @mdays;
+#$month  += 0;
+#$day    += 0;
+#$doy    += 0;
+#$woy    += 0;
+
+$message = "今日は $year年$month月$day日、第$woy週の$dowです。\n";
+if ( $isleap ) { $message = $message."閏年なので"; }
+$message = $message."年間日数 $ydays日あるうちの $doy日目です。";
+
+print $message;
+exit;
+</code></pre>
+<p>日付について3</p>
+<pre><code>#! /usr/bin/perl
+
+use Time::Local;
+
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()+3600);
+
+my $time = timelocal( $sec, $min, $hour, $mday, $mon, $year );
+
+my $string =  localtime($time);
+
+print $string;
+exit;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180512.html" class="u-url">sql for sqlite</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180512.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-12T00:00:00Z" itemprop="datePublished" title="2018-05-12 00:00">2018-05-12 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://www.sqlite.org/lang.html">SQliteで使える言語</a> について</p>
+<p>SQliteは、型を指定しなくても CREATE  TABLE できるのが特徴。
+型指定するなら、integer, real, text, blob型を使える。</p>
+<pre><code>CREATE TABLE IF NOT EXISTS mytable (
+id INT,
+description TEXT,
+score REAL
+);
+</code></pre>
+<p>トランザクション</p>
+<pre><code>BEGIN TRANSACTION;
+:
+COMMIT or ROLLBACK;
+</code></pre>
+<p>クエリ計画の表示</p>
+<pre><code>EXPLAIN QUERY PLAN ～;
+</code></pre>
+<p>パフォーマンス対策</p>
+<pre><code>REINDEX [target];
+VACUUM;
+ANALYZE;
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_datefunc.html">日付・時刻関数</a></em></p>
+<p>日付・時刻の型は無いが、関数を使って扱うことができる。</p>
+<p>現在日時の例(デフォルトでUTCとして扱われる)</p>
+<pre><code>SELECT current_timestamp, date('now'), time();
+</code></pre>
+<p>文字列で特定日時を指定する。</p>
+<pre><code>SELECT datetime('1970-01-01 00:00:00')||' はUTCの時刻';
+</code></pre>
+<p>修飾子にlocaltimeを指定すると、ローカルのタイムゾーンに変換。(JSTの場合、9時間後)</p>
+<pre><code>SELECT datetime('1970-01-01 00:00:00+09:00')||' はUTCなので、JSTは '||datetime('1970-01-01 00:00:00+09:00', 'localtime');
+SELECT datetime('now')||' はUTCなので、JSTは '|| datetime('now', 'localtime')x;
+</code></pre>
+<p>修飾子にutcを指定すると、対象の日付がローカルのタイムゾーンのものとして、utcに変換。(JSTの場合、9時間前)</p>
+<pre><code>SELECT datetime('now')||' がJSTだとしたら、UTCは '||datetime('now', 'utc');
+</code></pre>
+<p>その他、修飾子を使うことができる。</p>
+<pre><code>SELECT datetime('now', '+1years', '+1months', '+1days', '+1hours', '+1minutes', '+1seconds');
+SELECT '今年の第1月曜日は '||date(datetime('now', 'start of year'), 'weekday 1');
+</code></pre>
+<p>条件式として使うことができる</p>
+<pre><code>SELECT * FROM mytable WHERE date BETWEEN datetime('now', '-3hours') AND datetime('now');
+SELECT * FROM mytable WHERE date(date) = date('now');
+</code></pre>
+<p>strftime書式を使うことができる</p>
+<pre><code>SELECT strftime('%s', '1970-02-01 00:00:00', '-1 minutes');
+SELECT datetime(strftime('%s', '1970-01-01 00:00:00'), 'unixepoch');
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_aggfunc.html">集約関数</a></em></p>
+<p>ccount, avg, min, maxなどの集約関数が使える。</p>
+<pre><code>SELECT col1 AS c1, aggregate(col2) AS c2
+FROM mytable
+WHERE condition 集計する対象を絞り込む。
+GROUP BY c1
+HAVING c2 &lt;&gt; 0; 集計結果から、出力する対象を絞り込む
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_corefunc.html">コア関数</a></em></p>
+<p>引数の中で、最初に現れたNULLでない値を返す
+(この例では「全部null」)</p>
+<pre><code>SELECT coalesce(null, null+'any', null+1, null*1, null/1, 1/0, '全部null');
+</code></pre>
+<p><em>制約について</em></p>
+<p>CHECK制約の列制約の例</p>
+<pre><code>CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT CHECK(length(pointname) &lt;= 8),
+  latitude  REAL NOT NULL CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  longitude REAL NOT NULL CHECK(longitude BETWEEN -180.0 AND 180.0),
+  CONSTRAINT point_primary PRIMARY KEY (pointname)
+);
+</code></pre>
+<p>表制約の例(制約名は省略可能)</p>
+<pre><code>DROP TABLE IF EXISTS point;
+CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT PRIMARY KEY,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  CHECK(length(pointname) &lt;= 8),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+</code></pre>
+<p>外部キーの例</p>
+<p>列制約</p>
+<pre><code>CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL REFERENCES point(pointname),
+  PRIMARY KEY (routename, seq)
+);
+</code></pre>
+<p>表制約</p>
+<pre><code>DROP TABLE IF EXISTS route;
+CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL,
+  PRIMARY KEY(routename, seq),
+  FOREIGN KEY(pointname) REFERENCES point(pointname)
+);
+</code></pre>
+<p>SQlite 3.6.19から外部キーの機能が導入されたが、デフォルトでは機能しない。
+(外部キーのDDLはエラーにならない。外部キー制約で拒否されるはずの値が拒否されない。)
+制約を有効にするためには(データベースを開くたびに)設定が必要。</p>
+<pre><code>PRAGMA foreign_keys;
+0→オフ
+1→オン
+PRAGMA foreign_keys = [ON|OFF];
+</code></pre>
+<p>(補足: sqlite_version()関数でバージョンを確認できる。)</p>
+<p>デフォルト値</p>
+<pre><code>DROP TABLE IF EXISTS track;
+CREATE TABLE IF NOT EXISTS track (
+  trackname TEXT,
+  timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  PRIMARY KEY(trackname, timestamp),
+  CHECK(length(trackname) &lt;= 8),
+  CHECK(datetime(timestamp) IS NOT NULL
+    AND datetime(timestamp) &gt;= datetime('1970-01-01 00:00:00')),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+</code></pre>
+<p><em>結合</em></p>
+<p>内部結合</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p, route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+ON r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+USING (pointname);
+</code></pre>
+<p>外部結合
+(LEFT OUTER JOINは実装されているが、RIGHT と FULL OUTER JOINは実装されていない。)</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+LEFT OUTER JOIN route AS r
+ON r.pointname = p.pointname;
+</code></pre>
+<p>自然結合</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+NATURAL JOIN route AS r;
+</code></pre>
+<p><em>その他</em></p>
+<p>CASE文</p>
+<pre><code>SELECT
+  CASE strftime('%M','now') % 3
+    WHEN 0 THEN 'is 0'
+    WHEN 1 THEN 'is 1'
+    ELSE 'is 2'
+  END,
+  CASE
+    WHEN strftime('%M','now') % 2 = 0 THEN 'even'
+    ELSE 'odd'
+  END
+;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180511.html" class="u-url">sqlite by python</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180511.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-11T00:00:00Z" itemprop="datePublished" title="2018-05-11 00:00">2018-05-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>pythonでsqliteを利用するとき
+<a href="http://docs.python.jp/2/library/sqlite3.html">sqlite 3モジュール</a>
+を使う</p>
+<p>簡単なpythonスクリプトの例 (古い環境だと、ライブラリ名はsqliteらしい)</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqlite_sample.py"></script><p>sqliteのデータを
+<a href="https://matplotlib.org">matplotlib</a>
+を使ってグラフにプロットする簡単な例。</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"></script>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180506.html" class="u-url">kernel parameter</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180506.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-06T00:00:00Z" itemprop="datePublished" title="2018-05-06 00:00">2018-05-06 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>ipv4 のルーティング設定の例</p>
+<p>設定値確認</p>
+<pre><code>cat /proc/sys/net/ipv4/ip_forward
+or
+sysctl [-n] net.ipv4.conf.all.forwarding
+
+全てのパラメータを表示
+sysctl -a
+</code></pre>
+<p>一時設定</p>
+<pre><code>echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+or
+sysctl -w net.ipv4.conf.all.forwarding=1
+</code></pre>
+<p>恒久設定</p>
+<pre><code>cat &lt;&lt; END &gt;&gt; /etc/sysctl.conf
+net.ipv4.conf.all.forwarding = 1
+END
+sysctl -p
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180503.html" class="u-url">openssl</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180503.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-03T00:00:00Z" itemprop="datePublished" title="2018-05-03 00:00">2018-05-03 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>自己認証局の作成・運用を手作業で実施する手順を記載する。</p>
+<p><em>自己認証局の作成</em></p>
+<p>(事前にindex.txtファイル、serialファイル等もろもろ準備した、作業ディレクトリで作業。)</p>
+<p>擬似乱数ファイルの作成(ほどよく更新されるファイルのダイジェストを得る。パーミッション、更新日時に留意。)</p>
+<pre><code>openssl dgst -sha1 /var/log/{lastlog,wtmp*} &gt; rand.dat
+</code></pre>
+<p>秘密鍵を作成(当面はRSAで問題ない)
+aes256で秘密鍵を保護。</p>
+<pre><code>openssl genrsa -aes256 -rand rand.dat -out cakey.pem 4096
+openssl rsa -in cakey.pem -text -noout
+(nooutを指定しないと保護されない秘密鍵が画面に出る。)
+</code></pre>
+<p>CSRを作成(署名アルゴリズムをsha256にしている)</p>
+<pre><code>openssl req -config openssl.cnf -new -sha256 -key cakey.pem -out cacsr.csr \
+-subj '/C=country/ST=state/L=local/O=object name/OU=organizational unit/CN=common name'
+openssl req -in cacsr.csr -text -noout
+</code></pre>
+<p>CSRより自己署名のCA証明書を作成(署名アルゴリズムをsha256にする)</p>
+<pre><code>openssl req -x509 -sha256 -days ddd -key cakey.pem -in cacsr.csr -out cacert.cer
+openssl x509 -in cacert.cer -text -noout
+</code></pre>
+<p><em>CAでの、CSRに対する署名</em></p>
+<p>サーバ証明書、クライアント証明書でも同様</p>
+<pre><code>openssl ca -md sha256 -config openssl.cnf -cert cacert.cer -keyfile cakey.pem -in servercsr.csr -out servercert.cer
+</code></pre>
+<p><em>Revoke、CRL作成</em></p>
+<p>以前と同じDNの証明書を作りたい場合、その証明書の期限が切れていても、事前に以前のものを取り消す必要がある場合がある。</p>
+<pre><code>openssl ca -config openssl.cnf -cert cacert.cer -keyfile cakey.pem -revoke usercert.cer
+openssl ca -config openssl.cnf -md sha256 -cert cacert.cer -keyfile cakey.pem -gencrl -out crl.pem
+openssl crl -in crl.pem -text -noout
+</code></pre>
+<p>CA証明書とCRLを結合して利用する場合がある。
+結合してできたファイルをCA証明書として指定することで、CRLの情報も読み取られる。(dovecot等)</p>
+<pre><code>cat cacert.cer crl.pem &gt; cacert2.cer
+openssl crl -in cacert2.cer -text -noout
+openssl x509 -in cacert2.cer -text -noout
+</code></pre>
+<p>結合したファイルで、サーバ証明書を検証する。</p>
+<pre><code>openssl verify -crl_check -CAfile cacert2.cer usercert.cer
+</code></pre>
+<p><em>サーバ証明書の申請</em></p>
+<p>クライアント証明書でも同様</p>
+<p>擬似乱数ファイル作成。秘密鍵作成</p>
+<pre><code>openssl dgst -sha1 /var/log/{lastlog,wtmp*} &gt; rand.dat
+openssl genrsa -out serverkey.pem 2048
+openssl rsa -in serverkey.pem -text -noout
+</code></pre>
+<p>証明書署名要求を作成
+プライベートCAで自分で署名する分には、CSRの署名アルゴリズムにこだわる必要はない。
+認証機関に承認を依頼する場合は影響があるとかないとか。</p>
+<pre><code>openssl req -config openssl.cnf -new -sha256 -key serverkey.pem -out servercsr.csr \
+-subj '/C=country/ST=state/L=local/O=object name/OU=organizational unit/CN=my server'
+openssl req -in servercsr.csr -text -noout
+</code></pre>
+<p>CSRをCAに申請して署名してもらう。
+署名された証明書を確認する。</p>
+<pre><code>openssl x509 -in servercert.cer -text -noout
+openssl verify -purpose sslserver -CAfile cacert.cer servercert.cer
+openssl verify -purpose sslclient -CAfile cacert.cer usercert.cer
+</code></pre>
+<p>必要に応じて秘密鍵のパスフレーズ解除</p>
+<pre><code>openssl rsa -in serverkey.pem -out serverkey-nopass.pem
+chmod 600 serverkey-nopass.pem
+</code></pre>
+<p><em>証明書、ssl通信のテスト</em></p>
+<p>クライアントからの接続テスト</p>
+<pre><code>openssl s_server
+-CAfile cacert.cer
+-cert servercert.cer
+-key serverkey.pem
+-Verify num クライアント証明書を要求し、検証する
+-crl_check CRLによる検証を実施
+-state
+</code></pre>
+<p>サーバへの接続テスト</p>
+<pre><code>openssl s_client
+-connect address:port 省略時はlocalhost:4433
+-CAfile cacert.cer
+-cert usercert.cer
+-key userkey.pem
+-crl_check
+-state
+</code></pre>
+<p><em>pkcs12の作成</em></p>
+<p>(スマホ、PC等にインストールできるように)クライアントの秘密鍵、証明書を1ファイルにまとめる。(拡張子はpfxやp12が一般的)</p>
+<pre><code>openssl pkcs12 -export -in cert.cer -inkey key.pem -out file.p12
+</code></pre>
+<p>iphoneで、CA証明書(.cer)と、p12ファイル(.p12)をメール等で送って、それぞれ「信頼」する。</p>
+<p><em>[おまけ]秘密鍵と証明書の対応の確認</em></p>
+<p>秘密鍵と証明書のmodulusが同一であることを確認(md5ダイジェストが一致することをもってよしとする)</p>
+<pre><code>openssl rsa -in 秘密鍵 -modulus -noout | openssl md5
+openssl x509 -in 証明書 -modulus -noout | openssl md5
+</code></pre>
+<p><em>[おまけ]楕円曲線暗号を使った鍵の作成</em></p>
+<p>google先生によると、prime256v1、secp384r1 あたりが良く使われるらしい。(ecdsaの使用の判断は熟慮の上で。)</p>
+<pre><code>openssl ecparam -list_curves
+openssl ecparam -out secp384r1.key -name secp384r1 -genkey
+openssl ec -in secp384r1.key -text -noout
+</code></pre>
+<p>認証局による証明書は、暗号化とサーバ運営者の身元確認という目的がある。
+個人で作成する自己認証局では、暗号化はできるが身元確認ができないと言われる。
+実社会で互いに信頼できる相手なら、CA証明書を配布して事前にインストールしてもらうようにすれば、身元確認の問題はおきないのではないか。
+限定された範囲での利用なら、この運用で問題ないのではないか。</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180426.html" class="u-url">openldap tools</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180426.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-04-26T00:00:00Z" itemprop="datePublished" title="2018-04-26 00:00">2018-04-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>ldapエントリの検索</p>
+<pre><code>ldapsearch -x [-H ldap:///] -D "&lt;basedn&gt;" -W -b &lt;searchbase&gt; [filter]
+</code></pre>
+<p>ldapmodifyによるエントリの更新</p>
+<pre><code>ldapmodify -x [-H ldap:///] -D "&lt;basedn&gt;" -W -f &lt;file.ldif&gt; [-n -v]
+-n: dry-run
+-v: verbose
+</code></pre>
+<p>ldapmodifyで使用するldifファイルの例</p>
+<pre><code>(例) 既存のdn に、新しい属性を追加する。
+dn: uid=user1,ou=user,dc=example
+changetype: modify
+add: gecos
+gecos: user1@example
+&lt;複数のエントリを続ける時は、空行で区切る&gt;
+dn: uid=user2,ou=user,dc=example
+changetype: modify
+add: gecos
+gecos: user2@example
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="next">
+                <a href="index-1.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

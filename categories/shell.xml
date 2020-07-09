@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about shell)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/shell.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat file | tr -d '\n'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;url encoding and decoding&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo 'http://example.com' | nkf -WwMQ | sed 's/=$//g' | tr = % | tr -d '\n'
+
+echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20200506.html</guid><pubDate>Wed, 06 May 2020 00:00:00 GMT</pubDate></item><item><title>sample of simple bash scripts</title><link>https://mnod.github.io/posts/20170913.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;ファイルバックアップスクリプト&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;引数に与えられたファイルを3ケタの連番をつけてコピーする。
+まだいま一ついけてない。&lt;/p&gt;
+&lt;p&gt;gistの引用のテストをかねて。&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>script</category><category>shell</category><guid>https://mnod.github.io/posts/20170913.html</guid><pubDate>Wed, 13 Sep 2017 00:00:00 GMT</pubDate></item><item><title>bash</title><link>https://mnod.github.io/posts/20161017.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;bashスクリプト等でよく使う機能の利用パターンを記載。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;trap&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;When the script exits, remove tmpfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;tmpfile=/tmp/tmpfile.$$
+trap "rm ${tmpfile}" EXIT
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;basename, dirname&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;use script file name and directory in the script&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo $(basename $0 .sh)
+echo $(dirname $0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;pushd, popd&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;pushd、popdは標準出力にメッセージを吐く。スクリプトで使用する際は不要なので捨てる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pushd . &amp;gt; /dev/null
+cd dir
+:
+popd    &amp;gt; /dev/null
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;read&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;標準入力からの入力を変数dummyへ入れる。
+(-pでプロンプトを指定。-sを指定するとエコーバックしない)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;read -p "input? " [-s] dummy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;比較演算&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;条件を満たせばtrue&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;th&gt;演算子&lt;/th&gt;&lt;th&gt;説明&lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;-z&lt;/td&gt;&lt;td&gt;文字列の長さ0&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-n&lt;/td&gt;&lt;td&gt;文字列の長さ1以上&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-s&lt;/td&gt;&lt;td&gt;ファイルサイズが1以上&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;em&gt;if&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;文字列の比較&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if [ $str = "hoge" ]; then
+:
+else
+:
+fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;case&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;case "$?" in
+  0)
+    echo ok
+    ;;
+  1)
+    echo ng
+    ;;
+  *)
+    echo error
+    ;;
+esac
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;for loop&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for file in /etc/ssh/ssh_host*key* ; do
+:
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;while loop&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;条件がtrueの時だけ実行する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;while true; do
+:
+sleep 300
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;全ての引数に対して処理を実行する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;while [ $1 ]; do
+echo $1
+shift
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;while とread&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;while read line; do
+echo $line
+done &amp;lt; filename
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;または&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat filename | while read line; do
+echo $line
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;printf&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;printf 'INSERT INTO mytable (temprature, humidity) VALUES (%f, %f);' 20.0 50.0 | sqlite3 database.db
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;組み込みコマンドgetoptsの使い方の例&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#! /bin/bash
+
+while getopts "hw:" opt; do
+  case ${opt} in
+    h)
+      echo usaage
+      exit
+      ;;
+    w)
+      dow=${OPTARG}
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+while [ $1 ]; do
+  :
+  shift
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;indirection reference&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;using shell &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;key=slackpkg
+pkg_slackpkg=skackware
+myos=pkg_${key}
+echo ${!myos}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;using eval&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pkg_slackpkg=slackware
+key=slackpkg
+eval myos=\"\${pkg_${key}}\"
+echo ${myos}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;when variable is array&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pkg_apt=(debian ubuntu raspbian)
+pkg_yum=(rhel fedora centos)
+
+for key in apt yum; do
+  echo ${key}
+  for i in `seq 0 2`; do
+    eval myos=\"\${pkg_${key}[i]}\"
+    echo ${i}: ${myos}
+  done
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;その他&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;スクリプトの改行文字をCR+LFで書くと、CRが(shebang等の)コマンド(の一部)として認識され、実行エラーとなる。
+スクリプトの改行文字はLFで書く。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ bash myscript.sh
+: command not found
+$ chmod +x myscript.sh
+$ ./myscript.sh
+-bash: ./myscript.sh: /bin/bash^M: bad interpreter: そのようなファイルやディレクトリはありません
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;rename the file using a part of original file name.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20161017.html</guid><pubDate>Mon, 17 Oct 2016 00:00:00 GMT</pubDate></item></channel></rss>

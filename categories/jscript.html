@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about jscript | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/jscript.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag jscript" hreflang="en" href="jscript.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about jscript</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="jscript.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170930.html" class="u-url">windows script host by jscript</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170930.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-30T00:00:00Z" itemprop="datePublished" title="2017-09-30 00:00">2017-09-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>スクリプトの呼び出し。
+アイコンのダブルクリックや、アイコンへのドラッグ&amp;ドロップでも起動できる。</p>
+<pre><code>cscript script.js //Nologo
+wscript script.js //Nologo
+</code></pre>
+<p>メッセージの表示。cscript ... で実行するとターミナルに表示される。</p>
+<pre><code>WScript.Echo( "メッセージ" + foo);
+</code></pre>
+<p>バッチファイルを呼び出す</p>
+<pre><code>var openssl     = "C:\\Users\\public\\Documents\\bin\\openssl.exe";
+var shell   = WScript.CreateObject("WScript.Shell");
+
+try {
+  oExec = shell.Exec( openssl + " version" );
+  //oExec = shell.Exec( openssl + " --help" );
+  while ( ! oExec.StdOut.AtEndOfStream ) {
+    WScript.Echo(oExec.StdOut.readline());
+  }
+  while ( ! oExec.StdErr.AtEndOfStream ) {
+    WScript.Echo(oExec.StdErr.readline());
+  }
+}
+catch (e){ 
+  WScript.Echo(e)
+}
+</code></pre>
+<p>引数のぶんだけ繰り返して実行する</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+    fin = fso.OpenTextFile(file, 1, false);
+    while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+    }
+    fin.Close();
+  }
+  catch (e) {
+    WScript.Echo(e);
+  }
+}
+</code></pre>
+<p>ファイルを開き一行ずつ読み込んで処理。</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+var fin;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+  }
+  catch(e) {
+    WScript.Echo(e);
+    continue;
+  }
+  fin = fso.OpenTextFile(file, 1, false);
+  while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+  }
+  fin.Close();
+}
+</code></pre>
+<p>アクセスファイルを開き、マクロを呼び出す。</p>
+<pre><code>var dbfile='C:\\Users\\public\\Documents\\Database1.accdb';
+var timeout = 500; // milliseconds
+try {
+  var AccessApp = new ActiveXObject( "Access.Application" );
+  // AccessApp.Visible = true;
+  WScript.Sleep( timeout );
+
+  try {
+    AccessApp.OpenCurrentDatabase( dbfile );
+    WScript.Sleep( timeout );
+    // マクロを実行する例
+    // AccessApp.DoCmd.RunMacro( "マクロ名" );
+  }
+  catch(e) {
+    WScript.Echo(e);
+  }
+  finally {
+    AccessApp.CloseCurrentDatabase();
+  }
+}
+catch(e) {
+    WScript.Echo(e);
+}
+finally {
+  AccessApp.Quit();
+  AccessApp = null;
+}
+</code></pre>
+<p>excel</p>
+<pre><code>var excelfile = "c:\\users\\public\\documents\\test.xlsm"
+var updatelinks = true;
+var readonly = true;
+
+try {
+  var ExcelApp = new ActiveXObject("Excel.Application");
+  // ExcelApp.Visible = true;
+  // ExcelApp.DisplayAlerts = true;
+
+  try {
+    // var book = ExcelApp.Workbooks.Open(excelfile);
+    var book = ExcelApp.Workbooks.Open(excelfile, updatelinks, readonly);
+    // マクロを実行する例
+    ExcelApp.Run("マクロ名")
+
+    // シートに記入して保存する例
+    // var sheet = book.sheets(1);
+    // sheet.Cells(2, 1).value = "message...";
+    // book.Save();
+  }
+  catch(e) {
+    WScript.Echo(e)
+  }
+  finally {
+    book.Close();
+  }
+}
+catch(e) {
+  WScript.Echo(e)
+}
+finally {
+  ExcelApp.Quit();
+}
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

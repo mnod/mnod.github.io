@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about postgres)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/postgres.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>PostgreSQL on CentOS7</title><link>https://mnod.github.io/posts/20170423.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;install&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;yum install postgresql-server
+systemctl list-unit-files  -t service
+systemctl is-enabled postgresql.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;start daemon&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status postgresql.service
+postgresql-setup initdb
+systemctl start postgresql.service
+su - postgres
+psql -l
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sql command  operation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;psql &amp;lt;&amp;lt; END
+\du
+\q
+END
+psql -c "select * from pg_user"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and drop user&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\du
+SELECT * FROM pg_user;
+createuser -P ossdb
+dropuser -i ossdb
+CREATE USER ossdb LOGIN PASSWORD 'password';
+DROP USER IF EXISTS ossdb;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and drop database&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\l
+SELECT * FROM pg_database;
+createdb -O ossdb -W ossdb
+dropdb -i ossdb
+CREATE DATABASE ossdb OWNER ossdb;
+DROP DATABASE IF EXISTS ossdb;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;connect&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; END &amp;gt;&amp;gt; /var/lib/pgsql/data/pg_hba.conf
+host    ossdb           ossdb           127.0.0.1/32            md5
+END
+systemctl reload postgresql.service
+psql -U ossdb -d ossdb -h 127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and drop table&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\dit
+\d table_name
+CREATE TABLE t1 (
+c1 integer,
+c2 date,
+c3 time,
+c4 character,
+c5 character varying(16),
+c6 real,
+primary key (c1), 
+unique (c2, c3)
+);
+DROP TABLE IF EXISTS  t1;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>centos</category><category>postgres</category><guid>https://mnod.github.io/posts/20170423.html</guid><pubDate>Sun, 23 Apr 2017 00:00:00 GMT</pubDate></item></channel></rss>

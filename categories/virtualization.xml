@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about virtualization)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/virtualization.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm virtualization</title><link>https://mnod.github.io/posts/20170325.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;qcow2 イメージ&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;作成。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;qemu-img create -f qcow2 image.qcow2 xxG
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;シュリンク。仮想マシンを止めて実行する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mv image.qcow2 image.qcow2.bak
+qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;qemu-kvm コマンドのよく使うオプション&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;cdイメージから起動&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-cdrom image.iso -boot d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cpuとメモリの指定&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-smp 2 -m 2048
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;kvmでwindows10を使用する時、私の環境(Core i5 650)だと下記のように指定することで、cpu負荷が落ち着いた。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-cpu core2duo,+lahf_lm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;その後、試行錯誤し、現在は下記の通り指定している。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(仮想)ストレージの指定。準仮想化ドライバを利用すると、スループットが上がるらしい。
+(Windows等で利用する場合は、仮想マシン上でドライバを入れる必要がある。)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-drive if=virtio,file=image.qcow2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ネットワークインターフェースの指定(従来方式)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-net nic,macaddr=xx:xx:xx:xx:xx:xx,model=virtio
+-net tap,ifname=vnet0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;vncコンソールとキーマップの指定。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-vnc 192.168.xx.xx:xx -k ja
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンソールのマウスカーソルの位置がずれるときは以下を指定
+(WindowsではCPU負荷が高くなるらしい)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-usbdevice tablet
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;デーモンとして起動&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-daemonize
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;物理デバイスのパススルー&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;example&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;boot ultra lite linux distribution microcore linux for network configure test&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kvm -drive if=virtio,file=linux-microcore-6.4.img -netdev tap,id=tap0 -device e1000,netdev=tap0,mac=52:54:00:12:34:56
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>kvm</category><category>linux</category><category>virtualization</category><guid>https://mnod.github.io/posts/20170325.html</guid><pubDate>Sat, 25 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>

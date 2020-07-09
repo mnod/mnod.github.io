@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about git)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/git.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>github</title><link>https://mnod.github.io/posts/20200617.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;adding ssh public key&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You can use github without ssh key. 
+But when you add ssh key and you use ssh private key without passphrase, it is convinient for scripting.&lt;/p&gt;
+&lt;p&gt;Login and follow menu like below:
+&lt;a href="https://github.com/settings/profile"&gt;Settings&lt;/a&gt; &amp;gt; &lt;a href="https://github.com/settings/keys"&gt;SSH and GPG keys&lt;/a&gt; &amp;gt; &lt;a href="https://github.com/settings/ssh/new"&gt;New SSH key&lt;/a&gt;
+Then register name and content of your ssh public key.&lt;/p&gt;
+&lt;p&gt;edit ssh config file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; END | tee -a .ssh/config
+Host github.com
+    IdentityFile    ~/.ssh/id_rsa.mykey
+    User            git
+Host *.github.com
+    IdentityFile    ~/.ssh/id_rsa.mykey
+    User            git
+END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test ssh connection. add -v to see debug messages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh -T github.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When you've already work with any github repository, if you want to use git protocol instad of https, you can use it.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git config --global url.git@github.com:.insteadOf https://github.com/
+git config --global url.git@gist.github.com:.insteadOf https://gist.github.com/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;After &lt;a href="https://github.com/new"&gt;Create a new repository&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;when you don't have ever created a git repository&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git init
+git add README.md
+git commit -m "first commit"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;after that add remote to the repository, and push it.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git remote add origin git@github.com:username/myrepositoryname.git
+git remote -v
+git push -u origin master
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To .gitignore file, add list of files which you don't want to add to the git repository &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; END | tee -a .gitignore
+id_rsa
+END
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>git</category><guid>https://mnod.github.io/posts/20200617.html</guid><pubDate>Wed, 17 Jun 2020 00:00:00 GMT</pubDate></item><item><title>git</title><link>https://mnod.github.io/posts/20170902.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;オープンソースの分散型VCS。同種のアプリケーションと比較してgitが優れているところは、ユーザが多く情報が多いという点。&lt;/p&gt;
+&lt;p&gt;gitリポジトリの作成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cd myproject
+git init
+git add .
+git status
+git diff
+git rm [-r] target # -rで、ディレクトリを削除
+git commit -m "commit message"
+git log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;作業ディレクトリを持たない公開用リポジトリの作成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git clone --bare myproject myproject.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;単純なリモート作業&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git clone git://example.com/.../myproject.git # リポジトリのclone
+cd myproject
+:
+git push [origin] [master] # 変更内容をpush
+
+git pull # fetchしてmerge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ブランチを作成し作業対象とする&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git branch master
+git pull
+git checkout -b mybranch
+git branch
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;masterブランチにマージ。不要なブランチの削除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git checkout master
+git merge mybranch
+git branch -d mybranch
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ブランチをリモートにpush&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git push origin mybranch
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ブランチをリモートからfetchして作業&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git fetch origin
+git branch -a
+git checkout -b mybranch origin/mybranch # ブランチを作成してチェックアウト
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;リモートブランチの削除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git push origin :mybranch
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;change last commit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git add file
+git commit --amend -m "commit message"
+git push -f origin master
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Stash the changes in a dirty working directory away&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git stash
+git stash list
+git stash show -p stash@{0}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;apply stash on top of the current working directory. and remove a stash from the list&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git stash apply stash@{0}
+git stash drop stash@{0}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>git</category><category>vcs</category><guid>https://mnod.github.io/posts/20170902.html</guid><pubDate>Sat, 02 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>

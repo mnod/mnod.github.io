@@ -1,0 +1,1042 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ecs</title><link>https://mnod.github.io/posts/20200209.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;cluster&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-clusters 
+$ aws ecs describe-clusters --clusters &amp;lt;clusterArn&amp;gt;
+
+$ aws ecs create-cluster --cluster-name &amp;lt;cluster-name&amp;gt; --tags '[{"key": "Name","value": "test"}]'
+$ aws ecs delete-cluster --cluster &amp;lt;clusterArn&amp;gt;
+
+$ aws ecs delete-cluster --cluster &amp;lt;clusterArn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;task definition&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-task-definitions
+$ aws ecs describe-task-definition --task-definition &amp;lt;taskDefinitionArn&amp;gt;
+
+$ jq . task-definition.json
+{
+  "family": "sample-fargate",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "fargate-app",
+      "image": "busybox",
+      "essential": true,
+      "command": [
+        "sleep",
+        "360"
+      ]
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
+$ aws ecs register-task-definition --cli-input-json file://task-definition.json
+
+$ aws ecs deregister-task-definition --task-definition &amp;lt;taskDefinitionArn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;task&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;When you use fargate and retrieve docker image from docker hub, you have to use internet gateway or nat gateway in the vpc.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-tasks --cluster &amp;lt;clusterArn&amp;gt;
+$ aws ecs describe-tasks --cluster &amp;lt;clusterArn&amp;gt; --tasks &amp;lt;taskArn&amp;gt;
+
+$ jq . network-configuration.json
+{
+  "awsvpcConfiguration": {
+    "subnets": [
+      "&amp;lt;subnet&amp;gt;"
+    ],
+    "securityGroups": [
+      "&amp;lt;securitygroup&amp;gt;"
+    ],
+    "assignPublicIp": "ENABLED"
+  }
+}
+$ aws ecs run-task --task-definition &amp;lt;taskDefinitionArn&amp;gt; --cluster &amp;lt;clusterArn&amp;gt; --count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs stop-task --cluster &amp;lt;clusterArn&amp;gt; --task &amp;lt;taskArn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;tags&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-tags-for-resource --resource-arn &amp;lt;resource-arn&amp;gt;
+$ aws ecs tag-resource --resource-arn &amp;lt;resource-arn&amp;gt; --tags '[{"key": "Name","value": "test"}]'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;service&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-services --cluster &amp;lt;clusterArn&amp;gt;
+$ aws ecs describe-services --cluster &amp;lt;clusterArn&amp;gt; --services &amp;lt;serviceArn&amp;gt;
+$ aws ecs create-service --cluster &amp;lt;clusterArn&amp;gt; --service-name &amp;lt;serviceName&amp;gt; --task-definition &amp;lt;task-definition&amp;gt; --desired-count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs list-tasks --cluster &amp;lt;clusterArn&amp;gt;
+$ aws ecs describe-tasks --cluster &amp;lt;clusterArn&amp;gt; --tasks &amp;lt;taskArn&amp;gt;
+
+$ aws ecs update-service --cluster &amp;lt;clusterArn&amp;gt; --service &amp;lt;serviceArn&amp;gt; --desired-count 0
+$ aws ecs delete-service --cluster &amp;lt;clusterArn&amp;gt; --service &amp;lt;serviceArn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200209.html</guid><pubDate>Sun, 09 Feb 2020 00:00:00 GMT</pubDate></item><item><title>dynamodb</title><link>https://mnod.github.io/posts/20200128.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create and delete table&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws dynamodb list-tables
+$ aws dynamodb describe-table --table-name testtable
+$ aws dynamodb create-table --table-name testtable  \
+ --attribute-definitions '[{"AttributeName":"Artist","AttributeType":"S"},{"AttributeName":"AlbumTitle","AttributeType":"S"}]' \
+ --key-schema '[{"AttributeName":"Artist","KeyType":"HASH"},{"AttributeName":"AlbumTitle","KeyType":"RANGE"}]' \
+ --provisioned-throughput '{"ReadCapacityUnits": 1,"WriteCapacityUnits": 1}' \
+ --tags '[{"Key": "Name","Value": "test"}]'
+
+$ aws dynamodb delete-table --table-name testtable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;put item&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' put-item.json
+{
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+$ aws dynamodb put-item --table-name testtable --item file://put-item.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;get and delete item&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+$ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample python script&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;put-item.py&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+item = {
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.put_item(TableName=tablename, Item=item)
+print (json.dumps(res))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get-item.py&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.get_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;delete-item.py&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.delete_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+# print (json.dumps(res['ResponseMetadata']['HTTPStatusCode']))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;cloudformation template&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    TestDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "TestDynamoDBTable"
+        Tags:
+          - Key: "Name"
+            Value: "test"
+        AttributeDefinitions:
+          - AttributeName: "subject"
+            AttributeType: "S"
+          - AttributeName: "year"
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: "subject"
+            KeyType: "HASH"
+          - AttributeName: "year"
+            KeyType: "RANGE"
+        BillingMode: "PROVISIONED"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200128.html</guid><pubDate>Tue, 28 Jan 2020 00:00:00 GMT</pubDate></item><item><title>aws</title><link>https://mnod.github.io/posts/20200125.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;query with JMESPath&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;projection&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
+$ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;selection
+(if the targe command has &lt;code&gt;filters&lt;/code&gt; option, it would be faster than &lt;code&gt;query&lt;/code&gt;.)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[?IsDefault == `true`]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
+
+$ aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `test`]]'
+$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=test'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;function&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[?contains(VpcId, `vpc`)].VpcId'
+
+$ aws ec2 describe-vpcs --query 'sort_by(Vpcs[?contains(VpcId, `vpc`)].VpcId, &amp;amp;VpcId)'
+$ aws ec2 describe-images --filters "Name=owner-id,Values=&amp;lt;id&amp;gt;" --query "sort_by(Images[].{Name:Name, ImageId:ImageId}, &amp;amp;Name)"
+
+$ aws ec2 describe-vpcs --query 'length(Vpcs[?contains(VpcId, `vpc`)])'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;generate-cli-skeleton output&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --generate-cli-skeleton output
+$ aws ec2 describe-vpcs --generate-cli-skeleton output --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
+$ aws ec2 describe-vpcs --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;generate-cli-skeleton input&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --generate-cli-skeleton input | tee describe-vpcs.json
+$ vi describe-vpcs.json
+$ jq . describe-vpcs.json
+{
+  "Filters": [
+    {
+      "Name": "tag:Name",
+      "Values": [
+        "test"
+      ]
+    }
+  ]
+}
+$ aws ec2 describe-vpcs --cli-input-json file://describe-vpcs.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;samples of filter&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filters '["Name":"isDefault","Values":["true"]]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"tag-key","Values":["aws:cloudformation:stack-name"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=tag-key,Values=aws:cloudformation:stack-name'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"tag:Name","Values":["terraform_test","mystack-VPC"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-VPC'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><category>json</category><guid>https://mnod.github.io/posts/20200125.html</guid><pubDate>Sat, 25 Jan 2020 00:00:00 GMT</pubDate></item><item><title>vpc</title><link>https://mnod.github.io/posts/20200119.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;describe region and abailability zone&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-regions --filters 'Name=region-name,Values=ap-northeast-1'
+{
+    "Regions": [
+        {
+            "Endpoint": "ec2.ap-northeast-1.amazonaws.com",
+            "RegionName": "ap-northeast-1",
+            "OptInStatus": "opt-in-not-required"
+        }
+    ]
+}
+$ aws ec2 describe-availability-zones --filters 'Name=region-name,Values=ap-northeast-1'
+{
+    "AvailabilityZones": [
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1a",
+            "ZoneId": "apne1-az4"
+        },
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1c",
+            "ZoneId": "apne1-az1"
+        },
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1d",
+            "ZoneId": "apne1-az2"
+        }
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;vpc&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filter "Name=cidr,Values=172.16.100.0/24"
+$ aws ec2 create-vpc --cidr-block 172.16.100.0/24
+
+$ aws ec2 describe-vpc-attribute --attribute enableDnsHostnames --vpc-id &amp;lt;vpc&amp;gt;
+$ aws ec2 modify-vpc-attribute --enable-dns-hostnames --vpc-id &amp;lt;vpc&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before remove vpc, subnet need to be removed.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 delete-vpc --vpc-id &amp;lt;vpc&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;tag&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filters "Name=tag:Name,Values=test"
+$ jq . tags.json
+[
+  {
+    "Key": "Name",
+    "Value": "test"
+  }
+]
+$ aws ec2 create-tags --resources &amp;lt;vpc&amp;gt; --tags file://tags.json
+
+$ aws ec2 create-tags --resources &amp;lt;vpc&amp;gt; --tags '{"Key":"Name", "Value":"test"}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;subnets&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-subnets --filters "Name=cidr-block,Values=172.16.100.0/26"
+$ aws ec2 create-subnet --vpc-id &amp;lt;vpc&amp;gt; --cidr-block 172.16.100.0/26
+$ aws ec2 delete-subnet --subnet-id &amp;lt;subnet&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;nacl&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-network-acls --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
+$ aws ec2 create-network-acl --vpc-id &amp;lt;vpc&amp;gt;
+$ aws ec2 replace-network-acl-association --association-id &amp;lt;aclassoc&amp;gt; --network-acl-id &amp;lt;nacl&amp;gt;
+
+$ aws ec2 delete-network-acl --network-acl-id &amp;lt;nacl&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;nacl entry&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;protocol
+- all: -1
+- icmp: 1
+- tcp: 6
+- udp: 17
+- icmpv6: 58&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-network-acls --filters "Name=network-acl-id,Values=&amp;lt;nacl&amp;gt;"
+$ aws ec2 create-network-acl-entry --ingress --network-acl-id &amp;lt;nacl&amp;gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
+$ aws ec2 create-network-acl-entry --egress  --network-acl-id &amp;lt;nacl&amp;gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
+
+$ aws ec2 delete-network-acl-entry --ingress --network-acl-id &amp;lt;nacl&amp;gt; --rule-number 100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;internet gateway&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-internet-gateways --query 'InternetGateways[?Attachments[?VpcId == `&amp;lt;vpc&amp;gt;`]]'
+$ aws ec2 create-internet-gateway
+$ aws ec2 attach-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt; --vpc-id &amp;lt;vpc&amp;gt;
+
+$ aws ec2 detach-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt; --vpc-id &amp;lt;vpc&amp;gt;
+$ aws ec2 delete-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;route table&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-route-tables --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
+$ aws ec2 create-route-table --vpc-id &amp;lt;vpc&amp;gt;
+$ aws ec2 associate-route-table --route-table-id &amp;lt;routetable&amp;gt; --subnet-id &amp;lt;subnet&amp;gt;
+
+$ aws ec2 describe-route-tables --filters "Name=route-table-id,Values=&amp;lt;routetable&amp;gt;"
+$ aws ec2 create-route --destination-cidr-block 0.0.0.0/0 --gateway-id &amp;lt;internetgateway&amp;gt; --route-table-id &amp;lt;routetable&amp;gt;
+
+$ aws ec2 delete-route --destination-cidr-block 0.0.0.0/0 --route-table-id &amp;lt;routetable&amp;gt;
+$ aws ec2 disassociate-route-table --association-id &amp;lt;rtbassoc&amp;gt;
+$ aws ec2 delete-route-table --route-table-id &amp;lt;routetable&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;security group&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-security-groups --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
+$ aws ec2 create-security-group --description "&amp;lt;description&amp;gt;" --group-name "&amp;lt;name&amp;gt;" --vpc-id &amp;lt;vpc&amp;gt;
+
+$ aws ec2 describe-security-groups --filters "Name=group-id,Values=&amp;lt;securitygroup&amp;gt;"
+$ aws ec2 authorize-security-group-ingress --group-id &amp;lt;securitygroup&amp;gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
+
+$ aws ec2 revoke-security-group-ingress --group-id &amp;lt;securitygroup&amp;gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
+$ aws ec2 delete-security-group --group-id &amp;lt;securitygroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;key pair&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-key-pairs 
+$ aws ec2 describe-key-pairs --key-names &amp;lt;keyname&amp;gt;
+$ aws ec2 create-key-pair --key-name &amp;lt;keyname&amp;gt; | tee id_rsa.testkey.json
+
+$ aws ec2 delete-key-pair --key-name &amp;lt;keyname&amp;gt;
+$ aws ec2 import-key-pair --key-name &amp;lt;keyname&amp;gt; --public-key-material file://id_rsa.testkey.pub
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;save the private key&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq -r '.KeyMaterial' id_rsa.testkey.json &amp;gt; id_rsa.testkey.nopass
+$ openssl rsa -aes256 -in id_rsa.testkey.nopass -out id_rsa.testkey
+$ chmod 600 id_rsa.testkey
+($ rm id_rsa.testkey.json id_rsa.testkey.nopass)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;ami&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-images --filters "Name=owner-id,Values=&amp;lt;id&amp;gt;"
+$ aws ec2 describe-images --filters "Name=image-id,Values=&amp;lt;ami&amp;gt;"
+$ aws ec2 create-image --instance-id &amp;lt;instance&amp;gt; --name &amp;lt;name&amp;gt;
+$ aws ec2 deregister-image --image-id &amp;lt;ami&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;snapshot&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-snapshots --filters Name=owner-id,Values=&amp;lt;id&amp;gt;
+$ aws ec2 describe-snapshots --filters Name=snapshot-id,Values=&amp;lt;snapshot&amp;gt;
+$ aws ec2 delete-snapshot --snapshot-id &amp;lt;snapshot&amp;gt;
+$ aws ec2 create-snapshot --volume-id &amp;lt;volume&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;launch template&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-launch-templates
+$ jq . template.json
+{
+  "ImageId": "&amp;lt;ami&amp;gt;",
+  "InstanceType": "t3.nano",
+  "CreditSpecification": {
+    "CpuCredits": "standard"
+  },
+  "KeyName": "&amp;lt;keyname&amp;gt;",
+  "InstanceInitiatedShutdownBehavior": "terminate"
+}
+$ aws ec2 create-launch-template --launch-template-name &amp;lt;name&amp;gt; --launch-template-data file://template.json
+$ aws ec2 describe-launch-template-versions --launch-template-id &amp;lt;templateid&amp;gt; --versions &amp;lt;version&amp;gt;
+
+$ aws ec2 create-launch-template-version \
+ --launch-template-id &amp;lt;templateid&amp;gt; \
+ --source-version &amp;lt;version&amp;gt; \
+ --version-description "&amp;lt;description&amp;gt;" \
+ --launch-template-data '{ "Monitoring": { "Enabled": true } }'
+$ aws ec2 modify-launch-template --launch-template-id &amp;lt;templateid&amp;gt; --default-version &amp;lt;version&amp;gt;
+
+$ aws ec2 delete-launch-template-versions --launch-template-id &amp;lt;templateid&amp;gt; --versions &amp;lt;version&amp;gt;
+$ aws ec2 delete-launch-template --launch-template-id &amp;lt;templateid&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;instance&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test"
+$ cat userdata.sh 
+sudo apt update
+sudo apt install nginx
+$ aws ec2 run-instances \
+ --security-group-ids &amp;lt;securitygroup&amp;gt; \
+ --subnet-id &amp;lt;subnet&amp;gt; \
+ --associate-public-ip-address \
+ --tag-specifications '{"ResourceType":"instance","Tags":[{"Key":"Name","Value":"test"}]}' \
+ --launch-template LaunchTemplateName=&amp;lt;templatename&amp;gt; \
+ --user-data file://userdata.sh
+#--image-id &amp;lt;ami&amp;gt;
+#--instance-type t3.nano
+#--credit-specification standard
+#--key-name &amp;lt;keyname&amp;gt;
+#--instance-initiated-shutdown-behavior terminate
+
+$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test" --query 'Reservations[].Instances[].{InstanceId:InstanceId,State:State}'
+$ aws ec2 stop-instances --instance-ids &amp;lt;instance&amp;gt;
+$ aws ec2 start-instances --instance-ids &amp;lt;instance&amp;gt;
+$ aws ec2 terminate-instances --instance-ids &amp;lt;instance&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;instance meta data&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl http://169.254.169.254/latest/meta-data/instance-id
+curl http://169.254.169.254/latest/user-data
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200119.html</guid><pubDate>Sun, 19 Jan 2020 00:00:00 GMT</pubDate></item><item><title>iam</title><link>https://mnod.github.io/posts/20200112.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;user&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-users --query 'Users[?UserName==`&amp;lt;username&amp;gt;`]'
+$ aws iam get-user --user-name &amp;lt;username&amp;gt;
+
+$ aws iam create-user --user-name &amp;lt;username&amp;gt;
+$ aws iam tag-user --user-name &amp;lt;username&amp;gt; --tags '{"Key":"name","Value":"test"}'
+
+$ aws iam delete-user --user-name &amp;lt;username&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;login profile&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam get-login-profile --user-name &amp;lt;username&amp;gt;
+$ aws iam create-login-profile --generate-cli-skeleton &amp;gt; create-login-profile.json
+
+$ jq '.' create-login-profile.json
+{
+  "UserName": "&amp;lt;username&amp;gt;",
+  "Password": "&amp;lt;initialpassword&amp;gt;",
+  "PasswordResetRequired": true
+}
+$ aws iam create-login-profile --user-name &amp;lt;username&amp;gt; --cli-input-json file://create-login-profile.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;group&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-groups  --query 'Groups[?GroupName==`&amp;lt;groupname&amp;gt;`]'
+$ aws iam create-group --group-name &amp;lt;groupname&amp;gt;
+
+$ aws iam delete-group --group-name &amp;lt;groupname&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;policy&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-policies --query 'Policies[?PolicyName==`&amp;lt;policyname&amp;gt;`]'
+$ aws iam get-policy --policy-arn &amp;lt;policyarn&amp;gt;
+
+$ jq . policy.json 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+
+$ aws iam create-policy --policy-name &amp;lt;policyname&amp;gt; --policy-document file://policy.json
+
+$ aws iam list-policy-versions --policy-arn &amp;lt;policyarn&amp;gt;
+$ aws iam get-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v1
+$ aws iam create-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --policy-document file://policy_v2.json
+$ aws iam set-default-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v1
+
+$ aws iam delete-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v2
+$ aws iam delete-policy --policy-arn &amp;lt;policyarn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample policy for allow change password&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetAccountPasswordPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ChangePassword",
+      "Resource": "&amp;lt;userarn&amp;gt;"
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;add user to group&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-groups-for-user --user-name &amp;lt;username&amp;gt;
+$ aws iam add-user-to-group --group-name &amp;lt;groupname&amp;gt; --user-name &amp;lt;username&amp;gt;
+
+$ aws iam remove-user-from-group --group-name &amp;lt;groupname&amp;gt; --user-name &amp;lt;username&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;attach policy to user&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-user-policies --user-name &amp;lt;username&amp;gt;
+$ aws iam attach-user-policy --user-name &amp;lt;username&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
+$ aws iam detach-user-policy --user-name &amp;lt;username&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;attach policy to group&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-group-policies --group-name &amp;lt;groupname&amp;gt;
+$ aws iam attach-group-policy --group-name &amp;lt;groupname&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
+$ aws iam detach-group-policy --group-name &amp;lt;groupname&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;role&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-roles --query 'Roles[?RoleName==`&amp;lt;rolename&amp;gt;`]'
+$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+$ aws iam create-role --role-name &amp;lt;rolename&amp;gt; --assume-role-policy-document file://assumepolicy.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(Before you delte role, you must remove roles from instance profile.)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam delete-role --role-name &amp;lt;rolename&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;attach policy to role&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-role-policies --role-name &amp;lt;rolename&amp;gt;
+$ aws iam attach-role-policy --role-name &amp;lt;rolename&amp;gt; --policy-arn &amp;lt;policyarn&amp;gt;
+$ aws iam detach-role-policy --role-name &amp;lt;rolename&amp;gt; --policy-arn &amp;lt;policyarn&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;add role to instance profile&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-instance-profiles-for-role --role-name &amp;lt;rolename&amp;gt;
+$ aws iam add-role-to-instance-profile --instance-profile-name &amp;lt;rolename&amp;gt; --role-name &amp;lt;rolename&amp;gt;
+$ aws iam remove-role-from-instance-profile --instance-profile-name &amp;lt;rolename&amp;gt; --role-name &amp;lt;rolename&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;associate iam instance profile&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-iam-instance-profile-associations 
+$ aws ec2 associate-iam-instance-profile --iam-instance-profile '{"Arn":"&amp;lt;rolearn&amp;gt;","Name":"&amp;lt;rolename&amp;gt;"}' --instance-id &amp;lt;instanceid&amp;gt;
+$ aws ec2 disassociate-iam-instance-profile --association-id &amp;lt;associationid&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;access key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws iam list-access-keys --user-name &amp;lt;user-name&amp;gt;
+$ aws iam get-access-key-last-used --access-key-id &amp;lt;access-key-id&amp;gt;
+
+$ aws iam create-access-key --user-name &amp;lt;user-name&amp;gt;
+$ aws iam update-access-key --user-name &amp;lt;user-name&amp;gt; --access-key-id &amp;lt;access-key-id&amp;gt; --status Inactive
+$ aws iam delete-access-key --user-name &amp;lt;user-name&amp;gt; --access-key-id &amp;lt;access-key-id&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;cloudformation sample template&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    TestLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    AllowAccessDynamoDBTable:
+      Type: "AWS::IAM::Policy"
+      Properties:
+        PolicyName: "AllowAccessDynamoDBTable"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+              Resource: !GetAtt TestDynamoDBTable.Arn
+        Roles:
+          - !Ref TestLambdaRole
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200112.html</guid><pubDate>Sun, 12 Jan 2020 00:00:00 GMT</pubDate></item><item><title>sqs</title><link>https://mnod.github.io/posts/20200109.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create queue&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws sqs list-queues
+aws sqs create-queue --queue-name testqueue
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;get queue url or attributes&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws sqs get-queue-url --queue-name testqueue
+aws sqs get-queue-attributes --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --attribute-names All
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;handle message&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws sqs send-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --message-body {"foo":"bar"}
+aws sqs receive-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
+{
+    "Messages": [
+        {
+            "MessageId": "",
+            "ReceiptHandle": "",
+            "MD5OfBody": "",
+            "Body": "{}"
+        }
+    ]
+}
+aws sqs delete-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --receipt-handle "&amp;lt;ReceiptHandle&amp;gt;"
+aws sqs purge-queue --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete queue&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws sqs delete-queue --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample python script&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;send message
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"&gt;&lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;receive message
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"&gt;&lt;/script&gt;&lt;/p&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200109.html</guid><pubDate>Thu, 09 Jan 2020 00:00:00 GMT</pubDate></item><item><title>apigateway</title><link>https://mnod.github.io/posts/20191110.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create rest-api&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-rest-apis
+$ aws apigateway create-rest-api --name &amp;lt;API Name&amp;gt;
+$ aws apigateway get-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create resource&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-resources --rest-api-id &amp;lt;API ID&amp;gt;
+$ aws apigateway create-resource --rest-api-id &amp;lt;API ID&amp;gt; --parent-id &amp;lt;Parent Resource ID&amp;gt; --path-part subpath
+$ aws apigateway get-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;put method&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway put-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --authorization-type none --http-method get 
+$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;put integration response&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway put-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json":"{\"json\":\"template\"}"}'
+$ aws apigateway get-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;put method response&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway put-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200 --response-models '{"text/plain":"Empty"}'
+$ aws apigateway get-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;update integration&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' test.json
+[
+  {
+    "op": "add",
+    "path": "/requestTemplates/application~1json",
+    "value": "{\"example\":\"json\"}"
+  }
+]
+$ aws apigateway update-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --patch-operations file://test.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create deployment&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-deployments --rest-api-id &amp;lt;API ID&amp;gt;
+$ aws apigateway create-deployment --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
+$ aws apigateway get-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create stage&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-stages --rest-api-id &amp;lt;API ID&amp;gt;
+$ aws apigateway create-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
+$ aws apigateway get-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;test invoke method&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway test-invoke-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
+  --http-method [GET|POST|DELETE|...]
+  --path-with-query-string "/"
+  --body "bodystring"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create api key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-api-keys
+$ aws apigateway create-api-key --name testkey
+$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt;
+$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt; --include-value
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;update api key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway update-api-key --api-key &amp;lt;Key ID&amp;gt; --patch-operations '{ "op":"replace", "path":"/enabled", "value":"true" }'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create usage plan&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plans
+$ aws apigateway create-usage-plan --name myusageplan --api-stages '{"apiId":"&amp;lt;API ID&amp;gt;","stage":"&amp;lt;Stage Name&amp;gt;"}' --throttle '{ "burstLimit": 2, "rateLimit": 1.0 }' --quota '{ "limit": 320, "offset": 0, "period": "DAY" }'
+$ aws apigateway get-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;associate usage-plan and key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan-keys --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
+$ aws apigateway create-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt; --key-type API_KEY
+$ aws apigateway get-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;update method&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway update-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --patch-operations op='replace',path='/apiKeyRequired',value='true'
+$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;test run with api-key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl https://&amp;lt;API ID&amp;gt;.execute-api.&amp;lt;Region Name&amp;gt;.amazonaws.com/&amp;lt;Stage Name&amp;gt; --header "x-api-key:&amp;lt;API Key Value&amp;gt;"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;diassociate usage-plan and key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
+$ aws apigateway delete-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete stage&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
+$ aws apigateway delete-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
+$ aws apigateway delete-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete usage-plan&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
+$ aws apigateway delete-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete api key&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt;
+$ aws apigateway delete-api-key --api-key &amp;lt;Key ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete integration response&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+$ aws apigateway delete-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete method response&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+$ aws apigateway delete-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete integration&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+$ aws apigateway delete-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete method&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+$ aws apigateway delete-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete resource&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
+$ aws apigateway delete-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete rest-api&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws apigateway get-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
+$ aws apigateway delete-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;cloudformation sample template&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: "ApiGatewayRestApi"
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    ApiGatewayResourceSubject:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+        PathPart: "{subject}"
+        RestApiId: !Ref ApiGatewayRestApi
+    TestLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt TestLambda.Arn
+        Action: lambda:InvokeFunction
+        Principal: apigateway.amazonaws.com
+    ApiGatewayGET:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: "GET"
+        RestApiId: !Ref ApiGatewayRestApi
+        ResourceId: !Ref ApiGatewayResourceSubject
+        RequestParameters:
+          "method.request.path.string": true
+          "method.request.path.year": true
+        AuthorizationType: "NONE"
+        MethodResponses:
+            - StatusCode: 200
+              ResponseModels:
+                application/json;charset=UTF-8: Empty
+        Integration:
+          Type: "AWS_PROXY"
+          IntegrationHttpMethod: "POST"
+          RequestParameters:
+            "integration.request.path.string": "method.request.path.string"
+            "integration.request.path.year": "method.request.path.year"
+          Uri: !Sub &amp;gt;-
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestLambda.Arn}/invocations
+          RequestTemplates:
+            application/json: "{ \"statusCode\" : 200 }"
+    DeployDevel:
+      DependsOn: ApiGatewayGET
+      Type: 'AWS::ApiGateway::Deployment'
+      Properties:
+        RestApiId: !Ref ApiGatewayRestApi
+        StageName: "devel"
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191110.html</guid><pubDate>Sun, 10 Nov 2019 00:00:00 GMT</pubDate></item><item><title>sns</title><link>https://mnod.github.io/posts/20191101.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create topic&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws sns create-topic --name &amp;lt;Topic Name&amp;gt;
+$ aws sns list-topics
+$ aws sns get-topic-attributes --topic-arn &amp;lt;Topic ARN&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create subscription&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws lambda list-functions | jq '.Functions[].FunctionArn'
+
+$ aws sns subscribe --topic-arn &amp;lt;Topic ARN&amp;gt; --protocol lambda --notification-endpoint &amp;lt;Lambda ARN&amp;gt;
+$ aws sns list-subscriptions
+$ aws sns get-subscription-attributes --subscription-arn &amp;lt;Subscription ARN&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;publish&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws sns publish --topic-arn &amp;lt;Topic ARN&amp;gt; --subject "test subject" --message "this is test message"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;unsubscribe&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws sns unsubscribe --subscription-arn &amp;lt;Subscription ARN&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete topic&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws sns delete-topic --topic-arn &amp;lt;Topic ARN&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create SNS with CloudFormation&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;prepare yaml file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat sns.yml
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  MySNSTopic:
+    Type: 'AWS::SNS::Topic'
+  MySubscription:
+    Type: 'AWS::SNS::Subscription'
+    Properties: 
+      Endpoint: !Ref lambdaARN
+      Protocol: lambda
+      TopicArn: !Ref MySNSTopic
+Parameters:
+  lambdaARN:
+    Type: String
+$ aws cloudformation validate-template --template-body file://sns.yml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;prepare paremeter file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' sns.parameter
+[
+  {
+    "ParameterKey": "lambdaARN",
+    "ParameterValue": "&amp;lt;lambda ARN&amp;gt;"
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create stack&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation create-stack --template-body file://sns.yml --stack-name &amp;lt;Stack Name&amp;gt; --parameters file://sns.parameter
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm CloudFormation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation list-stacks
+$ aws cloudformation describe-stacks --stack-name &amp;lt;Stack Name&amp;gt;
+$ aws cloudformation get-template --stack-name &amp;lt;Stack Name&amp;gt; --query 'TemplateBody' | xargs printf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm SNS&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws sns list-topics
+$ aws sns list-subscriptions
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;delete stack&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation delete-stack --stack-name &amp;lt;Stack Name&amp;gt;
+$ aws cloudformation list-stacks --query 'StackSummaries[?StackName==`&amp;lt;Stack Name&amp;gt;`]'
+$ aws cloudformation describe-stacks --stack-name &amp;lt;Stack Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191101.html</guid><pubDate>Fri, 01 Nov 2019 00:00:00 GMT</pubDate></item><item><title>glacier</title><link>https://mnod.github.io/posts/20191027.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create vault&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws glacier create-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+$ aws glacier list-vaults --account-id -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;set vault notification&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' vault-notifications.json
+{
+  "SNSTopic": "&amp;lt;ARN of SNS Topic&amp;gt;",
+  "Events": [
+    "ArchiveRetrievalCompleted",
+    "InventoryRetrievalCompleted"
+  ]
+}
+$ aws glacier set-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --vault-notification-config file://vault-notifications.json
+$ aws glacier get-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;set strategy of retrieval policy to free tier&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' retrieval-policy.json 
+{
+  "Rules": [
+    {
+      "Strategy": "FreeTier"
+    }
+  ]
+}
+$ aws glacier set-data-retrieval-policy --account-id - --policy file://retrieval-policy.json
+$ aws glacier get-data-retrieval-policy --account-id -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;upload archive&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws glacier upload-archive --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --body testdata.tar.enc
+$ aws glacier describe-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;retrieve inventory&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' inventory-retrieval.json
+{
+  "Type": "inventory-retrieval"
+}
+$ aws glacier initiate-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-parameters file://inventory-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+
+$ aws glacier describe-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt;
+$ aws glacier get-job-output --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt; output.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;retrieve archive&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq '.' archive-retrieval.json
+{
+  "Type": "archive-retrieval",
+  "ArchiveId": "&amp;lt;Archive ID&amp;gt;"
+}
+$ aws glacier initiate-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-parameters file://archive-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+
+$ aws glacier describe-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt;
+$ aws glacier get-job-output --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt; output.dat
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete archive&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws glacier delete-archive --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --archive-id &amp;lt;Archive ID&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete vault notification&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws glacier delete-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+$ aws glacier get-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete vault&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws glacier describe-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+$ aws glacier delete-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191027.html</guid><pubDate>Sun, 27 Oct 2019 00:00:00 GMT</pubDate></item><item><title>s3</title><link>https://mnod.github.io/posts/20191019.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;bucket&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws s3api list-buckets
+$ aws s3api create-bucket --bucket mybucketname --region ap-northeast-1 --create-bucket-configuration LocationConstraint=ap-northeast-1
+$ aws s3api delete-bucket --bucket mybucketname
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;file&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws s3 ls s3://mybucketname/
+$ aws s3 cp testfile.txt s3://mybucketname/
+$ aws s3 cp s3://mybucketname/testfile.txt testfile2.txt
+$ aws s3 rm s3://mybucketname/testfile.txt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;versioning&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;enable and disable versioning for a bucket&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws s3api get-bucket-versioning --bucket mybucketname
+$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Enabled"}'
+$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Suspended"}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list object versions&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt
+$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt --query 'Versions[?IsLatest==`true`].VersionId'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove all versions for a file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix testfile.txt \
+&amp;gt; --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
+
+$ aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;bucket notification configuration&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws s3api get-bucket-notification-configuration --bucket bucketname
+$ jq . notification.json 
+{
+  "QueueConfigurations": [
+    {
+      "Events": [
+        "s3:ObjectCreated:*"
+      ],
+      "QueueArn": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;",
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {
+              "Name": "prefix",
+              "Value": "input/"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+$ aws s3api put-bucket-notification-configuration --bucket bucketname --notification-configuration file://notification.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before configure bucket notification, add policy to SQS queue like below&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "Version": "2012-10-17",
+  "Id": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;/&amp;lt;policyname&amp;gt;",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:s3:::&amp;lt;bucketname&amp;gt;"
+        }
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample cloudformation template&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  BucketName:
+    Type: String
+Resources:
+  MyPrivBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: "{{ BucketName }}" 
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: "Enabled"
+      Tags:
+        - "Key": "Name"
+          "Value": "test"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;boto3 client&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;file operation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import boto3
+import sys
+bucket = "mybucketname"
+try:
+    s3_client = boto3.client('s3')
+    s3_client.upload_file('testfile.txt', bucket, 'dirname/uploaded.txt')
+    s3_client.download_file(bucket, 'dirname/uploaded.txt', 'downloaded.txt')
+    s3_client.delete_object(Bucket = bucket, Key='dirname/uploaded.txt')
+except:
+    print ("error")
+    sys.exit()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191019.html</guid><pubDate>Sat, 19 Oct 2019 00:00:00 GMT</pubDate></item></channel></rss>

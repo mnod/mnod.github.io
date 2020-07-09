@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about jscript)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/jscript.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;スクリプトの呼び出し。
+アイコンのダブルクリックや、アイコンへのドラッグ&amp;amp;ドロップでも起動できる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cscript script.js //Nologo
+wscript script.js //Nologo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;メッセージの表示。cscript ... で実行するとターミナルに表示される。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;WScript.Echo( "メッセージ" + foo);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;バッチファイルを呼び出す&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var openssl     = "C:\\Users\\public\\Documents\\bin\\openssl.exe";
+var shell   = WScript.CreateObject("WScript.Shell");
+
+try {
+  oExec = shell.Exec( openssl + " version" );
+  //oExec = shell.Exec( openssl + " --help" );
+  while ( ! oExec.StdOut.AtEndOfStream ) {
+    WScript.Echo(oExec.StdOut.readline());
+  }
+  while ( ! oExec.StdErr.AtEndOfStream ) {
+    WScript.Echo(oExec.StdErr.readline());
+  }
+}
+catch (e){ 
+  WScript.Echo(e)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;引数のぶんだけ繰り返して実行する&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+
+for (i = 0; i &amp;lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+    fin = fso.OpenTextFile(file, 1, false);
+    while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+    }
+    fin.Close();
+  }
+  catch (e) {
+    WScript.Echo(e);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ファイルを開き一行ずつ読み込んで処理。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+var fin;
+
+for (i = 0; i &amp;lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+  }
+  catch(e) {
+    WScript.Echo(e);
+    continue;
+  }
+  fin = fso.OpenTextFile(file, 1, false);
+  while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+  }
+  fin.Close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;アクセスファイルを開き、マクロを呼び出す。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var dbfile='C:\\Users\\public\\Documents\\Database1.accdb';
+var timeout = 500; // milliseconds
+try {
+  var AccessApp = new ActiveXObject( "Access.Application" );
+  // AccessApp.Visible = true;
+  WScript.Sleep( timeout );
+
+  try {
+    AccessApp.OpenCurrentDatabase( dbfile );
+    WScript.Sleep( timeout );
+    // マクロを実行する例
+    // AccessApp.DoCmd.RunMacro( "マクロ名" );
+  }
+  catch(e) {
+    WScript.Echo(e);
+  }
+  finally {
+    AccessApp.CloseCurrentDatabase();
+  }
+}
+catch(e) {
+    WScript.Echo(e);
+}
+finally {
+  AccessApp.Quit();
+  AccessApp = null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;excel&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var excelfile = "c:\\users\\public\\documents\\test.xlsm"
+var updatelinks = true;
+var readonly = true;
+
+try {
+  var ExcelApp = new ActiveXObject("Excel.Application");
+  // ExcelApp.Visible = true;
+  // ExcelApp.DisplayAlerts = true;
+
+  try {
+    // var book = ExcelApp.Workbooks.Open(excelfile);
+    var book = ExcelApp.Workbooks.Open(excelfile, updatelinks, readonly);
+    // マクロを実行する例
+    ExcelApp.Run("マクロ名")
+
+    // シートに記入して保存する例
+    // var sheet = book.sheets(1);
+    // sheet.Cells(2, 1).value = "message...";
+    // book.Save();
+  }
+  catch(e) {
+    WScript.Echo(e)
+  }
+  finally {
+    book.Close();
+  }
+}
+catch(e) {
+  WScript.Echo(e)
+}
+finally {
+  ExcelApp.Quit();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>jscript</category><category>windows</category><guid>https://mnod.github.io/posts/20170930.html</guid><pubDate>Sat, 30 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>

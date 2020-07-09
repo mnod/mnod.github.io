@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about lifestyle)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/lifestyle.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+&lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
+&lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
+(物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
+未来永劫手元に残らなくてもよい本なら、サービスを利用する価値があるのではないかと思う。資格関連本など、墓場まで持っていかなくてもよいタイプの本は、意外と多いはず。
+中期から短期的にサービスを受けることができる有料サービスで、優れたコンテンツを手軽に持ち運んで読むことができると捉えれば、電子書籍は合理的なのではないだろうか。&lt;/p&gt;
+&lt;p&gt;電子書籍では書き込みができないという短所もあるが、本当に必要なところだけノートに書き写すなりすればよいのではないかと思う。本に書き込んだことを繰り返し参照するという運用が、本当に効率的なのであれば、紙の本を使えばいいし、そうでないなら電子書籍で充分ではないかと思う。&lt;/p&gt;
+&lt;p&gt;電子書籍には紙の手触りがない、紙の本なら直感的にどのあたりに何が書いてあったか覚える、という意見がある。
+例えばkindle の場合、好きなページに好きなだけしおりを設定することができる。電子書籍でも、自分で設定したしおりを頼りにすれば、好きなところに比較的簡単にたどり着けるのではないかと思う。&lt;/p&gt;
+&lt;p&gt;紙の本を全否定するのではないが、雑誌を切り抜いてスクラップしたりハードカバーの本を手元におきたいなど、紙の本がどうしても必要だという事情がないのなら、電子書籍を活用しないのはもったいない。
+紙の本だと人に貸すこともできるし、不要になれば売り払うこともできる。&lt;/p&gt;
+&lt;p&gt;お菓子を食べながら読んでも、コーヒーをこぼしても、電子書籍コンテンツ自体は汚れることはない。
+電子書籍端末は、気に入る端末が限られるので、大切に使わないと代わりになるものに出会えなくなる可能性もある。(買いたくなるような7インチタブレットがなかなか出てこない)&lt;/p&gt;
+&lt;p&gt;電子端末の持ち込みが制限される職場には持ち込むことができない可能性がある。&lt;/p&gt;
+&lt;p&gt;自分の場合、荷物を増やしたくないので、雑誌も書籍も物理的な本はあまり買わず、短期間で読みきるタイプの本の場合は図書館を積極的に利用するようにしている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.amazon.kindle"&gt;kindle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;最大手のサービスなら、そう簡単にサービスが終わることはないと考え、自分はAmazon を利用している。
+(極東の島国の企業に買収されるようなサービスでは安心して利用できない)&lt;/p&gt;
+&lt;p&gt;kindleは、専用端末は必ずしも必要ではなく、Androidやiosの普通に売られてるスマホやタブレットにアプリを入れて使うことができる。また、一つのアカウントで複数の端末を使うことができる。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.adobe.reader"&gt;Adobe Acrobat Reader&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;オープンソースソフトウェアに限らず様々な製品のドキュメントがPDF 形式で配布されている。
+タブレット端末に入れて持ち運ぶと、手軽にどこでも快適に読むことができ、とても重宝する。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.zlibrary.ui.android"&gt;FBReader&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.fbreader.plugin.pdf"&gt;PDF plugin&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;epubをはじめ、様々な形式に対応したドキュメントリーダー。
+２つのPDF ファイルを切り替えながら読むためにAdobe リーダーとあわせて使っている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.mizushimanet.AozoraProvider"&gt;青空プロバイダ&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.example.android.npn2SC1815J.VerticalTextViewer"&gt;縦書きビューア&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;自分は青空文庫の本を読むのにこれらを使っている。&lt;/p&gt;
+&lt;p&gt;かつて紙の文庫本を買って読んだ古典が(全てではないが)無償で読めるのは、感慨深い。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer"&gt;Perfect Viewer&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;様々な形式に対応したドキュメントリーダー。
+電子書籍だけでなく、画像ファイルの閲覧にも対応している。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20180826.html</guid><pubDate>Sun, 26 Aug 2018 00:00:00 GMT</pubDate></item><item><title>weightloss</title><link>https://mnod.github.io/posts/20180701.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;減量＝摂取カロリーと消費カロリーの収支をマイナスにする努力。&lt;/p&gt;
+&lt;p&gt;メタボには該当しないがBMI的に標準体重の上限近いので、減量に取り組んでいる。&lt;/p&gt;
+&lt;p&gt;無理をせず1週間で 300g くらいずつ減らしていき、数十週かけて標準体重の中ほどを目指している。(１日あたりカロリー収支を、300kcal 消費超過とする。)&lt;/p&gt;
+&lt;p&gt;急に減量すると防御が働くそうなので、あせらず少しずつ。
+月に5%にとどめたほうがいいらしい(一週間あたり1%程度)。&lt;/p&gt;
+&lt;p&gt;カロリー消費は食事誘導性熱産生、生活活動、基礎代謝 (= 1 : 2 : 7)だけ。できることをこつこつ積み重ねるしかない。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;摂取カロリーを減らす&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;食欲のコントロール。満腹感を得ることを目的としない。
+軽い空腹感があったほうが集中力が高まる。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;食べる量を単純に減らす(半ライスにする。大盛りにしない。追加しない。時間をかけて食べる。)&lt;/li&gt;
+&lt;li&gt;食事＝次の食事までに使う分のカロリーを摂取すること(食べるのは必要な量だけにとどめる)&lt;/li&gt;
+&lt;li&gt;高カロリーを摂らない。or  低カロリーに入れ替え。
+食べるなら意識して食べる。
+(コーラ、ポカリ、栄養ドリンク。菓子パン。食後のお菓子。おやつ。マヨネーズ、ドレッシング、バター、砂糖、揚げ物。)
+お菓子を食べるなら一口ゼリー。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;消費カロリーを増やす&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;いつもより[徒歩・自転車・階段]。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;カロリーを消費しやすく&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;食事を抜かず三食食べる (朝しっかり、昼減らす、夜あっさり)&lt;/li&gt;
+&lt;li&gt;体温を上げる (カプサイシン)&lt;/li&gt;
+&lt;li&gt;筋肉を増やす (ドローイン → ストレッチ → 筋トレ)
+体脂肪が減り引き締まる。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;脂肪消費を進める&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;筋肉をつけて有酸素運動&lt;/li&gt;
+&lt;li&gt;運動前にプーアル茶(脂肪分解をすすめる効果があるらしい)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;脂肪吸収を抑える&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;食事の際は烏龍茶(脂質吸収を抑える効果があるらしい)&lt;/li&gt;
+&lt;li&gt;食後血糖値上昇を抑える(食後に運動する。デザートのお菓子をやめる)&lt;/li&gt;
+&lt;li&gt;炭水化物を減らす&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;生活習慣&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;就寝中のカロリー消費(7～7.5h睡眠)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;目標設定・進捗管理&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;体重と体脂肪率を１日２回記録する(起床後と就寝前など)。&lt;/li&gt;
+&lt;li&gt;計画・実行・反省・改善を辛抱強く継続する。
+休むとリカバリが難しいので休まない。
+習慣化する。減量した状態をキープする。&lt;/li&gt;
+&lt;li&gt;なぜ減量したいのか。減量して得られるものを思い描く。
+なりたい自分を目指して生活習慣を改善する。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;停滞期&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;体重が5%くらい減ると防御が働いて、数週間体重が減らなくなる。この間も辛抱してがんばる。&lt;/p&gt;
+&lt;p&gt;心が折れそうなときは
+「怠惰な豚でいたくない。でぶは自己管理できないことの表れ。みっともない。」と言い聞かせてがんばる。&lt;/p&gt;
+&lt;p&gt;何事も始めるのに遅すぎるということはない。変化を恐れず、常に自分を変えて成長する。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180701.html</guid><pubDate>Sun, 01 Jul 2018 00:00:00 GMT</pubDate></item><item><title>stop smoking</title><link>https://mnod.github.io/posts/20180630.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;数年前に禁煙成功し、それ以来完全にやめることができた。
+その時に考えたこと、やったことなど。&lt;/p&gt;
+&lt;p&gt;禁煙 = 一度決めたことを継続する心の強さこそが力
+禁煙できれば何でもできる。禁煙すらできなければ何もできない。&lt;/p&gt;
+&lt;p&gt;意志があれば禁煙外来に行かなくても、禁煙ガム・禁煙パッチがなくても禁煙できる。意思がなければ、何をやってもやめられるわけがない。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;考え方を変える&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;煙草を吸い続ける価値はない、煙草を吸わないのが合理的であると覚悟する。&lt;/p&gt;
+&lt;p&gt;煙草による不都合。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;くさいので、嫌がられる。迷惑になる。迷惑をかけていることに無自覚。&lt;/li&gt;
+&lt;li&gt;味や臭いに鈍感になる。&lt;/li&gt;
+&lt;li&gt;食事・休憩できるところが限られる。&lt;/li&gt;
+&lt;li&gt;煙草代。&lt;/li&gt;
+&lt;li&gt;将来の医療費がかかる。他人への健康被害。&lt;/li&gt;
+&lt;li&gt;吸ってる時間が無駄。余命が短い。&lt;/li&gt;
+&lt;li&gt;火の不始末の心配。煙草やライターの在庫の心配。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;禁煙で得られるもの。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;くさくないので、嫌がられない。迷惑にならない。&lt;/li&gt;
+&lt;li&gt;味や臭いが判るようになる。&lt;/li&gt;
+&lt;li&gt;どこでも飲食できる。(むしろ喫煙席の近くは臭いと感じるようになる)&lt;/li&gt;
+&lt;li&gt;煙草代がかからない。&lt;/li&gt;
+&lt;li&gt;将来の医療費がかかる可能性が下がる。&lt;/li&gt;
+&lt;li&gt;無駄な時間が減る。余命が短くなくなる。&lt;/li&gt;
+&lt;li&gt;心配事が減る。&lt;/li&gt;
+&lt;li&gt;自信。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;煙草を吸う人がかっこいいというのは幻想にすぎない。
+自分では気づかないだけで、世間の人は喫煙者をこう見てる。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;煙で他人に迷惑をかけておきながら自分がかっこいいと勘違いしている痛い人。&lt;/li&gt;
+&lt;li&gt;煙で他人に迷惑をかけても気にしないタイプの人。&lt;/li&gt;
+&lt;li&gt;自分を律することができないタイプの人。&lt;/li&gt;
+&lt;li&gt;ゴミをポイ捨てして灰をちらかす人と同族。ところ構わず歩き煙草する人と同族&lt;/li&gt;
+&lt;li&gt;臭い人。(匂いで頭痛を起こす人がいる)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;迷惑行為を他の誰かがやっているから自分もやっていいというのは、言い訳にもならない。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;客観視と減煙&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;失敗してもあきらめない。最初は間引きから入ってもいい。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;何故吸っているのか、どんなときに吸っているのかを自覚する。
+惰性で吸わない。本当に吸いたい気持ちがあるのか自問して、吸いたい気持ちがあるときにだけ吸う。&lt;/li&gt;
+&lt;li&gt;何気なく吸わない。付き合いで吸わない。吸いたい気持ちが少ないのなら吸わない。&lt;/li&gt;
+&lt;li&gt;煙草を吸うのが習慣となっている場合、それをやめてみる
+食事前後だから吸う。お風呂上りだから吸う、などというのはやめる。&lt;/li&gt;
+&lt;li&gt;吸いたくなるポイントで吸わないようにできるか試してみる
+起床後。朝食の前後。午前中。昼食前後。午後。夕食前後。お風呂前後。就寝まで。&lt;/li&gt;
+&lt;li&gt;連続で吸わない。
+一度に吸うのは1本だけ。煙草の間隔を数時間開ける&lt;/li&gt;
+&lt;li&gt;イライラしたから吸いたい? 緊張したから吸いたい?
+煙草は甘えや逃避でしかない。感情を制御できるようにする。
+ (煙草を吸わない人は、煙草を吸わなくてもイライラや緊張と付き合ってる)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;実践&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;禁煙を初めて最初の2週間は心が折れそうになっても、強い決意で吸わない。&lt;/li&gt;
+&lt;li&gt;1か月経って自信がついたとしても、ここまでの辛い思いを無駄にしないように吸わない。&lt;/li&gt;
+&lt;li&gt;数か月経ってふと吸いたくなることがあっても、ここまで煙草無しで生活することができているので吸わない。&lt;/li&gt;
+&lt;li&gt;1年経つと疾病可能性が下がってきているので、せっかくなので吸わない。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;吸いたいイライラに負けない。周囲の人に当たらない。&lt;/p&gt;
+&lt;p&gt;吸いたくなるのは数分間だけであり、それを我慢できればしばらくは大丈夫。
+最初は吸いたくなる欲求が強いが、数か月かけてだんだん下がってくる。
+吸いたくなる間隔もだんだん開いてくる。
+その様子を客観的に観察してモチベーションとする。記録する。&lt;/p&gt;
+&lt;p&gt;吸いたくなる数分間を我慢できなくなりそうな時
+何か飲み物を飲む。タブレット菓子を食べる。席を立つ。気分転換をする。ストレッチ。瞑想。深呼吸。&lt;/p&gt;
+&lt;p&gt;何度も禁煙に失敗してもあきらめない。
+甘えを捨てて、自分には厳しく。周囲の人には感謝。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180630.html</guid><pubDate>Sat, 30 Jun 2018 00:00:00 GMT</pubDate></item></channel></rss>

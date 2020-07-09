@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about sqlite)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/sqlite.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>sql for sqlite</title><link>https://mnod.github.io/posts/20180512.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://www.sqlite.org/lang.html"&gt;SQliteで使える言語&lt;/a&gt; について&lt;/p&gt;
+&lt;p&gt;SQliteは、型を指定しなくても CREATE  TABLE できるのが特徴。
+型指定するなら、integer, real, text, blob型を使える。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE IF NOT EXISTS mytable (
+id INT,
+description TEXT,
+score REAL
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;トランザクション&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;BEGIN TRANSACTION;
+:
+COMMIT or ROLLBACK;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;クエリ計画の表示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EXPLAIN QUERY PLAN ～;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;パフォーマンス対策&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;REINDEX [target];
+VACUUM;
+ANALYZE;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://www.sqlite.org/lang_datefunc.html"&gt;日付・時刻関数&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;日付・時刻の型は無いが、関数を使って扱うことができる。&lt;/p&gt;
+&lt;p&gt;現在日時の例(デフォルトでUTCとして扱われる)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT current_timestamp, date('now'), time();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文字列で特定日時を指定する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT datetime('1970-01-01 00:00:00')||' はUTCの時刻';
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修飾子にlocaltimeを指定すると、ローカルのタイムゾーンに変換。(JSTの場合、9時間後)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT datetime('1970-01-01 00:00:00+09:00')||' はUTCなので、JSTは '||datetime('1970-01-01 00:00:00+09:00', 'localtime');
+SELECT datetime('now')||' はUTCなので、JSTは '|| datetime('now', 'localtime')x;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修飾子にutcを指定すると、対象の日付がローカルのタイムゾーンのものとして、utcに変換。(JSTの場合、9時間前)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT datetime('now')||' がJSTだとしたら、UTCは '||datetime('now', 'utc');
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;その他、修飾子を使うことができる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT datetime('now', '+1years', '+1months', '+1days', '+1hours', '+1minutes', '+1seconds');
+SELECT '今年の第1月曜日は '||date(datetime('now', 'start of year'), 'weekday 1');
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;条件式として使うことができる&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT * FROM mytable WHERE date BETWEEN datetime('now', '-3hours') AND datetime('now');
+SELECT * FROM mytable WHERE date(date) = date('now');
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;strftime書式を使うことができる&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT strftime('%s', '1970-02-01 00:00:00', '-1 minutes');
+SELECT datetime(strftime('%s', '1970-01-01 00:00:00'), 'unixepoch');
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://www.sqlite.org/lang_aggfunc.html"&gt;集約関数&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;ccount, avg, min, maxなどの集約関数が使える。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT col1 AS c1, aggregate(col2) AS c2
+FROM mytable
+WHERE condition 集計する対象を絞り込む。
+GROUP BY c1
+HAVING c2 &amp;lt;&amp;gt; 0; 集計結果から、出力する対象を絞り込む
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://www.sqlite.org/lang_corefunc.html"&gt;コア関数&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;引数の中で、最初に現れたNULLでない値を返す
+(この例では「全部null」)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT coalesce(null, null+'any', null+1, null*1, null/1, 1/0, '全部null');
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;制約について&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;CHECK制約の列制約の例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT CHECK(length(pointname) &amp;lt;= 8),
+  latitude  REAL NOT NULL CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  longitude REAL NOT NULL CHECK(longitude BETWEEN -180.0 AND 180.0),
+  CONSTRAINT point_primary PRIMARY KEY (pointname)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;表制約の例(制約名は省略可能)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DROP TABLE IF EXISTS point;
+CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT PRIMARY KEY,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  CHECK(length(pointname) &amp;lt;= 8),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;外部キーの例&lt;/p&gt;
+&lt;p&gt;列制約&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &amp;lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL REFERENCES point(pointname),
+  PRIMARY KEY (routename, seq)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;表制約&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DROP TABLE IF EXISTS route;
+CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &amp;lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL,
+  PRIMARY KEY(routename, seq),
+  FOREIGN KEY(pointname) REFERENCES point(pointname)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SQlite 3.6.19から外部キーの機能が導入されたが、デフォルトでは機能しない。
+(外部キーのDDLはエラーにならない。外部キー制約で拒否されるはずの値が拒否されない。)
+制約を有効にするためには(データベースを開くたびに)設定が必要。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PRAGMA foreign_keys;
+0→オフ
+1→オン
+PRAGMA foreign_keys = [ON|OFF];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(補足: sqlite_version()関数でバージョンを確認できる。)&lt;/p&gt;
+&lt;p&gt;デフォルト値&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DROP TABLE IF EXISTS track;
+CREATE TABLE IF NOT EXISTS track (
+  trackname TEXT,
+  timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  PRIMARY KEY(trackname, timestamp),
+  CHECK(length(trackname) &amp;lt;= 8),
+  CHECK(datetime(timestamp) IS NOT NULL
+    AND datetime(timestamp) &amp;gt;= datetime('1970-01-01 00:00:00')),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;結合&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;内部結合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p, route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+ON r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+USING (pointname);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;外部結合
+(LEFT OUTER JOINは実装されているが、RIGHT と FULL OUTER JOINは実装されていない。)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+LEFT OUTER JOIN route AS r
+ON r.pointname = p.pointname;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自然結合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+NATURAL JOIN route AS r;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;その他&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;CASE文&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT
+  CASE strftime('%M','now') % 3
+    WHEN 0 THEN 'is 0'
+    WHEN 1 THEN 'is 1'
+    ELSE 'is 2'
+  END,
+  CASE
+    WHEN strftime('%M','now') % 2 = 0 THEN 'even'
+    ELSE 'odd'
+  END
+;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>rdbms</category><category>sqlite</category><guid>https://mnod.github.io/posts/20180512.html</guid><pubDate>Sat, 12 May 2018 00:00:00 GMT</pubDate></item><item><title>sqlite by python</title><link>https://mnod.github.io/posts/20180511.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;pythonでsqliteを利用するとき
+&lt;a href="http://docs.python.jp/2/library/sqlite3.html"&gt;sqlite 3モジュール&lt;/a&gt;
+を使う&lt;/p&gt;
+&lt;p&gt;簡単なpythonスクリプトの例 (古い環境だと、ライブラリ名はsqliteらしい)&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqlite_sample.py"&gt;&lt;/script&gt;
+
+&lt;p&gt;sqliteのデータを
+&lt;a href="https://matplotlib.org"&gt;matplotlib&lt;/a&gt;
+を使ってグラフにプロットする簡単な例。&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>python</category><category>script</category><category>sqlite</category><guid>https://mnod.github.io/posts/20180511.html</guid><pubDate>Fri, 11 May 2018 00:00:00 GMT</pubDate></item><item><title>sqlite</title><link>https://mnod.github.io/posts/20170819.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;SQLiteはRDBMSのデータベースエンジン。サーバではなくライブラリで、とても小さく軽量。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.sqlite.org/docs.html"&gt;ドキュメント&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ここでは &lt;a href="https://www.sqlite.org/cli.html"&gt;コマンドラインインタフェース&lt;/a&gt; sqlite3 の利用について記載する。&lt;/p&gt;
+&lt;p&gt;データベースファイルを指定して起動&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sqlite3 database.db
+-column 左寄せのカラム形式で表示
+-header 列の見出しを表示
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コマンドラインでSQL実行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sqlite3 database.db 'SELECT count(*) FROM mytable;'
+
+echo 'SELECT count(*) FROM mytable;' | sqlite3 database.db
+
+cat &amp;lt;&amp;lt; quit | sqlite3 database.db
+SELECT count(*) FROM mytable;
+quit
+
+sqlite3 database.db &amp;lt; filename.sql
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;主なメタコマンド&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;データベースファイルの確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.databases
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;存在する表の確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.tables
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;表のDDLの確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.schema
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;表のインデックス名の確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.indices 表名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;DDLとデータ内容をSQLでダンプ&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.dump [表名]
+表名を省略すると全てのテーブルが対象。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ファイルに記載されたSQLを実行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.read ファイル名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSV形式で表示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.header on
+.mode csv
+.output ファイル名
+SELECT * FROM ...;
+.output stdout
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSVファイルの内容を表へインポート&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.import database.csv mytable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;データベース全体のダンプとリストア&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sqlite3 database.db .dump | gzip -c &amp;gt; database.dump.gz
+zcat database.dump.gz | sqlite3 database_test.db
+(ダンプはSQLなので、sqlite以外の環境へもリストア可能)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;バックアップとリストア&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;gt;&amp;gt; test1.sql &amp;lt;&amp;lt; END
+SELECT count(*) FROM test;
+.backup tmp.backup
+DROP TABLE test;
+SELECT count(*) FROM test;
+.restore tmp.backup
+SELECT count(*) FROM test;
+END
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>rdbms</category><category>sqlite</category><guid>https://mnod.github.io/posts/20170819.html</guid><pubDate>Sat, 19 Aug 2017 00:00:00 GMT</pubDate></item></channel></rss>

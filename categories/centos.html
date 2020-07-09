@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about centos | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/centos.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag centos" hreflang="en" href="centos.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about centos</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="centos.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170423.html" class="u-url">PostgreSQL on CentOS7</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170423.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-04-23T00:00:00Z" itemprop="datePublished" title="2017-04-23 00:00">2017-04-23 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>install</p>
+<pre><code>yum install postgresql-server
+systemctl list-unit-files  -t service
+systemctl is-enabled postgresql.service
+</code></pre>
+<p>start daemon</p>
+<pre><code>systemctl status postgresql.service
+postgresql-setup initdb
+systemctl start postgresql.service
+su - postgres
+psql -l
+</code></pre>
+<p>sql command  operation</p>
+<pre><code>psql &lt;&lt; END
+\du
+\q
+END
+psql -c "select * from pg_user"
+</code></pre>
+<p>create and drop user</p>
+<pre><code>\du
+SELECT * FROM pg_user;
+createuser -P ossdb
+dropuser -i ossdb
+CREATE USER ossdb LOGIN PASSWORD 'password';
+DROP USER IF EXISTS ossdb;
+</code></pre>
+<p>create and drop database</p>
+<pre><code>\l
+SELECT * FROM pg_database;
+createdb -O ossdb -W ossdb
+dropdb -i ossdb
+CREATE DATABASE ossdb OWNER ossdb;
+DROP DATABASE IF EXISTS ossdb;
+</code></pre>
+<p>connect</p>
+<pre><code>cat &lt;&lt; END &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+host    ossdb           ossdb           127.0.0.1/32            md5
+END
+systemctl reload postgresql.service
+psql -U ossdb -d ossdb -h 127.0.0.1
+</code></pre>
+<p>create and drop table</p>
+<pre><code>\dit
+\d table_name
+CREATE TABLE t1 (
+c1 integer,
+c2 date,
+c3 time,
+c4 character,
+c5 character varying(16),
+c6 real,
+primary key (c1), 
+unique (c2, c3)
+);
+DROP TABLE IF EXISTS  t1;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170311.html" class="u-url">CentOS7 basic operation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170311.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-11T00:00:00Z" itemprop="datePublished" title="2017-03-11 00:00">2017-03-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>パッケージ更新</p>
+<pre><code>uname -a
+yum check-update
+yum update
+</code></pre>
+<p>chronyの設定</p>
+<pre><code>yum list chrony
+ls -l /etc/chrony.conf*
+cp -pi /etc/chrony.conf /etc/chrony.conf.000
+ls -l /etc/chrony.conf*
+diff -u /etc/chrony.conf{,.000}
+
+systemctl status chronyd.service
+ps -ef | grep chronyd | grep -v grep
+chronyc sources
+chronyc tracking
+chronyc sourcestats
+chronyc -a makestep
+
+systemctl restart chronyd.service
+</code></pre>
+<p>サービスの自動起動設定と解除</p>
+<pre><code>systemctl list-unit-files  -t service
+systemctl is-enabled chronyd.service
+
+systemctl disable chronyd.service
+systemctl enable chronyd.service
+</code></pre>
+<p>パッケージ削除と確認</p>
+<pre><code>yum remove chrony
+yum list chrony
+</code></pre>
+<p>パッケージ導入</p>
+<pre><code>yum install ntp
+yum list ntp
+</code></pre>
+<p>サービス起動</p>
+<pre><code>systemctl status ntpd.service
+systemctl start ntpd.service
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

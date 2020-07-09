@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about virtualization | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/virtualization.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag virtualization" hreflang="en" href="virtualization.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about virtualization</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="virtualization.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170325.html" class="u-url">kvm virtualization</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170325.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-25T00:00:00Z" itemprop="datePublished" title="2017-03-25 00:00">2017-03-25 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>qcow2 イメージ</em></p>
+<p>作成。</p>
+<pre><code>qemu-img create -f qcow2 image.qcow2 xxG
+</code></pre>
+<p>シュリンク。仮想マシンを止めて実行する。</p>
+<pre><code>mv image.qcow2 image.qcow2.bak
+qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
+</code></pre>
+<p><em>qemu-kvm コマンドのよく使うオプション</em></p>
+<p>cdイメージから起動</p>
+<pre><code>-cdrom image.iso -boot d
+</code></pre>
+<p>cpuとメモリの指定</p>
+<pre><code>-smp 2 -m 2048
+</code></pre>
+<p>kvmでwindows10を使用する時、私の環境(Core i5 650)だと下記のように指定することで、cpu負荷が落ち着いた。</p>
+<pre><code>-cpu core2duo,+lahf_lm
+</code></pre>
+<p>その後、試行錯誤し、現在は下記の通り指定している。</p>
+<pre><code>-cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+</code></pre>
+<p>(仮想)ストレージの指定。準仮想化ドライバを利用すると、スループットが上がるらしい。
+(Windows等で利用する場合は、仮想マシン上でドライバを入れる必要がある。)</p>
+<pre><code>-drive if=virtio,file=image.qcow2
+</code></pre>
+<p>ネットワークインターフェースの指定(従来方式)</p>
+<pre><code>-net nic,macaddr=xx:xx:xx:xx:xx:xx,model=virtio
+-net tap,ifname=vnet0
+</code></pre>
+<p>vncコンソールとキーマップの指定。</p>
+<pre><code>-vnc 192.168.xx.xx:xx -k ja
+</code></pre>
+<p>コンソールのマウスカーソルの位置がずれるときは以下を指定
+(WindowsではCPU負荷が高くなるらしい)</p>
+<pre><code>-usbdevice tablet
+</code></pre>
+<p>デーモンとして起動</p>
+<pre><code>-daemonize
+</code></pre>
+<p>物理デバイスのパススルー</p>
+<p><em>example</em></p>
+<p>boot ultra lite linux distribution microcore linux for network configure test</p>
+<pre><code>kvm -drive if=virtio,file=linux-microcore-6.4.img -netdev tap,id=tap0 -device e1000,netdev=tap0,mac=52:54:00:12:34:56
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

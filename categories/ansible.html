@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about ansible | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/ansible.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag ansible" hreflang="en" href="ansible.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about ansible</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="ansible.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200516.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-16T00:00:00Z" itemprop="datePublished" title="2020-05-16 00:00">2020-05-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Dockerfile</p>
+<pre><code>From centos:centos8
+
+ARG VERSION=0.12.25
+RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
+    yum clean all &amp;&amp; \
+    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;&amp; \
+    unzip terraform.zip &amp;&amp; \
+    rm terraform.zip &amp;&amp; \
+    mv terraform /usr/local/bin &amp;&amp; \
+    pip2 install ansible boto boto3 awscli &amp;&amp; \
+    ln -s /usr/bin/python2.7 /usr/bin/python &amp;&amp; \
+    mkdir /tmp/terraform &amp;&amp; \
+    useradd -m docker
+
+VOLUME ["/tmp/terraform"]
+USER "docker"
+WORKDIR "/tmp/terraform"
+CMD ["/bin/bash"]
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
+$ sudo docker tag terraform:0.12.25 terraform:latest
+</code></pre>
+<p>test the image</p>
+<pre><code>$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
+</code></pre>
+<p>create variable file /mydir/credentials </p>
+<pre><code>AWS_ACCESS_KEY_ID=xxxx
+AWS_SECRET_ACCESS_KEY=xxxx
+AWS_DEFAULT_REGION=xxxx
+</code></pre>
+<p>create wrapper script infradeploy.sh</p>
+<pre><code>docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
+</code></pre>
+<p>test terraform and ansible work</p>
+<pre><code>$ sudo sh infradeploy.sh terraform show
+$ sudo sh infradeploy.sh ./ec2.py --list
+$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
+$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
+</code></pre>
+<p>As described at <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html">this site</a> we can use ec2.py and ec2.ini(optional) for dynamic inventory
+When I ran ec2.py I got <code>ImportError: No module named ansible.module_utils</code> in the case I installed ansible from ubuntu repository.
+It seems ansible should be installed with pip if you want to use ec2.py</p>
+<p>playbook sample</p>
+<pre><code>- name: test playbook
+  hosts: tag_Name_tagname
+  remote_user: admin
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "./id_rsa.mykey"
+  tasks:
+    - name: install some packages
+      apt:
+        name: ['make','screen']
+        state: present
+        install_recommends: no
+      when: ansible_pkg_mgr == 'apt'
+      tags: packages
+
+    - name: create a directory
+      file:
+        path: /my/direcoty
+        state: directory
+        owner: admin
+        mode: '0755'
+
+$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
+$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200510.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-10T00:00:00Z" itemprop="datePublished" title="2020-05-10 00:00">2020-05-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>install</em></p>
+<pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
+$ unzip terraform_x.xx.xx_linux_amd64.zip
+$ cp terraform /usr/local/bin
+</code></pre>
+<p><em>sample varible file</em></p>
+<p>terraform.tfvars </p>
+<pre><code># region   = "ap-northeast-2"
+# az = {
+#   zone0    = "ap-northeast-2a"
+#   zone1    = "ap-northeast-2b"
+# }
+# ami     = "ami-0d79f772de48b11f7"
+cidr_block   = "172.16.0.0/16"
+cidr_subnet0 = "172.16.0.0/24"
+cidr_subnet1 = "172.16.10.0/24"
+</code></pre>
+<p><em>sample tf file</em></p>
+<p>test.tf</p>
+<pre><code>variable "region" {
+  default = "ap-northeast-1"
+}
+variable "az" {
+  default = {
+    zone0 = "ap-northeast-1a"
+    zone1 = "ap-northeast-1c"
+  }
+}
+variable "ami" {
+  default = "ami-03a1ce3bba6d67270"
+}
+variable "instance_type" {
+  default = "t3.nano"
+}
+variable "cidr_block" {}
+variable "cidr_subnet0" {}
+variable "cidr_subnet1" {}
+variable "operation_addr" {}
+variable "key_name" {}
+variable "private_key" {}
+
+provider "aws" {
+  region = var.region
+}
+
+resource "aws_vpc" "terraform_test_vpc" {
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet0" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet0
+  availability_zone = var.az.zone0
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_subnet" "terraform_test_subnet1" {
+  vpc_id            = aws_vpc.terraform_test_vpc.id
+  cidr_block        = var.cidr_subnet1
+  availability_zone = var.az.zone1
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_internet_gateway" "terraform_test_igw" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table" "terraform_test_route" {
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.terraform_test_igw.id
+  }
+
+  tags = {
+    Name = "terraform_test"
+  }
+}
+
+resource "aws_route_table_association" "terraform_test_subnet0" {
+  subnet_id      = aws_subnet.terraform_test_subnet0.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_route_table_association" "terraform_test_subnet1" {
+  subnet_id      = aws_subnet.terraform_test_subnet1.id
+  route_table_id = aws_route_table.terraform_test_route.id
+}
+
+resource "aws_security_group" "sg_ssh_web" {
+  name = "terraform_test_security_group"
+  description = "allow inbound ssh and web traffic"
+  vpc_id = aws_vpc.terraform_test_vpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [var.operation_addr]
+  }
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "ec2_public" {
+    ami           = var.ami
+    instance_type = var.instance_type
+    key_name      = var.key_name
+    vpc_security_group_ids = [
+      aws_security_group.sg_ssh_web.id,
+    ]
+    subnet_id = aws_subnet.terraform_test_subnet0.id
+    associate_public_ip_address = "true"
+    user_data = file("userdata.sh")
+    connection {
+      user = "admin"
+      host = self.public_ip
+      private_key = file(var.private_key)
+    }
+    provisioner "file" {
+      source      = "index.html"
+      destination = "~/index.html"
+    }
+    provisioner "remote-exec" {
+      inline = [
+        "sudo apt update",
+        "sudo apt install -y nginx",
+        "sudo mv ~/index.html /var/www/html"
+      ]
+    }
+
+    tags = {
+        Name = "terraform_test"
+    }
+}
+
+output "public_dns" {
+  value = aws_instance.ec2_public.public_dns
+}
+</code></pre>
+<p><em>ininialize</em></p>
+<p>install plugin file under the current directory</p>
+<pre><code>$ terraform init
+</code></pre>
+<p><em>validate tf file</em></p>
+<pre><code>$ terraform validate
+</code></pre>
+<p><em>apply</em></p>
+<pre><code>$ terraform plan -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+$ terraform apply -auto-approve "apply.plan"
+</code></pre>
+<p>or when destroy</p>
+<pre><code>$ terraform plan -destroy -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey' -target aws_instance.web1
+$ terraform apply -auto-approve "destroy.plan"
+</code></pre>
+<p>confirm result</p>
+<pre><code>$ terraform show
+</code></pre>
+<p><em>destroy</em></p>
+<pre><code>$ terraform destroy -auto-approve -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
+</code></pre>
+<p><em>sample ansible playbook</em></p>
+<p>apply.playbook</p>
+<pre><code>- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform plan
+      terraform:
+        project_path: './'
+        state: planned
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+
+    - name: terraform apply
+      terraform:
+        project_path: './'
+        state: present
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+</code></pre>
+<p>destroy.playbook</p>
+<pre><code>- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: terraform destroy
+      terraform:
+        project_path: './'
+        state: absent
+        plan_file: ansible.plan
+        variables:
+          operation_addr: "{{ operation_addr }}"
+          key_name: "{{ key_name }}"
+          private_key: "{{ private_key }}"
+      when: not ansible_check_mode
+      register: result
+
+    - name: debug result
+      debug: 
+        var: result
+      when: not ansible_check_mode
+</code></pre>
+<p>apply and destroy with ansible</p>
+<pre><code>$ jq . extravars.json
+{
+  "operation_addr": "xxx.xxx.xxx.xxx/xx",
+  "key_name": "mykey",
+  "private_key": "id_rsa.mykey"
+}
+$ ansible-playbook --check -e @extravars.json apply.playbook
+$ ansible-playbook -e @extravars.json apply.playbook
+$ ansible-playbook --check -e @extravars.json destroy.playbook
+$ ansible-playbook -e @extravars.json destroy.playbook
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20190916.html" class="u-url">CloudFormation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20190916.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-09-16T00:00:00Z" itemprop="datePublished" title="2019-09-16 00:00">2019-09-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>sample template of CloudFormation in yaml format</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - Key: Name
+        Value: myfirststack
+</code></pre>
+<p>validate template file</p>
+<pre><code>$ aws cloudformation validate-template --template-body file://mystack.yml
+</code></pre>
+<p><em>create stack</em></p>
+<pre><code>$ aws cloudformation create-stack --stack-name mystack --template-body file://mystack.yml
+</code></pre>
+<p>confrim information of created stack</p>
+<pre><code>$ aws cloudformation list-stacks
+$ aws cloudformation describe-stacks --stack-name mystack
+$ aws cloudformation describe-stack-events --stack-name mystack --query 'StackEvents[?ResourceType==`AWS::CloudFormation::Stack`]'
+
+$ aws cloudformation describe-stack-resources --stack-name mystack
+$ aws cloudformation list-stack-resources --stack-name mystack
+
+$ aws cloudformation get-template --stack-name mystack
+$ aws cloudformation get-template --stack-name mystack | jq -r '.TemplateBody'
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - Key: Name
+        Value: first-VPC
+</code></pre>
+<p><em>update template file and validate it</em></p>
+<pre><code>$ diff -u mystack.yml{,.bak}
+--- mystack.yml 2019-09-16 11:23:04.368417527 +0900
++++ mystack.yml.bak     2019-09-16 10:51:35.053928361 +0900
+@@ -1,12 +1,9 @@
+ AWSTemplateFormatVersion: '2010-09-09'
+-Parameters:
+-  CidrBlock:
+-    Type: String
+ Resources:
+   FirstVPC:
+     Type: AWS::EC2::VPC
+     Properties:
+-      CidrBlock: !Ref CidrBlock
++      CidrBlock: 10.0.0.0/16
+       Tags:
+       - Key: Name
+-        Value: mystack-VPC
++        Value: first-VPC
+
+$ aws cloudformation validate-template --template-body file://mystack.yml
+</code></pre>
+<p><em>update the stack</em></p>
+<pre><code>$ aws cloudformation update-stack --stack-name mystack --template-body file://mystack.yml --parameters ParameterKey=CidrBlock,ParameterValue=10.0.0.0/17
+</code></pre>
+<p>confirm</p>
+<p><em>delete the stack</em></p>
+<pre><code>$ aws cloudformation delete-stack --stack-name mystack
+</code></pre>
+<p><em>create stack with ansible</em></p>
+<pre><code>$ cat mystack.yml 
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.10.0.0/16
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml 
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+
+$ ansible-playbook --syntax-check playbook.yml 
+$ ansible-playbook --list-tasks playbook.yml 
+$ ansible-playbook --check playbook.yml
+$ ansible-playbook playbook.yml
+</code></pre>
+<p><em>update stack with ansible</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  CidrBlock:
+    Type: String
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml 
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+        template_parameters:
+          CidrBlock: "10.20.0.0/16"
+
+$ ansible-playbook playbook.yml
+</code></pre>
+<p><em>variable from command line</em></p>
+<pre><code>$ cat mystack.yml
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  CidrBlock:
+    Type: String
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      Tags:
+      - Key: Name
+        Value: mystack
+
+$ cat playbook.yml
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "present"
+        region: "ap-northeast-1"
+        disable_rollback: true
+        template: "mystack.yml"
+        template_parameters:
+          CidrBlock: "{{ CidrBlock }}"
+
+$ ansible-playbook -e "CidrBlock=10.30.0.0/16" playbook.yml
+</code></pre>
+<p><em>delete stack with ansible</em></p>
+<pre><code>$ cat playbook.yml
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: delete a cloudformation stack
+      cloudformation:
+        stack_name: "mystack"
+        state: "absent"
+        region: "ap-northeast-1"
+
+$ ansible-playbook playbook.yml
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170827.html" class="u-url">ansible</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170827.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-27T00:00:00Z" itemprop="datePublished" title="2017-08-27 00:00">2017-08-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>エージェントレスの構成管理ツール。</p>
+<p>対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。</p>
+<ul>
+<li>Pythonが動くこと</li>
+<li>相手がリモートホストならsshでログインできること</li>
+</ul>
+<p>(ただし、使うモジュールによっては追加パッケージが必要。例:aptモジュールを使うためにはpython-aptが必要)</p>
+<p>「あるべき姿」をYAMLで記載する。(記載したファイル(群)をplaybookと呼ぶ)</p>
+<pre><code>ansible
+  -i hosts インベントリファイルを指定
+  -m ping 疎通確認
+  -m setup ファクト収集
+  -a 'command -h' 指定したコマンドを実行
+  --ask-pass ログインで必要となるパスワードを要求
+  targethost 対象ホストを指定
+</code></pre>
+<p>リポジトリファイル(hosts)の内容の例</p>
+<pre><code>[myserver]
+192.168.1.1 ansible_ssh_user=myusername
+[desktop]
+myhostname  ansible_connection=local
+</code></pre>
+<p>疎通確認の例</p>
+<pre><code>$ ansible -i hosts -m ping 192.168.1.1 --ask-pass
+$ ansible -i hosts -m ping myhostname
+    $ ansible -i hosts -m ping 192.168.1.1 --ask-pass --ssh-common-args '-o PubkeyAuthentication=no'
+
+ansible-playbook
+  -i hosts
+  --syntax-check  プレイブックの文法チェックのみ
+  --list-tasks   プレイブックのタスクをリスト表示
+  --check ドライラン
+  --ask-sudo-pass sudoで必要となるパスワードを要求
+  --ask-su-pass suで必要となるパスワードを要求
+  --ask-pass ログインで必要となるパスワードを要求
+  --diff show differences
+  --tags "tag1,tag2,..."
+  --skip-tags "tag1,tag2,..."
+  playbook.yml プレイブックを指定
+</code></pre>
+<p>プレイリストの内容確認、実行前確認、設定反映の例</p>
+<pre><code>$ ansible-playbook -i hosts --syntax-check myserver.yml
+$ ansible-playbook -i hosts --list-tasks myserver.yml 
+$ ansible-playbook -i hosts --check myserver.yml --ask-pass
+$ ansible-playbook -i hosts myserver.yml --ask-pass
+</code></pre>
+<p><em>Sample ansible playbook in a single yaml file</em></p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=playbooksingle.yml"></script>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

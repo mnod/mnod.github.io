@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="tech log">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts for year 2017 | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/2017/">
+<link rel="next" href="index-1.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts for year 2017</h1>
+        
+
+        <div class="metadata">
+            
+                <p class="feedlink">
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170930.html" class="u-url">windows script host by jscript</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170930.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-30T00:00:00Z" itemprop="datePublished" title="2017-09-30 00:00">2017-09-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>スクリプトの呼び出し。
+アイコンのダブルクリックや、アイコンへのドラッグ&amp;ドロップでも起動できる。</p>
+<pre><code>cscript script.js //Nologo
+wscript script.js //Nologo
+</code></pre>
+<p>メッセージの表示。cscript ... で実行するとターミナルに表示される。</p>
+<pre><code>WScript.Echo( "メッセージ" + foo);
+</code></pre>
+<p>バッチファイルを呼び出す</p>
+<pre><code>var openssl     = "C:\\Users\\public\\Documents\\bin\\openssl.exe";
+var shell   = WScript.CreateObject("WScript.Shell");
+
+try {
+  oExec = shell.Exec( openssl + " version" );
+  //oExec = shell.Exec( openssl + " --help" );
+  while ( ! oExec.StdOut.AtEndOfStream ) {
+    WScript.Echo(oExec.StdOut.readline());
+  }
+  while ( ! oExec.StdErr.AtEndOfStream ) {
+    WScript.Echo(oExec.StdErr.readline());
+  }
+}
+catch (e){ 
+  WScript.Echo(e)
+}
+</code></pre>
+<p>引数のぶんだけ繰り返して実行する</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+    fin = fso.OpenTextFile(file, 1, false);
+    while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+    }
+    fin.Close();
+  }
+  catch (e) {
+    WScript.Echo(e);
+  }
+}
+</code></pre>
+<p>ファイルを開き一行ずつ読み込んで処理。</p>
+<pre><code>var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+var fin;
+
+for (i = 0; i &lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+  }
+  catch(e) {
+    WScript.Echo(e);
+    continue;
+  }
+  fin = fso.OpenTextFile(file, 1, false);
+  while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+  }
+  fin.Close();
+}
+</code></pre>
+<p>アクセスファイルを開き、マクロを呼び出す。</p>
+<pre><code>var dbfile='C:\\Users\\public\\Documents\\Database1.accdb';
+var timeout = 500; // milliseconds
+try {
+  var AccessApp = new ActiveXObject( "Access.Application" );
+  // AccessApp.Visible = true;
+  WScript.Sleep( timeout );
+
+  try {
+    AccessApp.OpenCurrentDatabase( dbfile );
+    WScript.Sleep( timeout );
+    // マクロを実行する例
+    // AccessApp.DoCmd.RunMacro( "マクロ名" );
+  }
+  catch(e) {
+    WScript.Echo(e);
+  }
+  finally {
+    AccessApp.CloseCurrentDatabase();
+  }
+}
+catch(e) {
+    WScript.Echo(e);
+}
+finally {
+  AccessApp.Quit();
+  AccessApp = null;
+}
+</code></pre>
+<p>excel</p>
+<pre><code>var excelfile = "c:\\users\\public\\documents\\test.xlsm"
+var updatelinks = true;
+var readonly = true;
+
+try {
+  var ExcelApp = new ActiveXObject("Excel.Application");
+  // ExcelApp.Visible = true;
+  // ExcelApp.DisplayAlerts = true;
+
+  try {
+    // var book = ExcelApp.Workbooks.Open(excelfile);
+    var book = ExcelApp.Workbooks.Open(excelfile, updatelinks, readonly);
+    // マクロを実行する例
+    ExcelApp.Run("マクロ名")
+
+    // シートに記入して保存する例
+    // var sheet = book.sheets(1);
+    // sheet.Cells(2, 1).value = "message...";
+    // book.Save();
+  }
+  catch(e) {
+    WScript.Echo(e)
+  }
+  finally {
+    book.Close();
+  }
+}
+catch(e) {
+  WScript.Echo(e)
+}
+finally {
+  ExcelApp.Quit();
+}
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170918.html" class="u-url">backup and restore openldap</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170918.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-18T00:00:00Z" itemprop="datePublished" title="2017-09-18 00:00">2017-09-18 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>backup</em></p>
+<pre><code># systemctl stop slapd
+slapcat &gt; ldap.ldif
+slapcat -b cn=config &gt; ldap-config.ldif
+</code></pre>
+<p><em>restore</em></p>
+<pre><code>systemctl stop slapd
+mv /etc/ldap/slapd.d{,.bak}
+mv /var/lib/ldap{,.bak}
+mkdir /etc/ldap/slapd.d
+mkdir /var/lib/ldap
+slapadd -n0 -F /etc/ldap/slapd.d -l ldap-config.ldif
+slapadd -l ldap.ldif
+chown openldap:openldap -R /etc/ldap/slapd.d
+chown openldap:openldap -R /var/lib/ldap
+systemctl start slapd
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170913.html" class="u-url">sample of simple bash scripts</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170913.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-13T00:00:00Z" itemprop="datePublished" title="2017-09-13 00:00">2017-09-13 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>ファイルバックアップスクリプト</em></p>
+<p>引数に与えられたファイルを3ケタの連番をつけてコピーする。
+まだいま一ついけてない。</p>
+<p>gistの引用のテストをかねて。</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"></script>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170902.html" class="u-url">git</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170902.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-02T00:00:00Z" itemprop="datePublished" title="2017-09-02 00:00">2017-09-02 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>オープンソースの分散型VCS。同種のアプリケーションと比較してgitが優れているところは、ユーザが多く情報が多いという点。</p>
+<p>gitリポジトリの作成</p>
+<pre><code>cd myproject
+git init
+git add .
+git status
+git diff
+git rm [-r] target # -rで、ディレクトリを削除
+git commit -m "commit message"
+git log
+</code></pre>
+<p>作業ディレクトリを持たない公開用リポジトリの作成</p>
+<pre><code>git clone --bare myproject myproject.git
+</code></pre>
+<p>単純なリモート作業</p>
+<pre><code>git clone git://example.com/.../myproject.git # リポジトリのclone
+cd myproject
+:
+git push [origin] [master] # 変更内容をpush
+
+git pull # fetchしてmerge
+</code></pre>
+<p>ブランチを作成し作業対象とする</p>
+<pre><code>git branch master
+git pull
+git checkout -b mybranch
+git branch
+</code></pre>
+<p>masterブランチにマージ。不要なブランチの削除</p>
+<pre><code>git checkout master
+git merge mybranch
+git branch -d mybranch
+</code></pre>
+<p>ブランチをリモートにpush</p>
+<pre><code>git push origin mybranch
+</code></pre>
+<p>ブランチをリモートからfetchして作業</p>
+<pre><code>git fetch origin
+git branch -a
+git checkout -b mybranch origin/mybranch # ブランチを作成してチェックアウト
+</code></pre>
+<p>リモートブランチの削除</p>
+<pre><code>git push origin :mybranch
+</code></pre>
+<p>change last commit</p>
+<pre><code>git add file
+git commit --amend -m "commit message"
+git push -f origin master
+</code></pre>
+<p>Stash the changes in a dirty working directory away</p>
+<pre><code>git stash
+git stash list
+git stash show -p stash@{0}
+</code></pre>
+<p>apply stash on top of the current working directory. and remove a stash from the list</p>
+<pre><code>git stash apply stash@{0}
+git stash drop stash@{0}
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170827.html" class="u-url">ansible</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170827.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-27T00:00:00Z" itemprop="datePublished" title="2017-08-27 00:00">2017-08-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>エージェントレスの構成管理ツール。</p>
+<p>対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。</p>
+<ul>
+<li>Pythonが動くこと</li>
+<li>相手がリモートホストならsshでログインできること</li>
+</ul>
+<p>(ただし、使うモジュールによっては追加パッケージが必要。例:aptモジュールを使うためにはpython-aptが必要)</p>
+<p>「あるべき姿」をYAMLで記載する。(記載したファイル(群)をplaybookと呼ぶ)</p>
+<pre><code>ansible
+  -i hosts インベントリファイルを指定
+  -m ping 疎通確認
+  -m setup ファクト収集
+  -a 'command -h' 指定したコマンドを実行
+  --ask-pass ログインで必要となるパスワードを要求
+  targethost 対象ホストを指定
+</code></pre>
+<p>リポジトリファイル(hosts)の内容の例</p>
+<pre><code>[myserver]
+192.168.1.1 ansible_ssh_user=myusername
+[desktop]
+myhostname  ansible_connection=local
+</code></pre>
+<p>疎通確認の例</p>
+<pre><code>$ ansible -i hosts -m ping 192.168.1.1 --ask-pass
+$ ansible -i hosts -m ping myhostname
+    $ ansible -i hosts -m ping 192.168.1.1 --ask-pass --ssh-common-args '-o PubkeyAuthentication=no'
+
+ansible-playbook
+  -i hosts
+  --syntax-check  プレイブックの文法チェックのみ
+  --list-tasks   プレイブックのタスクをリスト表示
+  --check ドライラン
+  --ask-sudo-pass sudoで必要となるパスワードを要求
+  --ask-su-pass suで必要となるパスワードを要求
+  --ask-pass ログインで必要となるパスワードを要求
+  --diff show differences
+  --tags "tag1,tag2,..."
+  --skip-tags "tag1,tag2,..."
+  playbook.yml プレイブックを指定
+</code></pre>
+<p>プレイリストの内容確認、実行前確認、設定反映の例</p>
+<pre><code>$ ansible-playbook -i hosts --syntax-check myserver.yml
+$ ansible-playbook -i hosts --list-tasks myserver.yml 
+$ ansible-playbook -i hosts --check myserver.yml --ask-pass
+$ ansible-playbook -i hosts myserver.yml --ask-pass
+</code></pre>
+<p><em>Sample ansible playbook in a single yaml file</em></p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=playbooksingle.yml"></script>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170826.html" class="u-url">resource monitoring</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170826.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-26T00:00:00Z" itemprop="datePublished" title="2017-08-26 00:00">2017-08-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>top</em></p>
+<p>topコマンドを一回だけ実行して終了する(バッチモード)。</p>
+<pre><code>top -b -n 1
+</code></pre>
+<p><em>sar</em></p>
+<p>sarで蓄積したデータの閲覧</p>
+<pre><code>LANG=C sar # LANGが日本語だと時分秒が日本語表記になるので、LANG=Cで実行
+-q # loadaverage
+-u # CPU
+-b # I/O
+-r # メモリ
+-S # スワップ
+:
+:
+-n DEV  # 送受信パケットの情報
+   EDEV # エラーパケットの情報
+   :
+   :
+-f /var/log/sa/saxx # 履歴ファイルを指定
+-s hh:mm # 以降のデータを表示
+-e hh:mm # 以前のデータを表示
+(-fではなく、[interval] [count]の指定で、リアルタイム表示できるらしい)
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170823.html" class="u-url">network commands on linux</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170823.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-23T00:00:00Z" itemprop="datePublished" title="2017-08-23 00:00">2017-08-23 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>確認コマンド</em></p>
+<p>show mac address table</p>
+<pre><code>ip [-6] neigh
+arp -an
+</code></pre>
+<p>show interface mac address</p>
+<pre><code>ip link
+ifconfig
+</code></pre>
+<p>show host ip address</p>
+<pre><code>ip [-6] addr
+ifconfig
+</code></pre>
+<p>show routing table</p>
+<pre><code>ip [-6] route
+netstat -rn
+route -n
+</code></pre>
+<p>show tcp and udp port status</p>
+<pre><code>ss -an
+netstat -an
+</code></pre>
+<p>query domain name server</p>
+<pre><code>dig &lt;@nameserver&gt; domainname [a|any|mx|ns|...]
+
+cat &lt;&lt; END &gt; list.dig
+@xxx.xxx.xxx.xxx example.com
+@xxx.xxx.xxx.yyy example.com
+END
+
+dig -f list.dig
+
+
+nslookup domainname &lt;nameserver&gt;
+
+nslookup &lt;&lt; exit
+server xxx.xxx.xxx.xxx
+example.org
+example.com
+exit
+</code></pre>
+<p><em>設定コマンド</em></p>
+<p>down and up the link</p>
+<pre><code>ip link set br0 down
+ip link set br0 up
+</code></pre>
+<p>delete and add from/to interface</p>
+<pre><code>ifconfig eth0 0.0.0.0
+ifconfig eth0 192.168.0.1 netmask 255.255.255.0
+ip address delete 192.168.0.1/24 dev enp0s25    
+ip address add 192.168.0.1/24 brd + dev enp0s25
+</code></pre>
+<p>delete and add default gateway</p>
+<pre><code>ip route delete default
+ip route add default via 192.168.0.254
+</code></pre>
+<p><em>operate virtual bridge</em></p>
+<p>show information of virtual bridge</p>
+<pre><code>brctl show
+ip link show master br0
+bridge link show
+</code></pre>
+<p>add and delete virtual bridge</p>
+<pre><code>ip link add br0 type bridge
+ip link del br0
+brctl addbr br0
+brctl delbr br0
+</code></pre>
+<p>add and dlete interface to virtual bridge</p>
+<pre><code>ip link set dev enp0s25 master br0
+ip link set dev tap0 master br0
+ip link set dev enp0s25 nomaster
+brctl addif br0 eth0
+brctl addif br0 tap0
+brctl delif br0 eth0
+</code></pre>
+<p>write below to network config file and execute <code>service networking restart</code></p>
+<pre><code>auto eth0
+iface eth0 inet static
+  address 0.0.0.0
+auto br0
+iface br0 inet static
+  address 192.168.0.1
+  netmask 255.255.255.0
+  bridge_ports eth0
+</code></pre>
+<p><em>openvswitch</em></p>
+<p>show information of virtual bridge</p>
+<pre><code>ovs-vsctl show
+</code></pre>
+<p>add and delete virtual bridge</p>
+<pre><code>ovs-vsctl add-br br0
+ovs-vsctl del-br br0
+</code></pre>
+<p>add and dlete interface to virtual bridge</p>
+<pre><code>ovs-vsctl add-port br0 eth0
+ovs-vsctl add-port br0 tap0
+ip link set br0 up
+ovs-vsctl del-port br0 tap0
+ovs-vsctl del-port br0 eth0
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170822.html" class="u-url">expect</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170822.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-22T00:00:00Z" itemprop="datePublished" title="2017-08-22 00:00">2017-08-22 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>自動ログインマクロというとTeratermマクロを思い浮かべがちだが、un*x の expect コマンドを使うこともできる。</p>
+<p>マクロはホームディレクトリ等に保存してchmod 700 しておく。</p>
+<p>expect を使ったssh自動ログインbashスクリプトの簡単な例(一部抜粋)</p>
+<p>sshで自動ログインだけ考えたら、パスフレーズなしの秘密鍵を使えば済むが、マクロならその後の処理も自動化できる。</p>
+<pre><code>expect -c "
+spawn ssh ${user}@${addr}
+expect {
+  \"s password: \" {
+  send   \"${pass}\n\"
+  }
+}
+interact
+"
+
+exit 0
+</code></pre>
+<p>expect をインタープリタとして使ったtelnet自動ログインスクリプトの簡単な例</p>
+<pre><code>#! /usr/bin/expect
+
+set addr "hostname"
+set user "username"
+set pass "password"
+
+spawn telnet ${addr}
+expect {
+  "login: "  {
+  send "${user}\n"
+  expect "Password: "
+  send "${pass}\n"
+  }
+}
+interact
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170821.html" class="u-url">archive and compress</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170821.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-21T00:00:00Z" itemprop="datePublished" title="2017-08-21 00:00">2017-08-21 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>compress</em></p>
+<p>gzip</p>
+<pre><code>gzip filename
+gunzip -lv filename.gz
+gunzip filename.gz
+
+gzip -c filename &gt; filename.gz
+gunzip -c filename.gz &gt; filename
+
+zless filename.gz
+</code></pre>
+<p>bzip2</p>
+<pre><code>bzip2 filename
+bunzip2 filename.bz2
+
+bzip2 -c filename &gt; filename.bz2
+bunzip2 -c filename.bz2 &gt; filename
+
+bzless filename.bz2
+</code></pre>
+<p>xz</p>
+<pre><code>xz filename
+unxz filename.xz
+
+xz -c filename &gt; filename.xz
+unxz -c filename.xz &gt; filename
+
+xzless filename.xz
+</code></pre>
+<p><em>Archive</em></p>
+<p>tar</p>
+<pre><code>tar cf filename.tar filename.0
+tar cf filename.tar dirname
+tar tvf filename.tar
+tar xv filename.tar
+</code></pre>
+<p>zip</p>
+<pre><code>zip filename.zip filename
+zip -r filename.zip dirname
+unzip -lv filename.zip
+unzip filename.zip
+</code></pre>
+<p>7zip</p>
+<pre><code>7z a filename.7z filename
+7z a -r filename.7z dirname
+7z l filename.7z
+7z x filename.7z
+</code></pre>
+<p><em>tarとgzip</em></p>
+<p>GNU版tarが使えない時のtar.gzファイルの圧縮</p>
+<pre><code>tar cf - file or dir ... | gzip -c &gt; archive.tar.gz
+</code></pre>
+<p>同じく展開</p>
+<pre><code>gzip -cd archive.tar.gz | tar xf -
+</code></pre>
+<p>tar、gzipからbase64でエンコード。デコード・展開の確認</p>
+<pre><code>tar cf - file or dir ... | gzip -c | base64 - | base64 -i -d - | gzip -cd | tar tvf -
+tar cf - file or dir ... | gzip -c | openssl enc -a | openssl enc -a -d | gzip -cd | tar tvf -
+</code></pre>
+<p>ログがローテートされてgzipで圧縮されると、いちいち展開して読むのがめんどくさい
+と思ってた。
+以下のようなツールがあり、gzipで固められたテキストファイルをいちいち展開せずに処理することができる。超便利。</p>
+<pre><code>zcat zgrep zdiff zless
+</code></pre>
+<p>for bzip2</p>
+<pre><code>bzcat bzgrep bzdiff bzless
+</code></pre>
+<p>for xz</p>
+<pre><code>xzcat xzgrep xzdiff xzless
+</code></pre>
+<p>for zip</p>
+<pre><code>zipgrep
+</code></pre>
+<p>tar  の圧縮オプション</p>
+<ul>
+<li>Z: compress (Z)</li>
+<li>z: gzip (gz)</li>
+<li>j: bzip2 (bz2)</li>
+<li>J: xz (xz)</li>
+</ul>
+<p><em>zip</em></p>
+<p>microsoft系osでもおなじみの形式</p>
+<p>tarでアーカイブしてzip圧縮。展開の確認</p>
+<pre><code>tar cf - file or dir ... | zip - - | funzip | tar tvf -
+</code></pre>
+<p>暗号化</p>
+<pre><code>zip -e archive.zip filename
+</code></pre>
+<p>zipの標準的な暗号化方式は強度が弱い。また、アーカイブヘッダが暗号化されず、ファイル名等は隠匿できない。</p>
+<ul>
+<li>一定期間経てば保護する必要がなくなる内容を暗号化する用途であれば問題ない。</li>
+<li>見られても困らないファイル名になっているなら問題ない。</li>
+</ul>
+<p>ならよいが、そうでなければ下記の対応が必要となる。</p>
+<ul>
+<li>zipファイルを他のツール(gpg等)で暗号化する。</li>
+<li>他のアーカイブツール(7z等)を使う。</li>
+</ul>
+<p><em>7z</em></p>
+<p>zipよりも高い圧縮率をサポート。暗号化方式としてAES256をサポート。アーカイブヘッダの暗号化をサポート。
+7zではファイルのuid/gidは保持しない。</p>
+<p>(ubuntuのp7zipパッケージに含まれる7zrでは、暗号化できなかった。
+p7zip-fullパッケージの7zを使うことで、暗号化することができた。)</p>
+<p>7z形式で暗号化して圧縮(アーカイブヘッダも暗号化)。</p>
+<pre><code>7z a -t7z -p -mhe=on archive.7z dirname
+</code></pre>
+<p>lコマンドの-sltオプションで、暗号化されているか確認することができる。</p>
+<pre><code>7z l -slt archive.7z
+</code></pre>
+<p>ファイルの場合、悪意ある人の手に渡ったら、高性能の計算機で長時間パスワード解析されてしまう。
+(キャッシュカードのPINコードのように、一定時間に一定回数失敗したら保護される、ということはない。)
+内容が漏れたら困る暗号化ファイルには長いパスワードを使う。</p>
+<p>圧縮音声など、さらなる圧縮を望まない場合、zipや7z等ではアーカイブのみで圧縮しないこともできる。</p>
+<pre><code>zip -0 ....
+7z a -mx=0 ....
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170820.html" class="u-url">sed and awk</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170820.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-20T00:00:00Z" itemprop="datePublished" title="2017-08-20 00:00">2017-08-20 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>簡単な使い方の例を記載する。</p>
+<p><em>sed</em></p>
+<p>2行目以降で、fooをbarに全て置換</p>
+<pre><code>sed -e '2,$ s/foo/bar/g' filename
+</code></pre>
+<p>20行目の次に「(タブ)added text」を追加、10行目を削除</p>
+<pre><code>sed -e '20i\\tadded text' -e '10d' filename
+</code></pre>
+<p>exprを含まない行だけ表示</p>
+<pre><code>sed -ne '/expr/! p' filename
+</code></pre>
+<p>後方参照</p>
+<pre><code>df /tmp | grep ^/ | awk '{print $5}' | sed -e 's/\([0-9]\{1,2\}\)%/\1/'
+
+df /tmp | sed -ne 's/.* \([0-9]\{1,2\}\)% .*/\1/ p'
+</code></pre>
+<p>replace CR + LF to LF</p>
+<pre><code>sed  -e  's/\r$//' -i.bak textfile
+perl -pe 's/\r$//' -i.bak textfile
+</code></pre>
+<p>replace LF to CR + LF</p>
+<pre><code>sed  -e  's/$/\r/' -i.bak textfile
+perl -pe 's/$/\r/' -i.bak textfile
+</code></pre>
+<p>連続した空白文字をタブに置換</p>
+<pre><code>sed  -e   's/\s\s*/\t/g' test
+perl -ple 's/\s+/,/g'    test
+</code></pre>
+<p>置換先文字列としてシェル変数を使う。</p>
+<pre><code>sed  -e 's/^/'"${foo}"'/' test
+</code></pre>
+<p>削除、挿入、置換を実行するsedスクリプトの例</p>
+<pre><code>#! /bin/sed -f
+
+3,5d
+8i \
+# inserted comment\
+inserted line # this is inserted
+20 s/^/#/
+</code></pre>
+<p><em>awk</em></p>
+<p>2行目から3行目までを表示</p>
+<pre><code>awk '(NR&gt;=2 &amp;&amp; NR&lt;=3) {print $0}' filename
+</code></pre>
+<p>行番号を表示</p>
+<pre><code>awk '{printf "%02d: %s\n", NR, $0}' filename
+</code></pre>
+<p>IPv4アドレスの第1オクテットが192のものの第2オクテットを抜き出す</p>
+<pre><code>awk -F. '$1~/192/ {print $2}' filename
+perl -F"\." -alne '{print $F[1]}' filename
+</code></pre>
+<p>コマンドにシェル変数を使う。</p>
+<pre><code>awk '{print '"${foo}"', $1}' test
+(fooが2017-08のような文字列だと、数値として扱われて演算結果が表示される)
+
+awk -v var=${foo} '{print var, $1}' test
+(こちらの例では、そのようなことはない)
+</code></pre>
+<p>スクリプトファイルにコマンドを記載して実行</p>
+<pre><code>awk -f script.awk textfile
+</code></pre>
+<p>下記の場合、shebangとして、#! /path/to/awk -f などと記載</p>
+<pre><code>chmod u+x script.awk
+./script.awk textfile
+</code></pre>
+<p>行頭に2桁の行番号をつけて出力するawkスクリプト</p>
+<pre><code>#! /bin/awk -f
+
+BEGIN{
+  print "script begin"
+}
+{
+  printf "%02d: %s\n", NR,$0
+}
+END {
+  print "script end"
+}
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="next">
+                <a href="index-1.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

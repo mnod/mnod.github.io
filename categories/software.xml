@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+&lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
+&lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
+(物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
+未来永劫手元に残らなくてもよい本なら、サービスを利用する価値があるのではないかと思う。資格関連本など、墓場まで持っていかなくてもよいタイプの本は、意外と多いはず。
+中期から短期的にサービスを受けることができる有料サービスで、優れたコンテンツを手軽に持ち運んで読むことができると捉えれば、電子書籍は合理的なのではないだろうか。&lt;/p&gt;
+&lt;p&gt;電子書籍では書き込みができないという短所もあるが、本当に必要なところだけノートに書き写すなりすればよいのではないかと思う。本に書き込んだことを繰り返し参照するという運用が、本当に効率的なのであれば、紙の本を使えばいいし、そうでないなら電子書籍で充分ではないかと思う。&lt;/p&gt;
+&lt;p&gt;電子書籍には紙の手触りがない、紙の本なら直感的にどのあたりに何が書いてあったか覚える、という意見がある。
+例えばkindle の場合、好きなページに好きなだけしおりを設定することができる。電子書籍でも、自分で設定したしおりを頼りにすれば、好きなところに比較的簡単にたどり着けるのではないかと思う。&lt;/p&gt;
+&lt;p&gt;紙の本を全否定するのではないが、雑誌を切り抜いてスクラップしたりハードカバーの本を手元におきたいなど、紙の本がどうしても必要だという事情がないのなら、電子書籍を活用しないのはもったいない。
+紙の本だと人に貸すこともできるし、不要になれば売り払うこともできる。&lt;/p&gt;
+&lt;p&gt;お菓子を食べながら読んでも、コーヒーをこぼしても、電子書籍コンテンツ自体は汚れることはない。
+電子書籍端末は、気に入る端末が限られるので、大切に使わないと代わりになるものに出会えなくなる可能性もある。(買いたくなるような7インチタブレットがなかなか出てこない)&lt;/p&gt;
+&lt;p&gt;電子端末の持ち込みが制限される職場には持ち込むことができない可能性がある。&lt;/p&gt;
+&lt;p&gt;自分の場合、荷物を増やしたくないので、雑誌も書籍も物理的な本はあまり買わず、短期間で読みきるタイプの本の場合は図書館を積極的に利用するようにしている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.amazon.kindle"&gt;kindle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;最大手のサービスなら、そう簡単にサービスが終わることはないと考え、自分はAmazon を利用している。
+(極東の島国の企業に買収されるようなサービスでは安心して利用できない)&lt;/p&gt;
+&lt;p&gt;kindleは、専用端末は必ずしも必要ではなく、Androidやiosの普通に売られてるスマホやタブレットにアプリを入れて使うことができる。また、一つのアカウントで複数の端末を使うことができる。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.adobe.reader"&gt;Adobe Acrobat Reader&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;オープンソースソフトウェアに限らず様々な製品のドキュメントがPDF 形式で配布されている。
+タブレット端末に入れて持ち運ぶと、手軽にどこでも快適に読むことができ、とても重宝する。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.zlibrary.ui.android"&gt;FBReader&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.geometerplus.fbreader.plugin.pdf"&gt;PDF plugin&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;epubをはじめ、様々な形式に対応したドキュメントリーダー。
+２つのPDF ファイルを切り替えながら読むためにAdobe リーダーとあわせて使っている。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.mizushimanet.AozoraProvider"&gt;青空プロバイダ&lt;/a&gt;と&lt;a href="https://play.google.com/store/apps/details?id=org.example.android.npn2SC1815J.VerticalTextViewer"&gt;縦書きビューア&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;自分は青空文庫の本を読むのにこれらを使っている。&lt;/p&gt;
+&lt;p&gt;かつて紙の文庫本を買って読んだ古典が(全てではないが)無償で読めるのは、感慨深い。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer"&gt;Perfect Viewer&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;様々な形式に対応したドキュメントリーダー。
+電子書籍だけでなく、画像ファイルの閲覧にも対応している。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20180826.html</guid><pubDate>Sun, 26 Aug 2018 00:00:00 GMT</pubDate></item><item><title>Tiny Tiny RSS</title><link>https://mnod.github.io/posts/20160926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://tt-rss.org/gitlab/fox/tt-rss/wikis/home"&gt;Tiny Tiny RSS&lt;/a&gt;は、フリーのサーバサイドRSSアグリゲータです。&lt;/p&gt;
+&lt;p&gt;利用するには、構築済みの方にアカウントを払い出してもらうか、自分でwebサーバ、dbサーバを構築・運用していく必要があります。&lt;/p&gt;
+&lt;p&gt;スマホのニュースアプリと比較して、RSSアグリゲータは、ニュースソースをお仕着せのものではなく自分で選択することができること、アプリ等が突然サービス終了して泣かされることがないことが利点です。&lt;/p&gt;
+&lt;p&gt;RSSアグリゲータといえば、数年前にgoogleのサービスが終了し、今度はYahoo!Japanのサービスが終了することになりました。
+自前でサーバを動かしていれば、サービスの終了に怯える必要がありません。&lt;/p&gt;
+&lt;p&gt;データがサーバにある利点は、複数の端末から同じデータにアクセスすることができること、クライアント端末に問題があってもデータは安全なことです。
+サーバ上のデータの安全性は、サーバの冗長度によります。&lt;/p&gt;
+&lt;p&gt;自分の場合は安価なVPSを借りて自前で構築・運用しています。もう随分前なのであやふやですが、構築自体は難しくなかったと記憶してます。再構築することがあれば、手順を記載したいと思います。&lt;/p&gt;
+&lt;p&gt;コンテンツはWebブラウザでアクセスすることもできるし、専用のクライアントソフトから見ることもできます。&lt;/p&gt;
+&lt;p&gt;スマホで動く専用のクライアントもいくつかあります。自分が使っているのは、以下の２つです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Androidの&lt;a href="https://play.google.com/store/apps/details?id=org.ttrssreader&amp;amp;hl=ja"&gt;TTRSS-Reader&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;iPhoneの&lt;a href="https://itunes.apple.com/us/app/tiny-reader-rss/id689519762?mt=8"&gt;tiny Reader RSS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。&lt;/p&gt;&lt;/div&gt;</description><category>serverside</category><category>software</category><guid>https://mnod.github.io/posts/20160926.html</guid><pubDate>Mon, 26 Sep 2016 00:00:00 GMT</pubDate></item><item><title>chronicle</title><link>https://mnod.github.io/posts/20160923.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;&lt;a href="https://steve.fi/Software/chronicle/"&gt;chronicle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Markdown等のテキストファイルを、ブログ形式でhtmlファイルに変換するソフトです。
+できたファイルを全てWebサーバに配置するだけで、(全世界に向けて)公開することができるようになります。&lt;/p&gt;
+&lt;p&gt;このサイトがまさにこれを利用しています。&lt;/p&gt;
+&lt;p&gt;ブログといえばコンテンツをデータベースに保存しておいて、アクセスがあるたびに動的にhtmlファイルを生成する形のものが一般的です。
+そのような場合は、webサーバ上でプログラムを実行する設定が必要となり、データベースにアクセスする権限が必要となります。&lt;/p&gt;
+&lt;p&gt;一方、chronicleのようなソフトの場合は、変換したhtmlファイルをサーバに置くだけでいいので、以下の利点があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;必要なのは公開するディレクトリへのアクセス権限だけ&lt;/li&gt;
+&lt;li&gt;アクセスがあるごとにファイルを生成する必要がないので、Webサーバにかかる負荷も少なくて済む&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://staticsitegenerators.net"&gt;同様のソフトがたくさんある&lt;/a&gt;中で、chronicleを選んだ理由は、以下があげられます。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;debian等で&lt;a href="https://packages.debian.org/jessie/chronicle"&gt;パッケージ&lt;/a&gt;に入っている&lt;/li&gt;
+&lt;li&gt;Markdownで記載することができて、記載ルールが簡単&lt;/li&gt;
+&lt;li&gt;テンプレートが非常にシンプル&lt;/li&gt;
+&lt;li&gt;perlで動くので、追加で必要となるものが(少)ない&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;chronicleでも、他のソフトでできるのと同様に、使用するテンプレートを変えるだけで見た目を切り替えることができます。インストール時に数種類同梱されていますが、このサイトでは&lt;a href="https://github.com/mnod/chronicle-theme"&gt;自分で作成したもの&lt;/a&gt;を利用しています。
+テンプレートは簡単なテキストファイルですので、htmlやcssの知識があれば容易に変更することができます。&lt;/p&gt;
+&lt;p&gt;サイトの見た目はテンプレートで決まるため、使うテンプレートを決めてしまえば、サイトを運用していく際にはコンテンツの内容のみを考えればいいという利点もあります。&lt;/p&gt;&lt;/div&gt;</description><category>perl</category><category>software</category><guid>https://mnod.github.io/posts/20160923.html</guid><pubDate>Fri, 23 Sep 2016 00:00:00 GMT</pubDate></item><item><title>remote access tool on android</title><link>https://mnod.github.io/posts/20160918.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Androidで動作するリモート接続ツールのご紹介。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=org.connectbot"&gt;ConnectBot&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのターミナルエミュレータです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、ssh。&lt;/li&gt;
+&lt;li&gt;ポート転送に対応。&lt;/li&gt;
+&lt;li&gt;鍵認証に対応(ed25519対応)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;7インチ以上のタブレットを使用して横画面にして使えば、ソフトウェアキーボードを使うストレスはあるにしても、実用に耐えるのではないかと思います。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=lysesoft.andftp"&gt;AndFtp&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのftpクライアントです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ftpだけでなくsftp、scpでの接続も可能。&lt;/li&gt;
+&lt;li&gt;鍵認証にも対応。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;リモートとローカルファイルシステムの画面を簡単に切り替えながら作業することができます。
+ワイルドカード表記を利用して表示するファイルを絞りこむ機能があり、同一ディレクトリに沢山のファイルがある場合にはすごく便利です。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.estrongs.android.pop"&gt;ESファイルエクスプローラ&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのファイル管理ツール(エクスプローラ)です。&lt;/p&gt;
+&lt;p&gt;ローカルファイルだけでなく、(s)ftp、samba、webdav等、ネットワークファイルシステムにもアクセスできます。
+自分は使ってませんが、Dropbox等のクラウドサービスに接続する機能もあります。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;[リモートデスクトップツール]&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;タブレットには、rdpやvncのクライアントも入れてますが、ほとんど使うことがありません。使うようなことがあれば、書き足したいと思います。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>software</category><guid>https://mnod.github.io/posts/20160918.html</guid><pubDate>Sun, 18 Sep 2016 00:00:00 GMT</pubDate></item><item><title>development tools on android</title><link>https://mnod.github.io/posts/20160917.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Androidで動作する開発関連ツールのご紹介。&lt;/p&gt;
+&lt;p&gt;*&lt;a href="https://mnod.github.io/posts/20160917.html"&gt;Termux&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Android で動作する terminal ソフト。bash
+各種ソフトをインストールすることができる。
+Pythonを入れることができる。
+Android端末だけであれこれできる。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.manichord.mgit"&gt;MGit&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;下記 SGit の開発は終了したようです。非常にありがたいプロジェクトなので残念でした。
+その後を引き継いで別の方が開発を続けているものが MGit です。&lt;/p&gt;
+&lt;p&gt;sshを使う場合、パスフレーズつきの秘密鍵にも対応しているようです。&lt;/p&gt;
+&lt;p&gt;基本的な事柄ですが、commit等する前に、アプリの設定でユーザ名とメールアドレスの設定を済ませておかないとエラーとなります。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=me.sheimi.sgit"&gt;SGit&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのgitクライアントです。&lt;/p&gt;
+&lt;p&gt;Androidタブレット端末でこのサイトのメンテナンスをする際などに利用しています。&lt;/p&gt;
+&lt;p&gt;gitでできる全てのことに対応しているわけではないようですが、clone → add → commit → pushといった基本的なことは一通り実行できます。&lt;/p&gt;
+&lt;p&gt;https、sshなどに対応してます。
+ssh鍵について、&lt;a href="https://github.com/sheimi/SGit"&gt;ソースコード&lt;/a&gt;をざっと眺めてみたところ、使っているライブラリの関係で、(本稿執筆時点では)dsaかrsaしか使えないようです。
+また、パスフレーズについては対応予定となっており、今のところはパスフレーズ無しのものだけの対応のようです。ssh鍵を使う方は注意して確認してみてください。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=jp.sblo.pandora.jota"&gt;Jota Text Editor&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;フリーのテキストエディタです。&lt;/p&gt;
+&lt;p&gt;現在は開発を終了しており、機能追加等の予定はないとのことですが、現状で問題なく使えるようになってます。&lt;/p&gt;
+&lt;p&gt;100万文字程度まで対応とありますが、「Alphabetで1MBytes」だそうで、通常はファイルサイズ制限で困ることは少ないのではないかと思います。
+よく使う機能をボタンに割り当てることができます。初期状態では、コピペ系やアンドゥ、リドゥなどが割り当てられてます。&lt;/p&gt;
+&lt;p&gt;コードの色分け表示や自動インデント機能などはありますが、一方、デスクトップのエディタにあるような便利な機能はありません。
+デスクトップと同じ作業をこなすことはできない可能性がありますが、簡易な作業なら充分対応可能だと思います。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>software</category><guid>https://mnod.github.io/posts/20160917.html</guid><pubDate>Sat, 17 Sep 2016 00:00:00 GMT</pubDate></item><item><title>my favorite desktop tools for windows</title><link>https://mnod.github.io/posts/20160910.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="http://www2s.biglobe.ne.jp/~geoph/"&gt;Clock Launcher&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Clock Launcherは、たくさんの機能が付属したフリーのランチャーアプリです。&lt;/p&gt;
+&lt;p&gt;ランチャー機能以外に、自分は以下のような機能を使用しています。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;クリップボード管理&lt;/li&gt;
+&lt;li&gt;デスクトップ付箋&lt;/li&gt;
+&lt;li&gt;カレンダー&lt;/li&gt;
+&lt;li&gt;デジタル時計&lt;/li&gt;
+&lt;li&gt;タイマー&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ランチャー本体を操作してもランチャーメニューを表示できますが、
+自分は、デスクトップの何もないところをダブルクリックするとランチャーメニューが起動するように設定しています。&lt;/p&gt;
+&lt;p&gt;普通のアプリケーションだけでなく、ユーザ辞書ツール(imjpdct.exe)や、自家製バッチ等を登録する等、とても便利に使わせてもらってます。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="http://salt.car.coocan.jp/VD.htm"&gt;Virtual Desktop for Win32&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Virtual Desktopはフリーの仮想デスクトップソフトです。&lt;/p&gt;
+&lt;p&gt;現在の最新バージョン(0.95)では、Windows7までの対応となっています。&lt;/p&gt;
+&lt;p&gt;デスクトップの拡張だけでなく、いくつか便利な機能があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;指定したウィンドウの半透明化。&lt;/li&gt;
+&lt;li&gt;ウィンドウの位置やサイズを数値で表示。&lt;/li&gt;
+&lt;li&gt;ウィンドウのスナップ。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160910.html</guid><pubDate>Sat, 10 Sep 2016 00:00:00 GMT</pubDate></item><item><title>WinMerge</title><link>https://mnod.github.io/posts/20160904.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの差分表示ツール、WinMergeのご紹介です。&lt;/p&gt;
+&lt;p&gt;WinMergeは、Windowsで動作する、フリーの差分表示、マージツールです。が、自分は差分表示機能しか使いこなしておりません。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://winmerge.org/"&gt;http://winmerge.org/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;こちらも、&lt;a href="http://portableapps.com/"&gt;PortableApps&lt;/a&gt; で、&lt;a href="http://portableapps.com/apps/utilities/winmerge_portable"&gt;WinMerge Portable&lt;/a&gt; としても配布されています。&lt;/p&gt;
+&lt;p&gt;日本語化している方がいらっしゃるので、私は、日本語版のほうを使用しています。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html"&gt;http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;3ファイル(ディレクトリ)の比較も可能。&lt;/li&gt;
+&lt;li&gt;シンタックスハイライト。&lt;/li&gt;
+&lt;li&gt;各種文字コードに対応。&lt;/li&gt;
+&lt;li&gt;プラグインによるエクセルファイルの比較。&lt;/li&gt;
+&lt;li&gt;バッチファイル出力機能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以前は別のツールを使用していたのですが、諸事情あって、乗り換えることになりました。空白や改行コードの違い等を無視するか、比較するか、必要に応じて細かく指定することができるので、とても便利です。&lt;/p&gt;
+&lt;p&gt;差分表示をGitHub同様のカラースキーマに設定することができます。GitHubに慣れている方には良いのではないでしょうか。(自分はGitHubを使いこなしてはいませんが、自分には見やすいです。)&lt;/p&gt;
+&lt;p&gt;エクセルファイルの比較は思った以上に便利です。お勧めです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160904.html</guid><pubDate>Sun, 04 Sep 2016 00:00:00 GMT</pubDate></item><item><title>PuTTY</title><link>https://mnod.github.io/posts/20160903.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。&lt;/p&gt;
+&lt;p&gt;PuTTYは、Windowsまたは、Un&lt;em&gt;xで動作するフリーのターミナルエミュレータです。(ここではWindows版についての情報を掲載します。Un&lt;/em&gt;x版については触れません。)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/"&gt;http://www.chiark.greenend.org.uk/%7Esgtatham/putty/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="http://portableapps.com/"&gt;PortableApps&lt;/a&gt; で、 &lt;a href="http://portableapps.com/apps/internet/putty_portable"&gt;PuTTY Portable&lt;/a&gt; としても配布されています。
+(PortableAppsは、アプリをUSBメモリ等にインストールして持ち運んで、いつもと異なる端末でも、いつもと同じような環境で作業できるようにするというプロジェクトです。)&lt;/p&gt;
+&lt;p&gt;日本語化している方がいらっしゃるので、私は、日本語版(PuTTYjp)を使用しています。&lt;/p&gt;
+&lt;p&gt;(私ごとですが、よく見かける"有志の方がxxしている"という表現がどうにも好きではありません。酸っぱいスメルを感じてぞわぞわします。)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html"&gt;http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、シリアル、ssh接続等。&lt;/li&gt;
+&lt;li&gt;GUIのPuTTY本体(putty.exe)だけでなく、コマンドライン用のsshクライアント(plink.exe)が付属している。&lt;/li&gt;
+&lt;li&gt;scp(pscp.exe)、sftp(psftp.exe)等のコマンドラインツールが付属している。&lt;/li&gt;
+&lt;li&gt;フルスクリーン表示ができる。
+(スクロールやタイトルバー等が表示されなくなり、画面全体でターミナル画面を表示するようになる)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。&lt;/p&gt;
+&lt;p&gt;TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
+(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item><item><title>TeraTerm</title><link>https://mnod.github.io/posts/20160902.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ttssh2.osdn.jp/"&gt;https://ttssh2.osdn.jp/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://osdn.jp/projects/ttssh2/"&gt;https://osdn.jp/projects/ttssh2/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;TeraTermは、Windowsで動作するフリーのターミナルエミュレータです。&lt;/p&gt;
+&lt;p&gt;ネットワーク・コンピュータ関連業界界隈の方だったら使ったことが無い人はいないのではないか、というくらいの定番ですね。毎日のようにお世話になっております。&lt;/p&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、シリアル、ssh接続等。&lt;/li&gt;
+&lt;li&gt;sshポート転送。&lt;/li&gt;
+&lt;li&gt;scpによるファイル転送。&lt;/li&gt;
+&lt;li&gt;各種日本語文字コードに対応&lt;/li&gt;
+&lt;li&gt;非常に高機能なマクロ機能。&lt;/li&gt;
+&lt;li&gt;作業ログ保存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;後述する予定のPuTTyも便利ではあるのですが、ログの保存が思ったようにできないことがあるため、使用する場面が限られてしまいます。&lt;/p&gt;
+&lt;p&gt;一方、こちらのTeraTermは、自分にとっては、非の打ちどころがほとんどありません。&lt;/p&gt;
+&lt;p&gt;機能追加の希望があるとすれば、Linux等のターミナルソフトでよくあるような、タブ切り替え機能が標準で使えるようになると嬉しいかもしれません。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;ペースト(貼り付け)操作について&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;TeraTermでは、ペーストのショートカットはAlt+Vになっています。&lt;/p&gt;
+&lt;p&gt;Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？&lt;/p&gt;
+&lt;p&gt;Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。&lt;/p&gt;
+&lt;p&gt;また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。&lt;/p&gt;
+&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item><item><title>sakura editor</title><link>https://mnod.github.io/posts/20160628.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://sakura-editor.sourceforge.net"&gt;http://sakura-editor.sourceforge.net&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://sourceforge.net/projects/sakura-editor/"&gt;https://sourceforge.net/projects/sakura-editor/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;サクラエディタは、Windows で動作するタブ式のテキストエディタです。&lt;/p&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;多様な文字コード、改行コードに対応。
+(un*xで作成したテキストファイルも問題なく編集することができます。)&lt;/li&gt;
+&lt;li&gt;正規表現による検索。置換。
+("行頭が#で始まる行(#の前に空白があるものも含む)"などといった、複雑な指定が可能)&lt;/li&gt;
+&lt;li&gt;grep機能。タグジャンプ機能。
+(複数のファイルから検索。みつけた場所にワンキーで移動可能)&lt;/li&gt;
+&lt;li&gt;指定したキーワードの色分け。&lt;/li&gt;
+&lt;li&gt;矩形編集。&lt;/li&gt;
+&lt;li&gt;キーボードマクロ。
+(一連のキー操作の記録、保存。呼び出し。)&lt;/li&gt;
+&lt;li&gt;選択範囲のソート、重複排除など。
+(シェルを使わずに、エディタ内でsort | uniq ができる)&lt;/li&gt;
+&lt;li&gt;動作が比較的軽い。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。&lt;/p&gt;
+&lt;p&gt;いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。&lt;/p&gt;
+&lt;p&gt;是非テキストエディタの活用をおすすめします。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160628.html</guid><pubDate>Sun, 28 Aug 2016 00:00:00 GMT</pubDate></item></channel></rss>

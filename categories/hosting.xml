@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about hosting)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/hosting.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>serversman vps</title><link>https://mnod.github.io/posts/20180421.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://dream.jp/vps/"&gt;ServersMan@VPS&lt;/a&gt;は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。&lt;/p&gt;
+&lt;p&gt;Debianで使っていたのだが、間もなくWheezyのLTSサポート期限を迎えるのに、新しいバージョンの対応が公表されないので、名残惜しいけど退会することにした。&lt;/p&gt;
+&lt;p&gt;よかったこと&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;東京でサーバを借りられる。固定アドレス。IPv6あり。料金が安い。コスト/パフォーマンス比は悪くないのではないか。&lt;/li&gt;
+&lt;li&gt;個人用途で、Apache, PosgreSQL, PHPのアプリを動かしていたが、速度等の不満は特になかった。&lt;/li&gt;
+&lt;li&gt;環境について技術的な内容の問い合わせ(メール)をしたことがあったが、レスポンスの早さ・内容とも悪印象はなかった。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;残念なこと&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DebianでサポートされているバージョンはWheezyが最新。Ubuntuでは(14.04)が最新。(私用ではDebian系を使いたい)&lt;/li&gt;
+&lt;li&gt;環境に起因する制限がいくつかある。loopデバイスが使えない。コンテナ、仮想環境が使えない等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;各種アプリケーションがプリインストールされたコースもあるが、自分は試したことは無い。
+ネットワーク/セキュリティについての理解がある人が、自分で構築できるサーバを個人用途で東京に安く借りたい、性能を求める場合にはそれだけの対価を支払うつもりがある、という場合にはおすすめできる。&lt;/p&gt;
+&lt;p&gt;(最近は新しいニュースリリースもなく、勝手な見解だが、現在は維持・運用するだけにとどまり、積極的な増設・投資はだいぶ前からやめているのではないかと感じている)&lt;/p&gt;&lt;/div&gt;</description><category>container</category><category>hosting</category><guid>https://mnod.github.io/posts/20180421.html</guid><pubDate>Sat, 21 Apr 2018 00:00:00 GMT</pubDate></item><item><title>arukas</title><link>https://mnod.github.io/posts/20160925.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;2019/10追記&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://arukas.io/updates/20190930-terminate-of-service/"&gt;2020/1/31でのサービス終了&lt;/a&gt;が発表されました。すでに新規アカウントの申し込みは終了しています。
+無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
+大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。&lt;/p&gt;
+&lt;p&gt;2018/04追記&lt;/p&gt;
+&lt;p&gt;2018/03下旬からサービスインとなっています。βテストの時との違いや気づいた点を記載します。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;利用するには、アカウント作成(招待制)とクレジット情報の登録が必要です。
+(無料のプランしか使う予定が無くてもクレジット情報が必要なようです。)&lt;/li&gt;
+&lt;li&gt;転送量は無料。当初の予告どおり、無料で使えるFreeプランもあります。
+(Freeプランでは0.1vcpu、メインメモリ128MB、同時に作成しておけるコンテナは一つだけ、実行できるのも一つだけ。)&lt;/li&gt;
+&lt;li&gt;ドメイン名にtokyoと入っていますが、自分が試したときはIPアドレスは大阪方面のものと判定されました。
+(βを使い始めた頃は東京方面のアドレスと判定されましたが、以後どうなったのか確認してません)&lt;/li&gt;
+&lt;li&gt;コントロールパネルのコンテナ作成画面は、利用するプランの選択肢がある以外は、βの時と同じに見えます。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;自分にとって「東京(のアドレス)で(無料で)使えるサーバ」というのが、非常に価値が大きかったので、ちょっと残念な感じもあります。
+いずれにせよ無料で使えるプランがあるのはありがたいですので、
+いろいろ制限がある中、どんなことがどこまでできるのか、試してみたいと思ってます。&lt;/p&gt;
+&lt;p&gt;2017/08追記&lt;/p&gt;
+&lt;p&gt;2017/07末をもってβテストが終わりました。そのまま正式サービスに移行するのではなく、一旦サービスを止めたようです。
+正式サービスの開始時期は今のところ未定とのことです。&lt;/p&gt;
+&lt;p&gt;追記ここまで。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://arukas.io/"&gt;arukas&lt;/a&gt;は、コンテナ技術の&lt;a href="https://www.docker.com/"&gt;docker&lt;/a&gt;を利用したホスティングサービスです。&lt;/p&gt;
+&lt;p&gt;逆から読むと、sakura。&lt;a href="http://vps.sakura.ad.jp/sp/"&gt;さくらのVPS&lt;/a&gt;でおなじみの、&lt;a href="https://www.sakura.ad.jp"&gt;さくらインターネット&lt;/a&gt;のサービスです。
+無料で利用することができるオープンβテストが4月末ごろから9月末までの予定で行われており、間もなく正式リリースとなるものと思われます。
+正式リリースした後も無料で利用できるプランが設定されるようです。&lt;/p&gt;
+&lt;p&gt;arukasでは、&lt;a href="https://hub.docker.com/"&gt;Docker Hub&lt;/a&gt;の&lt;a href="https://hub.docker.com/explore/"&gt;パブリックレポジトリ&lt;/a&gt;にアップロードされたコンテナを登録して、起動することができます。
+Docker Hubには沢山のレポジトリが登録されていますが、自分で作成・登録することもできます。
+無いものは自分で作ってしまえばいいので、実際には、どんなコンテナでも動かすことができます。&lt;/p&gt;
+&lt;p&gt;dockerの利点は、コンテナの作成・起動・終了・削除が迅速にできることで、これはそのままarukasにも当てはまります。
+ベータテストのためなのか、以下の制限があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;データ永続化の仕組みがないので、再起動するとデータが消える。&lt;/li&gt;
+&lt;li&gt;定期的(週に一度くらい?)に再起動される。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;そのため永続的に使いたいデータは、外部に置く必要があります。
+正式リリース後には変更される可能性もあるかもしれません。&lt;/p&gt;
+&lt;p&gt;URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。&lt;/p&gt;
+&lt;p&gt;同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
+この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。&lt;/p&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>hosting</category><guid>https://mnod.github.io/posts/20160925.html</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

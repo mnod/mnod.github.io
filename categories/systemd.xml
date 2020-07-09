@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about systemd)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/systemd.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>journalctl</title><link>https://mnod.github.io/posts/20200613.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show all messages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show all messages from boot&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show messages with explanations&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show kernel ring buffer&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -k
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show messages of limitted time span&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl --since "2020-06-11"
+journalctl --since "20 min ago"
+journalctl --since "2020-06-11 00:00:00" --untill "2020-06-11 23:59:59"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show specific messages by unit, executable or process&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -u networking
+journalctl /usr/bin/sudo
+journalctl _PID=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show specific messages by priority or syslog facility&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -p 5
+journalctl -p 0..5
+journalctl SYSLOG_FACILITY=10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;follow new messages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -f
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;don't pipe output to a pager&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl --no-pager
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Basically journal messages exist under /run/log/journal/ which is volatile directory.
+Below commands move journal messages directory to directory under /var/log/journal/.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo "Storage=persistent" | sudo tee -a /etc/systemd/journald.conf
+systemctl force-reload systemd-journald
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can specify directory in which journal messages saved.
+It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;journalctl -D /mnt/var/log/journal -x
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item><item><title>systemctl</title><link>https://mnod.github.io/posts/20200612.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show system status&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show running or failed units&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-units
+systemctl
+systemctl --failed
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show installed unit files&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-unit-files
+ls -l /usr/lib/systemd/system /etc/systemd/system
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;start, stop, restart or reload a unit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl start unit
+systemctl stop unit
+systemctl restart unit
+systemctl reload unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show status of a unit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;enable or disable a unit to be started on bootstrap&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl enable unit
+systemctl disable unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;check whether a unit is enabled or not&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl is-enabled unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mask or unmask a unit to make it impossible to start it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl mask unit
+systemctl unmask unit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;reboot or poweroff the system&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl reboot
+systemctl poweroff
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200612.html</guid><pubDate>Fri, 12 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

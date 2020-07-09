@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ubuntu)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ubuntu.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nfs</title><link>https://mnod.github.io/posts/20170401.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ service nfs-kernel-server status
+nfsd running
+
+$ service rpcbind status
+rpcbind start/running, process xxx
+
+$ rpcinfo -p &amp;lt;hostname&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;export infomation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ showmount -e
+Export list for xxxxxx:
+/mnt  192.168.1.2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;client information&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ showmount -a
+All mount points on yyyyyy:
+192.168.1.1:/mnt
+192.168.1.2:/mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;allow&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ vi /etc/hosts.allow
+portmap : 192.168.1.0/255.255.255.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20170401.html</guid><pubDate>Sat, 01 Apr 2017 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;
+&lt;p&gt;dockerデーモンの起動と動作確認。ubuntuの場合。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo service docker status
+$ sudo service docker start
+$ sudo docker run --rm hello-world
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;リポジトリに登録されているイメージを取得する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker pull debian:latest
+Pulling repository debian
+6845b83c79fb: Download complete
+575489a51992: Download complete
+Status: Downloaded newer image for debian:latest
+$ 
+$ sudo docker images debian
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+debian              latest              6845b83c79fb        13 days ago         125.1 MB
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンテナを作成して実行。コンソール接続してbashを実行する例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run -it debian:latest /bin/bash
+root@06e1a850e923:/# 
+root@06e1a850e923:/# w
+ 22:20:47 up 29 days, 14:32,  0 users,  load average: 0.36, 0.29, 0.24
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root@06e1a850e923:/#
+root@06e1a850e923:/# uname -a
+Linux 06e1a850e923 3.13.0-63-generic #103-Ubuntu SMP Fri Aug 14 21:42:59 UTC 2015 x86_64 GNU/Linux
+root@06e1a850e923:/#
+root@06e1a850e923:/# cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="8"
+VERSION="8 (jessie)"
+ID=debian
+HOME_URL="http://www.debian.org/"
+SUPPORT_URL="http://www.debian.org/support/"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@06e1a850e923:/#
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンソール接続したコンテナから一旦切断する例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@xxxxxxxxxxxx:/# [Ctl+p]-[Ctl+q]
+$ 
+$ sudo docker ps | grep debian
+xxxxxxxxxxxx        debian:latest       "/bin/bash"         About a minute ago   Up About a minute                       berserk_mayer
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再接続する例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker attach xxxxxxxxxxxx
+root@xxxxxxxxxxxx:/#
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンテナを終了する例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@06e1a850e923:/# exit
+exit
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;終了したコンテナを再起動する例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker ps -a | grep debian
+xxxxxxxxxxxx        debian:latest            "/bin/bash"            13 minutes ago      Exited (0) 13 seconds ago                                          berserk_mayer
+$
+$ sudo docker start -i xxxxxxxxxxxx
+root@xxxxxxxxxxxx:/# 
+root@xxxxxxxxxxxx:/# exit
+exit
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンテナの状態確認。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+$ 
+$ sudo docker ps -a | grep debian
+06e1a850e923        debian:latest            "/bin/bash"            2 minutes ago       Exited (0) 47 seconds ago                                      evil_kowalevski
+
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;copy file from/to docker container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker cp xxxxxxxxxxxx:/dirname/filename destination
+$ sudo docker cp source xxxxxxxxxxxx:/dirname/filename
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;コンテナの削除。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker rm 06e1a850e923
+06e1a850e923
+$ 
+$ sudo docker ps -a | grep debian
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;イメージの削除。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker rmi debian:latest
+Untagged: debian:latest
+Deleted: 6845b83c79fb642ed6af06cceaca042e155717ca8eb0b5cffa9c43f1f7f70348
+Deleted: 575489a51992d5d30976ff5ba7f7eabdc134acfb51c79ff48883089009594e64
+$
+$ sudo docker images debian
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;dockerイメージの作成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ mkdir project &amp;amp;&amp;amp; cd project
+$ 
+$ vi Dockerfile
+$ 
+$ sudo docker build -t imagename:tagname . | tee build.log
+$ 
+$ sudo docker images imagename
+$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When you want to use proxy, use --build-arg option like bellow&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When new image name is &lt;none&gt;, then rename it as below&lt;/none&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker tag xxxxxxxxxxxx imagename:tagname
+$ 
+$ sudo docker images imagename
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;不要なイメージの一括削除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo docker images | awk '$1~/&amp;lt;none&amp;gt;/ {print}'
+sudo docker images | awk '$1~/&amp;lt;none&amp;gt;/ {print $3}' | xargs sudo docker rmi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用するdockerfileの簡単な例。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;From debian:latest
+RUN apt-get update &amp;amp;&amp;amp; apt-get install -y \
+    screen \
+    openssl \
+    vim \
+   make \
+&amp;amp;&amp;amp; apt-get clean \
+&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20161001.html</guid><pubDate>Sat, 01 Oct 2016 00:00:00 GMT</pubDate></item><item><title>removal of old kernel packages in ubuntu</title><link>https://mnod.github.io/posts/20160911.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;新しいカーネルをインストールした後、元のカーネルパッケージを削除せずそのままにしておくと、/bootを小さく切っている場合など、ディスク領域を圧迫してくる場合があります。
+そんな時は、使用していない古いカーネルを削除することで、ディスクに空きを作ることができます。&lt;/p&gt;
+&lt;p&gt;以下、Ubuntuで、使用していない古いカーネルを削除する流れです。&lt;/p&gt;
+&lt;p&gt;現在のディスク使用状況を確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ df -h /boot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;現在のカーネルの情報を確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ uname -a
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;インストールされているカーネルパッケージのバージョンを確認し、不要なバージョンがどれなのかを調べる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dpkg -l | awk '$2~/^linux/ {print}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;バージョンを指定して、削除対象のパッケージを抽出する
+(カーネルだけでなく、カーネルソース等の関連パッケージも削除対象とする)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;削除を実行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx | xargs sudo aptitude -y purge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;不要なパッケージが削除されたことを確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;現在のディスク使用状況を確認&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ df -h /boot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上、不要なバージョンを全て削除するまで繰り返して実行する。&lt;/p&gt;
+&lt;p&gt;自分は、現在使っているカーネルの他に、何か問題が発生した際の保険として、一世代前のカーネルも削除せずに残すようにしています。&lt;/p&gt;&lt;/div&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20160911.html</guid><pubDate>Sun, 11 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

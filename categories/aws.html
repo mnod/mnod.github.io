@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about aws | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/aws.html">
+<link rel="next" href="aws-1.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag aws" hreflang="en" href="aws.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about aws</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="aws.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200209.html" class="u-url">ecs</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200209.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-02-09T00:00:00Z" itemprop="datePublished" title="2020-02-09 00:00">2020-02-09 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>cluster</em></p>
+<pre><code>$ aws ecs list-clusters 
+$ aws ecs describe-clusters --clusters &lt;clusterArn&gt;
+
+$ aws ecs create-cluster --cluster-name &lt;cluster-name&gt; --tags '[{"key": "Name","value": "test"}]'
+$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
+
+$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
+</code></pre>
+<p><em>task definition</em></p>
+<pre><code>$ aws ecs list-task-definitions
+$ aws ecs describe-task-definition --task-definition &lt;taskDefinitionArn&gt;
+
+$ jq . task-definition.json
+{
+  "family": "sample-fargate",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "fargate-app",
+      "image": "busybox",
+      "essential": true,
+      "command": [
+        "sleep",
+        "360"
+      ]
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
+$ aws ecs register-task-definition --cli-input-json file://task-definition.json
+
+$ aws ecs deregister-task-definition --task-definition &lt;taskDefinitionArn&gt;
+</code></pre>
+<p><em>task</em></p>
+<p>When you use fargate and retrieve docker image from docker hub, you have to use internet gateway or nat gateway in the vpc.</p>
+<pre><code>$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
+$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
+
+$ jq . network-configuration.json
+{
+  "awsvpcConfiguration": {
+    "subnets": [
+      "&lt;subnet&gt;"
+    ],
+    "securityGroups": [
+      "&lt;securitygroup&gt;"
+    ],
+    "assignPublicIp": "ENABLED"
+  }
+}
+$ aws ecs run-task --task-definition &lt;taskDefinitionArn&gt; --cluster &lt;clusterArn&gt; --count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs stop-task --cluster &lt;clusterArn&gt; --task &lt;taskArn&gt;
+</code></pre>
+<p><em>tags</em></p>
+<pre><code>$ aws ecs list-tags-for-resource --resource-arn &lt;resource-arn&gt;
+$ aws ecs tag-resource --resource-arn &lt;resource-arn&gt; --tags '[{"key": "Name","value": "test"}]'
+</code></pre>
+<p><em>service</em></p>
+<pre><code>$ aws ecs list-services --cluster &lt;clusterArn&gt;
+$ aws ecs describe-services --cluster &lt;clusterArn&gt; --services &lt;serviceArn&gt;
+$ aws ecs create-service --cluster &lt;clusterArn&gt; --service-name &lt;serviceName&gt; --task-definition &lt;task-definition&gt; --desired-count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
+$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
+
+$ aws ecs update-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt; --desired-count 0
+$ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200128.html" class="u-url">dynamodb</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200128.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-28T00:00:00Z" itemprop="datePublished" title="2020-01-28 00:00">2020-01-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create and delete table</em></p>
+<pre><code>$ aws dynamodb list-tables
+$ aws dynamodb describe-table --table-name testtable
+$ aws dynamodb create-table --table-name testtable  \
+ --attribute-definitions '[{"AttributeName":"Artist","AttributeType":"S"},{"AttributeName":"AlbumTitle","AttributeType":"S"}]' \
+ --key-schema '[{"AttributeName":"Artist","KeyType":"HASH"},{"AttributeName":"AlbumTitle","KeyType":"RANGE"}]' \
+ --provisioned-throughput '{"ReadCapacityUnits": 1,"WriteCapacityUnits": 1}' \
+ --tags '[{"Key": "Name","Value": "test"}]'
+
+$ aws dynamodb delete-table --table-name testtable
+</code></pre>
+<p><em>put item</em></p>
+<pre><code>$ jq '.' put-item.json
+{
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+$ aws dynamodb put-item --table-name testtable --item file://put-item.json
+</code></pre>
+<p><em>get and delete item</em></p>
+<pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+$ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>sample python script</em></p>
+<p>put-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+item = {
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.put_item(TableName=tablename, Item=item)
+print (json.dumps(res))
+</code></pre>
+<p>get-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.get_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+</code></pre>
+<p>delete-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.delete_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+# print (json.dumps(res['ResponseMetadata']['HTTPStatusCode']))
+</code></pre>
+<p><em>cloudformation template</em></p>
+<pre><code>    TestDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "TestDynamoDBTable"
+        Tags:
+          - Key: "Name"
+            Value: "test"
+        AttributeDefinitions:
+          - AttributeName: "subject"
+            AttributeType: "S"
+          - AttributeName: "year"
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: "subject"
+            KeyType: "HASH"
+          - AttributeName: "year"
+            KeyType: "RANGE"
+        BillingMode: "PROVISIONED"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200125.html" class="u-url">aws</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200125.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-25T00:00:00Z" itemprop="datePublished" title="2020-01-25 00:00">2020-01-25 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>query with JMESPath</em></p>
+<p>projection</p>
+<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
+$ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
+</code></pre>
+<p>selection
+(if the targe command has <code>filters</code> option, it would be faster than <code>query</code>.)</p>
+<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[?IsDefault == `true`]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
+
+$ aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key == `Name` &amp;&amp; Value == `test`]]'
+$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=test'
+</code></pre>
+<p>function</p>
+<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[?contains(VpcId, `vpc`)].VpcId'
+
+$ aws ec2 describe-vpcs --query 'sort_by(Vpcs[?contains(VpcId, `vpc`)].VpcId, &amp;VpcId)'
+$ aws ec2 describe-images --filters "Name=owner-id,Values=&lt;id&gt;" --query "sort_by(Images[].{Name:Name, ImageId:ImageId}, &amp;Name)"
+
+$ aws ec2 describe-vpcs --query 'length(Vpcs[?contains(VpcId, `vpc`)])'
+</code></pre>
+<p><em>generate-cli-skeleton output</em></p>
+<pre><code>$ aws ec2 describe-vpcs --generate-cli-skeleton output
+$ aws ec2 describe-vpcs --generate-cli-skeleton output --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
+$ aws ec2 describe-vpcs --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
+</code></pre>
+<p><em>generate-cli-skeleton input</em></p>
+<pre><code>$ aws ec2 describe-vpcs --generate-cli-skeleton input | tee describe-vpcs.json
+$ vi describe-vpcs.json
+$ jq . describe-vpcs.json
+{
+  "Filters": [
+    {
+      "Name": "tag:Name",
+      "Values": [
+        "test"
+      ]
+    }
+  ]
+}
+$ aws ec2 describe-vpcs --cli-input-json file://describe-vpcs.json
+</code></pre>
+<p><em>samples of filter</em></p>
+<pre><code>$ aws ec2 describe-vpcs --filters '["Name":"isDefault","Values":["true"]]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"tag-key","Values":["aws:cloudformation:stack-name"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=tag-key,Values=aws:cloudformation:stack-name'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"tag:Name","Values":["terraform_test","mystack-VPC"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-VPC'
+
+$ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
+$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200119.html" class="u-url">vpc</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200119.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-19T00:00:00Z" itemprop="datePublished" title="2020-01-19 00:00">2020-01-19 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>describe region and abailability zone</em></p>
+<pre><code>$ aws ec2 describe-regions --filters 'Name=region-name,Values=ap-northeast-1'
+{
+    "Regions": [
+        {
+            "Endpoint": "ec2.ap-northeast-1.amazonaws.com",
+            "RegionName": "ap-northeast-1",
+            "OptInStatus": "opt-in-not-required"
+        }
+    ]
+}
+$ aws ec2 describe-availability-zones --filters 'Name=region-name,Values=ap-northeast-1'
+{
+    "AvailabilityZones": [
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1a",
+            "ZoneId": "apne1-az4"
+        },
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1c",
+            "ZoneId": "apne1-az1"
+        },
+        {
+            "State": "available",
+            "Messages": [],
+            "RegionName": "ap-northeast-1",
+            "ZoneName": "ap-northeast-1d",
+            "ZoneId": "apne1-az2"
+        }
+    ]
+}
+</code></pre>
+<p><em>vpc</em></p>
+<pre><code>$ aws ec2 describe-vpcs --filter "Name=cidr,Values=172.16.100.0/24"
+$ aws ec2 create-vpc --cidr-block 172.16.100.0/24
+
+$ aws ec2 describe-vpc-attribute --attribute enableDnsHostnames --vpc-id &lt;vpc&gt;
+$ aws ec2 modify-vpc-attribute --enable-dns-hostnames --vpc-id &lt;vpc&gt;
+</code></pre>
+<p>Before remove vpc, subnet need to be removed.</p>
+<pre><code>$ aws ec2 delete-vpc --vpc-id &lt;vpc&gt;
+</code></pre>
+<p><em>tag</em></p>
+<pre><code>$ aws ec2 describe-vpcs --filters "Name=tag:Name,Values=test"
+$ jq . tags.json
+[
+  {
+    "Key": "Name",
+    "Value": "test"
+  }
+]
+$ aws ec2 create-tags --resources &lt;vpc&gt; --tags file://tags.json
+
+$ aws ec2 create-tags --resources &lt;vpc&gt; --tags '{"Key":"Name", "Value":"test"}'
+</code></pre>
+<p><em>subnets</em></p>
+<pre><code>$ aws ec2 describe-subnets --filters "Name=cidr-block,Values=172.16.100.0/26"
+$ aws ec2 create-subnet --vpc-id &lt;vpc&gt; --cidr-block 172.16.100.0/26
+$ aws ec2 delete-subnet --subnet-id &lt;subnet&gt;
+</code></pre>
+<p><em>nacl</em></p>
+<pre><code>$ aws ec2 describe-network-acls --filters "Name=vpc-id,Values=&lt;vpc&gt;"
+$ aws ec2 create-network-acl --vpc-id &lt;vpc&gt;
+$ aws ec2 replace-network-acl-association --association-id &lt;aclassoc&gt; --network-acl-id &lt;nacl&gt;
+
+$ aws ec2 delete-network-acl --network-acl-id &lt;nacl&gt;
+</code></pre>
+<p><em>nacl entry</em></p>
+<p>protocol
+- all: -1
+- icmp: 1
+- tcp: 6
+- udp: 17
+- icmpv6: 58</p>
+<pre><code>$ aws ec2 describe-network-acls --filters "Name=network-acl-id,Values=&lt;nacl&gt;"
+$ aws ec2 create-network-acl-entry --ingress --network-acl-id &lt;nacl&gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
+$ aws ec2 create-network-acl-entry --egress  --network-acl-id &lt;nacl&gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
+
+$ aws ec2 delete-network-acl-entry --ingress --network-acl-id &lt;nacl&gt; --rule-number 100
+</code></pre>
+<p><em>internet gateway</em></p>
+<pre><code>$ aws ec2 describe-internet-gateways --query 'InternetGateways[?Attachments[?VpcId == `&lt;vpc&gt;`]]'
+$ aws ec2 create-internet-gateway
+$ aws ec2 attach-internet-gateway --internet-gateway-id &lt;internetgateway&gt; --vpc-id &lt;vpc&gt;
+
+$ aws ec2 detach-internet-gateway --internet-gateway-id &lt;internetgateway&gt; --vpc-id &lt;vpc&gt;
+$ aws ec2 delete-internet-gateway --internet-gateway-id &lt;internetgateway&gt;
+</code></pre>
+<p><em>route table</em></p>
+<pre><code>$ aws ec2 describe-route-tables --filters "Name=vpc-id,Values=&lt;vpc&gt;"
+$ aws ec2 create-route-table --vpc-id &lt;vpc&gt;
+$ aws ec2 associate-route-table --route-table-id &lt;routetable&gt; --subnet-id &lt;subnet&gt;
+
+$ aws ec2 describe-route-tables --filters "Name=route-table-id,Values=&lt;routetable&gt;"
+$ aws ec2 create-route --destination-cidr-block 0.0.0.0/0 --gateway-id &lt;internetgateway&gt; --route-table-id &lt;routetable&gt;
+
+$ aws ec2 delete-route --destination-cidr-block 0.0.0.0/0 --route-table-id &lt;routetable&gt;
+$ aws ec2 disassociate-route-table --association-id &lt;rtbassoc&gt;
+$ aws ec2 delete-route-table --route-table-id &lt;routetable&gt;
+</code></pre>
+<p><em>security group</em></p>
+<pre><code>$ aws ec2 describe-security-groups --filters "Name=vpc-id,Values=&lt;vpc&gt;"
+$ aws ec2 create-security-group --description "&lt;description&gt;" --group-name "&lt;name&gt;" --vpc-id &lt;vpc&gt;
+
+$ aws ec2 describe-security-groups --filters "Name=group-id,Values=&lt;securitygroup&gt;"
+$ aws ec2 authorize-security-group-ingress --group-id &lt;securitygroup&gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
+
+$ aws ec2 revoke-security-group-ingress --group-id &lt;securitygroup&gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
+$ aws ec2 delete-security-group --group-id &lt;securitygroup&gt;
+</code></pre>
+<p><em>key pair</em></p>
+<pre><code>$ aws ec2 describe-key-pairs 
+$ aws ec2 describe-key-pairs --key-names &lt;keyname&gt;
+$ aws ec2 create-key-pair --key-name &lt;keyname&gt; | tee id_rsa.testkey.json
+
+$ aws ec2 delete-key-pair --key-name &lt;keyname&gt;
+$ aws ec2 import-key-pair --key-name &lt;keyname&gt; --public-key-material file://id_rsa.testkey.pub
+</code></pre>
+<p>save the private key</p>
+<pre><code>$ jq -r '.KeyMaterial' id_rsa.testkey.json &gt; id_rsa.testkey.nopass
+$ openssl rsa -aes256 -in id_rsa.testkey.nopass -out id_rsa.testkey
+$ chmod 600 id_rsa.testkey
+($ rm id_rsa.testkey.json id_rsa.testkey.nopass)
+</code></pre>
+<p><em>ami</em></p>
+<pre><code>$ aws ec2 describe-images --filters "Name=owner-id,Values=&lt;id&gt;"
+$ aws ec2 describe-images --filters "Name=image-id,Values=&lt;ami&gt;"
+$ aws ec2 create-image --instance-id &lt;instance&gt; --name &lt;name&gt;
+$ aws ec2 deregister-image --image-id &lt;ami&gt;
+</code></pre>
+<p><em>snapshot</em></p>
+<pre><code>$ aws ec2 describe-snapshots --filters Name=owner-id,Values=&lt;id&gt;
+$ aws ec2 describe-snapshots --filters Name=snapshot-id,Values=&lt;snapshot&gt;
+$ aws ec2 delete-snapshot --snapshot-id &lt;snapshot&gt;
+$ aws ec2 create-snapshot --volume-id &lt;volume&gt;
+</code></pre>
+<p><em>launch template</em></p>
+<pre><code>$ aws ec2 describe-launch-templates
+$ jq . template.json
+{
+  "ImageId": "&lt;ami&gt;",
+  "InstanceType": "t3.nano",
+  "CreditSpecification": {
+    "CpuCredits": "standard"
+  },
+  "KeyName": "&lt;keyname&gt;",
+  "InstanceInitiatedShutdownBehavior": "terminate"
+}
+$ aws ec2 create-launch-template --launch-template-name &lt;name&gt; --launch-template-data file://template.json
+$ aws ec2 describe-launch-template-versions --launch-template-id &lt;templateid&gt; --versions &lt;version&gt;
+
+$ aws ec2 create-launch-template-version \
+ --launch-template-id &lt;templateid&gt; \
+ --source-version &lt;version&gt; \
+ --version-description "&lt;description&gt;" \
+ --launch-template-data '{ "Monitoring": { "Enabled": true } }'
+$ aws ec2 modify-launch-template --launch-template-id &lt;templateid&gt; --default-version &lt;version&gt;
+
+$ aws ec2 delete-launch-template-versions --launch-template-id &lt;templateid&gt; --versions &lt;version&gt;
+$ aws ec2 delete-launch-template --launch-template-id &lt;templateid&gt;
+</code></pre>
+<p><em>instance</em></p>
+<pre><code>$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test"
+$ cat userdata.sh 
+sudo apt update
+sudo apt install nginx
+$ aws ec2 run-instances \
+ --security-group-ids &lt;securitygroup&gt; \
+ --subnet-id &lt;subnet&gt; \
+ --associate-public-ip-address \
+ --tag-specifications '{"ResourceType":"instance","Tags":[{"Key":"Name","Value":"test"}]}' \
+ --launch-template LaunchTemplateName=&lt;templatename&gt; \
+ --user-data file://userdata.sh
+#--image-id &lt;ami&gt;
+#--instance-type t3.nano
+#--credit-specification standard
+#--key-name &lt;keyname&gt;
+#--instance-initiated-shutdown-behavior terminate
+
+$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test" --query 'Reservations[].Instances[].{InstanceId:InstanceId,State:State}'
+$ aws ec2 stop-instances --instance-ids &lt;instance&gt;
+$ aws ec2 start-instances --instance-ids &lt;instance&gt;
+$ aws ec2 terminate-instances --instance-ids &lt;instance&gt;
+</code></pre>
+<p><em>instance meta data</em></p>
+<pre><code>curl http://169.254.169.254/latest/meta-data/instance-id
+curl http://169.254.169.254/latest/user-data
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200112.html" class="u-url">iam</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200112.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-12T00:00:00Z" itemprop="datePublished" title="2020-01-12 00:00">2020-01-12 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>user</em></p>
+<pre><code>$ aws iam list-users --query 'Users[?UserName==`&lt;username&gt;`]'
+$ aws iam get-user --user-name &lt;username&gt;
+
+$ aws iam create-user --user-name &lt;username&gt;
+$ aws iam tag-user --user-name &lt;username&gt; --tags '{"Key":"name","Value":"test"}'
+
+$ aws iam delete-user --user-name &lt;username&gt;
+</code></pre>
+<p><em>login profile</em></p>
+<pre><code>$ aws iam get-login-profile --user-name &lt;username&gt;
+$ aws iam create-login-profile --generate-cli-skeleton &gt; create-login-profile.json
+
+$ jq '.' create-login-profile.json
+{
+  "UserName": "&lt;username&gt;",
+  "Password": "&lt;initialpassword&gt;",
+  "PasswordResetRequired": true
+}
+$ aws iam create-login-profile --user-name &lt;username&gt; --cli-input-json file://create-login-profile.json
+</code></pre>
+<p><em>group</em></p>
+<pre><code>$ aws iam list-groups  --query 'Groups[?GroupName==`&lt;groupname&gt;`]'
+$ aws iam create-group --group-name &lt;groupname&gt;
+
+$ aws iam delete-group --group-name &lt;groupname&gt;
+</code></pre>
+<p><em>policy</em></p>
+<pre><code>$ aws iam list-policies --query 'Policies[?PolicyName==`&lt;policyname&gt;`]'
+$ aws iam get-policy --policy-arn &lt;policyarn&gt;
+
+$ jq . policy.json 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+
+$ aws iam create-policy --policy-name &lt;policyname&gt; --policy-document file://policy.json
+
+$ aws iam list-policy-versions --policy-arn &lt;policyarn&gt;
+$ aws iam get-policy-version --policy-arn &lt;policyarn&gt; --version-id v1
+$ aws iam create-policy-version --policy-arn &lt;policyarn&gt; --policy-document file://policy_v2.json
+$ aws iam set-default-policy-version --policy-arn &lt;policyarn&gt; --version-id v1
+
+$ aws iam delete-policy-version --policy-arn &lt;policyarn&gt; --version-id v2
+$ aws iam delete-policy --policy-arn &lt;policyarn&gt;
+</code></pre>
+<p>sample policy for allow change password</p>
+<pre><code>$ jq '.' policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetAccountPasswordPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ChangePassword",
+      "Resource": "&lt;userarn&gt;"
+    }
+  ]
+}
+</code></pre>
+<p><em>add user to group</em></p>
+<pre><code>$ aws iam list-groups-for-user --user-name &lt;username&gt;
+$ aws iam add-user-to-group --group-name &lt;groupname&gt; --user-name &lt;username&gt;
+
+$ aws iam remove-user-from-group --group-name &lt;groupname&gt; --user-name &lt;username&gt;
+</code></pre>
+<p><em>attach policy to user</em></p>
+<pre><code>$ aws iam list-attached-user-policies --user-name &lt;username&gt;
+$ aws iam attach-user-policy --user-name &lt;username&gt; --policy-arn "&lt;policyarn&gt;"
+$ aws iam detach-user-policy --user-name &lt;username&gt; --policy-arn "&lt;policyarn&gt;"
+</code></pre>
+<p><em>attach policy to group</em></p>
+<pre><code>$ aws iam list-attached-group-policies --group-name &lt;groupname&gt;
+$ aws iam attach-group-policy --group-name &lt;groupname&gt; --policy-arn "&lt;policyarn&gt;"
+$ aws iam detach-group-policy --group-name &lt;groupname&gt; --policy-arn "&lt;policyarn&gt;"
+</code></pre>
+<p><em>role</em></p>
+<pre><code>$ aws iam list-roles --query 'Roles[?RoleName==`&lt;rolename&gt;`]'
+$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+$ aws iam create-role --role-name &lt;rolename&gt; --assume-role-policy-document file://assumepolicy.json
+</code></pre>
+<p>(Before you delte role, you must remove roles from instance profile.)</p>
+<pre><code>$ aws iam delete-role --role-name &lt;rolename&gt;
+</code></pre>
+<p><em>attach policy to role</em></p>
+<pre><code>$ aws iam list-attached-role-policies --role-name &lt;rolename&gt;
+$ aws iam attach-role-policy --role-name &lt;rolename&gt; --policy-arn &lt;policyarn&gt;
+$ aws iam detach-role-policy --role-name &lt;rolename&gt; --policy-arn &lt;policyarn&gt;
+</code></pre>
+<p><em>add role to instance profile</em></p>
+<pre><code>$ aws iam list-instance-profiles-for-role --role-name &lt;rolename&gt;
+$ aws iam add-role-to-instance-profile --instance-profile-name &lt;rolename&gt; --role-name &lt;rolename&gt;
+$ aws iam remove-role-from-instance-profile --instance-profile-name &lt;rolename&gt; --role-name &lt;rolename&gt;
+</code></pre>
+<p><em>associate iam instance profile</em></p>
+<pre><code>$ aws ec2 describe-iam-instance-profile-associations 
+$ aws ec2 associate-iam-instance-profile --iam-instance-profile '{"Arn":"&lt;rolearn&gt;","Name":"&lt;rolename&gt;"}' --instance-id &lt;instanceid&gt;
+$ aws ec2 disassociate-iam-instance-profile --association-id &lt;associationid&gt;
+</code></pre>
+<p><em>access key</em></p>
+<pre><code>$ aws iam list-access-keys --user-name &lt;user-name&gt;
+$ aws iam get-access-key-last-used --access-key-id &lt;access-key-id&gt;
+
+$ aws iam create-access-key --user-name &lt;user-name&gt;
+$ aws iam update-access-key --user-name &lt;user-name&gt; --access-key-id &lt;access-key-id&gt; --status Inactive
+$ aws iam delete-access-key --user-name &lt;user-name&gt; --access-key-id &lt;access-key-id&gt;
+</code></pre>
+<p><em>cloudformation sample template</em></p>
+<pre><code>    TestLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    AllowAccessDynamoDBTable:
+      Type: "AWS::IAM::Policy"
+      Properties:
+        PolicyName: "AllowAccessDynamoDBTable"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+              Resource: !GetAtt TestDynamoDBTable.Arn
+        Roles:
+          - !Ref TestLambdaRole
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200109.html" class="u-url">sqs</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200109.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-09T00:00:00Z" itemprop="datePublished" title="2020-01-09 00:00">2020-01-09 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create queue</em></p>
+<pre><code>aws sqs list-queues
+aws sqs create-queue --queue-name testqueue
+</code></pre>
+<p><em>get queue url or attributes</em></p>
+<pre><code>aws sqs get-queue-url --queue-name testqueue
+aws sqs get-queue-attributes --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --attribute-names All
+</code></pre>
+<p><em>handle message</em></p>
+<pre><code>aws sqs send-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --message-body {"foo":"bar"}
+aws sqs receive-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+{
+    "Messages": [
+        {
+            "MessageId": "",
+            "ReceiptHandle": "",
+            "MD5OfBody": "",
+            "Body": "{}"
+        }
+    ]
+}
+aws sqs delete-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --receipt-handle "&lt;ReceiptHandle&gt;"
+aws sqs purge-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+</code></pre>
+<p><em>delete queue</em></p>
+<pre><code>aws sqs delete-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+</code></pre>
+<p><em>sample python script</em></p>
+<p>send message
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"></script></p>
+<p>receive message
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"></script></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191110.html" class="u-url">apigateway</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191110.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-11-10T00:00:00Z" itemprop="datePublished" title="2019-11-10 00:00">2019-11-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create rest-api</em></p>
+<pre><code>$ aws apigateway get-rest-apis
+$ aws apigateway create-rest-api --name &lt;API Name&gt;
+$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
+</code></pre>
+<p><em>create resource</em></p>
+<pre><code>$ aws apigateway get-resources --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-resource --rest-api-id &lt;API ID&gt; --parent-id &lt;Parent Resource ID&gt; --path-part subpath
+$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+</code></pre>
+<p><em>put method</em></p>
+<pre><code>$ aws apigateway put-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --authorization-type none --http-method get 
+$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>put integration response</em></p>
+<pre><code>$ aws apigateway put-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json":"{\"json\":\"template\"}"}'
+$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>put method response</em></p>
+<pre><code>$ aws apigateway put-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --response-models '{"text/plain":"Empty"}'
+$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>update integration</em></p>
+<pre><code>$ jq '.' test.json
+[
+  {
+    "op": "add",
+    "path": "/requestTemplates/application~1json",
+    "value": "{\"example\":\"json\"}"
+  }
+]
+$ aws apigateway update-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations file://test.json
+</code></pre>
+<p><em>create deployment</em></p>
+<pre><code>$ aws apigateway get-deployments --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-deployment --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+</code></pre>
+<p><em>create stage</em></p>
+<pre><code>$ aws apigateway get-stages --rest-api-id &lt;API ID&gt;
+$ aws apigateway create-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt; --deployment-id &lt;Deployment ID&gt;
+$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+</code></pre>
+<p><em>test invoke method</em></p>
+<pre><code>$ aws apigateway test-invoke-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+  --http-method [GET|POST|DELETE|...]
+  --path-with-query-string "/"
+  --body "bodystring"
+</code></pre>
+<p><em>create api key</em></p>
+<pre><code>$ aws apigateway get-api-keys
+$ aws apigateway create-api-key --name testkey
+$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
+$ aws apigateway get-api-key --api-key &lt;Key ID&gt; --include-value
+</code></pre>
+<p><em>update api key</em></p>
+<pre><code>$ aws apigateway update-api-key --api-key &lt;Key ID&gt; --patch-operations '{ "op":"replace", "path":"/enabled", "value":"true" }'
+</code></pre>
+<p><em>create usage plan</em></p>
+<pre><code>$ aws apigateway get-usage-plans
+$ aws apigateway create-usage-plan --name myusageplan --api-stages '{"apiId":"&lt;API ID&gt;","stage":"&lt;Stage Name&gt;"}' --throttle '{ "burstLimit": 2, "rateLimit": 1.0 }' --quota '{ "limit": 320, "offset": 0, "period": "DAY" }'
+$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+</code></pre>
+<p><em>associate usage-plan and key</em></p>
+<pre><code>$ aws apigateway get-usage-plan-keys --usage-plan-id &lt;Usage Plan ID&gt;
+$ aws apigateway create-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt; --key-type API_KEY
+$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+</code></pre>
+<p><em>update method</em></p>
+<pre><code>$ aws apigateway update-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations op='replace',path='/apiKeyRequired',value='true'
+$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>test run with api-key</em></p>
+<pre><code>$ curl https://&lt;API ID&gt;.execute-api.&lt;Region Name&gt;.amazonaws.com/&lt;Stage Name&gt; --header "x-api-key:&lt;API Key Value&gt;"
+</code></pre>
+<p><em>diassociate usage-plan and key</em></p>
+<pre><code>$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+$ aws apigateway delete-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
+</code></pre>
+<p><em>delete stage</em></p>
+<pre><code>$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+$ aws apigateway delete-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
+</code></pre>
+<p><em>delete deployment</em></p>
+<pre><code>$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+$ aws apigateway delete-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
+</code></pre>
+<p><em>delete usage-plan</em></p>
+<pre><code>$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+$ aws apigateway delete-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
+</code></pre>
+<p><em>delete api key</em></p>
+<pre><code>$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
+$ aws apigateway delete-api-key --api-key &lt;Key ID&gt;
+</code></pre>
+<p><em>delete integration response</em></p>
+<pre><code>$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+$ aws apigateway delete-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>delete method response</em></p>
+<pre><code>$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+$ aws apigateway delete-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
+</code></pre>
+<p><em>delete integration</em></p>
+<pre><code>$ aws apigateway get-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+$ aws apigateway delete-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>delete method</em></p>
+<pre><code>$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+$ aws apigateway delete-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
+</code></pre>
+<p><em>delete resource</em></p>
+<pre><code>$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+$ aws apigateway delete-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
+</code></pre>
+<p><em>delete rest-api</em></p>
+<pre><code>$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
+$ aws apigateway delete-rest-api --rest-api-id &lt;API ID&gt;
+</code></pre>
+<p><em>cloudformation sample template</em></p>
+<pre><code>    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: "ApiGatewayRestApi"
+        Tags:
+          - "Key": "Name"
+            "Value": "test"
+    ApiGatewayResourceSubject:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+        PathPart: "{subject}"
+        RestApiId: !Ref ApiGatewayRestApi
+    TestLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt TestLambda.Arn
+        Action: lambda:InvokeFunction
+        Principal: apigateway.amazonaws.com
+    ApiGatewayGET:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: "GET"
+        RestApiId: !Ref ApiGatewayRestApi
+        ResourceId: !Ref ApiGatewayResourceSubject
+        RequestParameters:
+          "method.request.path.string": true
+          "method.request.path.year": true
+        AuthorizationType: "NONE"
+        MethodResponses:
+            - StatusCode: 200
+              ResponseModels:
+                application/json;charset=UTF-8: Empty
+        Integration:
+          Type: "AWS_PROXY"
+          IntegrationHttpMethod: "POST"
+          RequestParameters:
+            "integration.request.path.string": "method.request.path.string"
+            "integration.request.path.year": "method.request.path.year"
+          Uri: !Sub &gt;-
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestLambda.Arn}/invocations
+          RequestTemplates:
+            application/json: "{ \"statusCode\" : 200 }"
+    DeployDevel:
+      DependsOn: ApiGatewayGET
+      Type: 'AWS::ApiGateway::Deployment'
+      Properties:
+        RestApiId: !Ref ApiGatewayRestApi
+        StageName: "devel"
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191101.html" class="u-url">sns</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191101.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-11-01T00:00:00Z" itemprop="datePublished" title="2019-11-01 00:00">2019-11-01 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create topic</em></p>
+<pre><code>$ aws sns create-topic --name &lt;Topic Name&gt;
+$ aws sns list-topics
+$ aws sns get-topic-attributes --topic-arn &lt;Topic ARN&gt;
+</code></pre>
+<p><em>create subscription</em></p>
+<pre><code>$ aws lambda list-functions | jq '.Functions[].FunctionArn'
+
+$ aws sns subscribe --topic-arn &lt;Topic ARN&gt; --protocol lambda --notification-endpoint &lt;Lambda ARN&gt;
+$ aws sns list-subscriptions
+$ aws sns get-subscription-attributes --subscription-arn &lt;Subscription ARN&gt;
+</code></pre>
+<p><em>publish</em></p>
+<pre><code>$ aws sns publish --topic-arn &lt;Topic ARN&gt; --subject "test subject" --message "this is test message"
+</code></pre>
+<p><em>unsubscribe</em></p>
+<pre><code>$ aws sns unsubscribe --subscription-arn &lt;Subscription ARN&gt;
+</code></pre>
+<p><em>delete topic</em></p>
+<pre><code>$ aws sns delete-topic --topic-arn &lt;Topic ARN&gt;
+</code></pre>
+<p><em>create SNS with CloudFormation</em></p>
+<p>prepare yaml file</p>
+<pre><code>$ cat sns.yml
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  MySNSTopic:
+    Type: 'AWS::SNS::Topic'
+  MySubscription:
+    Type: 'AWS::SNS::Subscription'
+    Properties: 
+      Endpoint: !Ref lambdaARN
+      Protocol: lambda
+      TopicArn: !Ref MySNSTopic
+Parameters:
+  lambdaARN:
+    Type: String
+$ aws cloudformation validate-template --template-body file://sns.yml
+</code></pre>
+<p>prepare paremeter file</p>
+<pre><code>$ jq '.' sns.parameter
+[
+  {
+    "ParameterKey": "lambdaARN",
+    "ParameterValue": "&lt;lambda ARN&gt;"
+  }
+]
+</code></pre>
+<p>create stack</p>
+<pre><code>$ aws cloudformation create-stack --template-body file://sns.yml --stack-name &lt;Stack Name&gt; --parameters file://sns.parameter
+</code></pre>
+<p>confirm CloudFormation</p>
+<pre><code>$ aws cloudformation list-stacks
+$ aws cloudformation describe-stacks --stack-name &lt;Stack Name&gt;
+$ aws cloudformation get-template --stack-name &lt;Stack Name&gt; --query 'TemplateBody' | xargs printf
+</code></pre>
+<p>confirm SNS</p>
+<pre><code>$ aws sns list-topics
+$ aws sns list-subscriptions
+</code></pre>
+<p>delete stack</p>
+<pre><code>$ aws cloudformation delete-stack --stack-name &lt;Stack Name&gt;
+$ aws cloudformation list-stacks --query 'StackSummaries[?StackName==`&lt;Stack Name&gt;`]'
+$ aws cloudformation describe-stacks --stack-name &lt;Stack Name&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191027.html" class="u-url">glacier</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191027.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-10-27T00:00:00Z" itemprop="datePublished" title="2019-10-27 00:00">2019-10-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create vault</em></p>
+<pre><code>$ aws glacier create-vault --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier list-vaults --account-id -
+</code></pre>
+<p><em>set vault notification</em></p>
+<pre><code>$ jq '.' vault-notifications.json
+{
+  "SNSTopic": "&lt;ARN of SNS Topic&gt;",
+  "Events": [
+    "ArchiveRetrievalCompleted",
+    "InventoryRetrievalCompleted"
+  ]
+}
+$ aws glacier set-vault-notifications --account-id - --vault-name &lt;Vault Name&gt; --vault-notification-config file://vault-notifications.json
+$ aws glacier get-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>set strategy of retrieval policy to free tier</em></p>
+<pre><code>$ jq '.' retrieval-policy.json 
+{
+  "Rules": [
+    {
+      "Strategy": "FreeTier"
+    }
+  ]
+}
+$ aws glacier set-data-retrieval-policy --account-id - --policy file://retrieval-policy.json
+$ aws glacier get-data-retrieval-policy --account-id -
+</code></pre>
+<p><em>upload archive</em></p>
+<pre><code>$ aws glacier upload-archive --account-id - --vault-name &lt;Vault Name&gt; --body testdata.tar.enc
+$ aws glacier describe-vault --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>retrieve inventory</em></p>
+<pre><code>$ jq '.' inventory-retrieval.json
+{
+  "Type": "inventory-retrieval"
+}
+$ aws glacier initiate-job --account-id - --vault-name &lt;Vault Name&gt; --job-parameters file://inventory-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &lt;Vault Name&gt;
+
+$ aws glacier describe-job --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt;
+$ aws glacier get-job-output --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt; output.json
+</code></pre>
+<p><em>retrieve archive</em></p>
+<pre><code>$ jq '.' archive-retrieval.json
+{
+  "Type": "archive-retrieval",
+  "ArchiveId": "&lt;Archive ID&gt;"
+}
+$ aws glacier initiate-job --account-id - --vault-name &lt;Vault Name&gt; --job-parameters file://archive-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &lt;Vault Name&gt;
+
+$ aws glacier describe-job --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt;
+$ aws glacier get-job-output --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt; output.dat
+</code></pre>
+<p><em>delete archive</em></p>
+<pre><code>$ aws glacier delete-archive --account-id - --vault-name &lt;Vault Name&gt; --archive-id &lt;Archive ID&gt;
+</code></pre>
+<p><em>delete vault notification</em></p>
+<pre><code>$ aws glacier delete-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier get-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>delete vault</em></p>
+<pre><code>$ aws glacier describe-vault --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier delete-vault --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191019.html" class="u-url">s3</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191019.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-10-19T00:00:00Z" itemprop="datePublished" title="2019-10-19 00:00">2019-10-19 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>bucket</em></p>
+<pre><code>$ aws s3api list-buckets
+$ aws s3api create-bucket --bucket mybucketname --region ap-northeast-1 --create-bucket-configuration LocationConstraint=ap-northeast-1
+$ aws s3api delete-bucket --bucket mybucketname
+</code></pre>
+<p><em>file</em></p>
+<pre><code>$ aws s3 ls s3://mybucketname/
+$ aws s3 cp testfile.txt s3://mybucketname/
+$ aws s3 cp s3://mybucketname/testfile.txt testfile2.txt
+$ aws s3 rm s3://mybucketname/testfile.txt
+</code></pre>
+<p><em>versioning</em></p>
+<p>enable and disable versioning for a bucket</p>
+<pre><code>$ aws s3api get-bucket-versioning --bucket mybucketname
+$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Enabled"}'
+$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Suspended"}'
+</code></pre>
+<p>list object versions</p>
+<pre><code>$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt
+$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt --query 'Versions[?IsLatest==`true`].VersionId'
+</code></pre>
+<p>remove all versions for a file</p>
+<pre><code>$ delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix testfile.txt \
+&gt; --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
+
+$ aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
+</code></pre>
+<p><em>bucket notification configuration</em></p>
+<pre><code>$ aws s3api get-bucket-notification-configuration --bucket bucketname
+$ jq . notification.json 
+{
+  "QueueConfigurations": [
+    {
+      "Events": [
+        "s3:ObjectCreated:*"
+      ],
+      "QueueArn": "arn:aws:sqs:&lt;region&gt;:&lt;id&gt;:&lt;queuename&gt;",
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {
+              "Name": "prefix",
+              "Value": "input/"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+$ aws s3api put-bucket-notification-configuration --bucket bucketname --notification-configuration file://notification.json
+</code></pre>
+<p>Before configure bucket notification, add policy to SQS queue like below</p>
+<pre><code>{
+  "Version": "2012-10-17",
+  "Id": "arn:aws:sqs:&lt;region&gt;:&lt;id&gt;:&lt;queuename&gt;/&lt;policyname&gt;",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:&lt;region&gt;:&lt;id&gt;:&lt;queuename&gt;",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:s3:::&lt;bucketname&gt;"
+        }
+      }
+    }
+  ]
+}
+</code></pre>
+<p><em>sample cloudformation template</em></p>
+<pre><code>AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  BucketName:
+    Type: String
+Resources:
+  MyPrivBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: "{{ BucketName }}" 
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      VersioningConfiguration:
+        Status: "Enabled"
+      Tags:
+        - "Key": "Name"
+          "Value": "test"
+</code></pre>
+<p><em>boto3 client</em></p>
+<p>file operation</p>
+<pre><code>import boto3
+import sys
+bucket = "mybucketname"
+try:
+    s3_client = boto3.client('s3')
+    s3_client.upload_file('testfile.txt', bucket, 'dirname/uploaded.txt')
+    s3_client.download_file(bucket, 'dirname/uploaded.txt', 'downloaded.txt')
+    s3_client.delete_object(Bucket = bucket, Key='dirname/uploaded.txt')
+except:
+    print ("error")
+    sys.exit()
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="next">
+                <a href="aws-1.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

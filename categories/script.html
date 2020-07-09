@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about script | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/script.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag script" hreflang="en" href="script.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about script</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="script.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180604.html" class="u-url">perl</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180604.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-04T00:00:00Z" itemprop="datePublished" title="2018-06-04 00:00">2018-06-04 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>リストの内容だけ繰り返す</p>
+<pre><code>#! /usr/bin/perl
+
+@list = (' item1 ', ' item2 ');
+
+foreach $val (@list) {
+  s/ //g;
+  print "$val\n";
+}
+</code></pre>
+<p>リストの内容だけ繰り返す(特殊変数を使用)</p>
+<pre><code>#! /usr/bin/perl
+
+@list = (' item1 ', ' item2 ');
+
+foreach (@list) {
+  s/ //g;
+  print "$_\n";
+}
+
+#! /usr/bin/perl
+
+@list = ('item1', 'item2');
+myfunction(@list);
+
+sub myfunction {
+  foreach ( @_ ) {
+    print "$_\n";
+  }
+}
+</code></pre>
+<p>標準入力から入ったものをそのまま出力1</p>
+<pre><code>#! /usr/bin/perl
+
+foreach (&lt;&gt;) {
+  print $_;
+}
+</code></pre>
+<p>while</p>
+<pre><code>while (&lt;&gt;) {
+  s/[\r\n]//g;                  # 改行コードを除去。
+  next if ( $_ eq "" );         # 空行ならスキップ
+  next if ( /^#/ );             # コメント行はスキップ
+  my ($var1, $var2) = split( /\s+/, $_);
+  :
+}
+</code></pre>
+<p>ファイルハンドラ</p>
+<pre><code>#!/usr/bin/perl
+
+$filename = "filename.txt";
+
+open(my $fh, "&lt;", $filename) 
+  or die "cannot open &lt; ".$filename.": $!";
+
+while ( &lt;$fh&gt; ) {
+  s/[\r\n]//g;                  # 改行コードを除去。
+  next if ( $_ eq "" );         # 空行ならスキップ
+  next if ( /^\s*#/ );          # コメント行ならスキップ
+
+  :
+  :
+
+ }
+
+close($fh)
+  or warn "close failed: $!";;
+</code></pre>
+<p>引数の利用</p>
+<pre><code>#! /usr/bin/perl
+
+my $count = @ARGV;
+if ( $count == 0 ) {
+  print "引数がないっす";
+}
+
+foreach (@ARGV) {
+  print "$_\n";
+}
+</code></pre>
+<p>オプションと引数</p>
+<pre><code>#! /usr/bin/perl
+
+use Getopt::Std;
+
+my $flg=0;
+getopts("f:tdh", \%opts);
+
+if ($opts{'f'}) {
+  $flg = $flg + 1;
+  print $opts{f};
+  print "\n";
+}
+if ($opts{'t'}) {
+  $flg = $flg + 2;
+}
+if ($opts{'d'}) {
+  $flg = $flg + 4;
+}
+usage() if ($opts{'h'}) ;
+
+print "$flg\n";
+
+my $count = @ARGV;
+print "$count\n";
+foreach (@ARGV) {
+  print "$_\n";
+}
+
+sub usage {
+  print "help message...\n";
+}
+</code></pre>
+<p>http</p>
+<pre><code>#!/usr/bin/perl
+
+use LWP::UserAgent;
+use HTTP::Request;
+use HTTP::Response;
+
+$url='http://xxx.xxx.xxx.xxx/xxx.html';
+
+my $proxy = new LWP::UserAgent;
+my $req = HTTP::Request-&gt;new('GET' =&gt; $URL);
+my $res = $proxy-&gt;request($req);
+
+$source = $res-&gt;content;
+$source =~ s/&lt;.*?&gt;//g;
+</code></pre>
+<p>日付について1</p>
+<pre><code>#! /usr/bin/perl
+
+my @week = qw(Sun Mon Tue Wed Thu Fri Sat);
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+#my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+
+$year = $year + 1900;
+$mon  = $mon + 1;
+$yday = $yday + 1;
+
+print "$year-$mon-$mday $hour:$min:$sec\n";
+print "$year-D$yday $week[$wday]\n";
+if ( $isdst ) { print "summer time\n"; }
+</code></pre>
+<p>日付について2</p>
+<pre><code>#! /usr/bin/perl
+
+use POSIX;
+
+my $isleap = 0;
+my @mdays  = (31,28,31,30,31,30,31,31,30,31,30,31);
+my $ydays;
+my $message;
+
+my ( $year, $month, $day, $dow, $downum, $doy, $woy ) = split( /\,/, strftime( "%Y,%m,%d,%A,%w,%j,%W", localtime() ) );
+
+if ( ( $year % 4 ) == 0 ) {
+  if ( ( ($year % 100) != 0 ) || ( ($year % 400) == 0 ) ) {
+    $isleap = 1;
+    $mdays[1] = 29;
+  }
+}
+
+$ydays  += $_ for @mdays;
+#$month  += 0;
+#$day    += 0;
+#$doy    += 0;
+#$woy    += 0;
+
+$message = "今日は $year年$month月$day日、第$woy週の$dowです。\n";
+if ( $isleap ) { $message = $message."閏年なので"; }
+$message = $message."年間日数 $ydays日あるうちの $doy日目です。";
+
+print $message;
+exit;
+</code></pre>
+<p>日付について3</p>
+<pre><code>#! /usr/bin/perl
+
+use Time::Local;
+
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()+3600);
+
+my $time = timelocal( $sec, $min, $hour, $mday, $mon, $year );
+
+my $string =  localtime($time);
+
+print $string;
+exit;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180511.html" class="u-url">sqlite by python</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180511.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-11T00:00:00Z" itemprop="datePublished" title="2018-05-11 00:00">2018-05-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>pythonでsqliteを利用するとき
+<a href="http://docs.python.jp/2/library/sqlite3.html">sqlite 3モジュール</a>
+を使う</p>
+<p>簡単なpythonスクリプトの例 (古い環境だと、ライブラリ名はsqliteらしい)</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqlite_sample.py"></script><p>sqliteのデータを
+<a href="https://matplotlib.org">matplotlib</a>
+を使ってグラフにプロットする簡単な例。</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"></script>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170913.html" class="u-url">sample of simple bash scripts</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170913.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-09-13T00:00:00Z" itemprop="datePublished" title="2017-09-13 00:00">2017-09-13 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>ファイルバックアップスクリプト</em></p>
+<p>引数に与えられたファイルを3ケタの連番をつけてコピーする。
+まだいま一ついけてない。</p>
+<p>gistの引用のテストをかねて。</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"></script>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

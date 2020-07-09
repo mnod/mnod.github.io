@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about multimedia)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/multimedia.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>mpd</title><link>https://mnod.github.io/posts/20200420.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;&lt;a href="https://www.musicpd.org/"&gt;mpd&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Music Player Daemon. server-client architecture.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;mpd.conf&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You can specify audio output type and device in /etc/mpd.conf. Various types are available.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;audio_output {
+        type            "alsa"
+        name            "My ALSA Device"
+    device          "hw:1,0"
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;mpc&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;command line interface of mpd&lt;/p&gt;
+&lt;p&gt;option&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-h &amp;lt;host&amp;gt; # specify server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;subcommands&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;play
+pause
+next
+prev
+
+ls &amp;lt;directory&amp;gt; # lists all files in directory
+listall &amp;lt;file&amp;gt; # lists all files
+add &amp;lt;file&amp;gt; # add file to queue
+clear # empty the queue
+
+search &amp;lt;type&amp;gt; &amp;lt;query&amp;gt; # for example: $ mpc search filename ENYA
+find &amp;lt;type&amp;gt; &amp;lt;query&amp;gt; # similar to search. but match exactly
+list &amp;lt;type&amp;gt; # shows a list of all tags of type
+update &amp;lt;path&amp;gt; # scans for updated files in the path
+
+lsplaylists # lists available playlists
+playlist &amp;lt;playlist name&amp;gt; # lists all songs in playlist
+rm &amp;lt;playlist&amp;gt; # remove playlist
+save &amp;lt;playlist&amp;gt; # save playlist
+
+load &amp;lt;playlist&amp;gt; # load &amp;lt;playlist&amp;gt; in the queue
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.namelessdev.mpdroid&amp;amp;hl=en"&gt;MPDroid&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;client for android&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://apps.apple.com/us/app/maximummpd/id1437096437#?platform=iphone"&gt;MaximumMPD&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;client for iOS&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="https://kodi.wiki/view/Add-on:MPD_Client"&gt;KODI Add-on:MPD Client&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Add-on of KODI formerly known as XBMC.
+If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.&lt;/p&gt;&lt;/div&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200420.html</guid><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate></item><item><title>vlc</title><link>https://mnod.github.io/posts/20200409.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;http interface&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;VLC(or cvlc) could be controlled with http request. See &lt;a href="https://wiki.videolan.org/VLC_HTTP_requests/"&gt;VLC HTTP requests&lt;/a&gt; for detail&lt;/p&gt;
+&lt;p&gt;start cvlc with http interface&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cvlc
+-I HTTP # start http interface
+--http-password &amp;lt;password&amp;gt; # specify http password
+--aout alsa --alsa-audio-device plughw:2,0 # specify audio output device
+vlc://quit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can control vlc with not only web browser but also command line tool&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl
+-I # fetche the headers only
+--user ":&amp;lt;mypassword&amp;gt;" # specify http passowrd (user name is null)
+http://127.0.0.1:8080/requests/status.xml 
+?command=pl_play
+?command=pl_pause
+?command=volume&amp;amp;val=+&amp;lt;int&amp;gt;
+?command=volume&amp;amp;val=-&amp;lt;int&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200409.html</guid><pubDate>Thu, 09 Apr 2020 00:00:00 GMT</pubDate></item></channel></rss>

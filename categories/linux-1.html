@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about linux (old posts, page 1) | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/linux-1.html">
+<link rel="prev" href="linux-2.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag linux" hreflang="en" href="linux.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about linux (old posts, page 1)</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="linux.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170325.html" class="u-url">kvm virtualization</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170325.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-25T00:00:00Z" itemprop="datePublished" title="2017-03-25 00:00">2017-03-25 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>qcow2 イメージ</em></p>
+<p>作成。</p>
+<pre><code>qemu-img create -f qcow2 image.qcow2 xxG
+</code></pre>
+<p>シュリンク。仮想マシンを止めて実行する。</p>
+<pre><code>mv image.qcow2 image.qcow2.bak
+qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
+</code></pre>
+<p><em>qemu-kvm コマンドのよく使うオプション</em></p>
+<p>cdイメージから起動</p>
+<pre><code>-cdrom image.iso -boot d
+</code></pre>
+<p>cpuとメモリの指定</p>
+<pre><code>-smp 2 -m 2048
+</code></pre>
+<p>kvmでwindows10を使用する時、私の環境(Core i5 650)だと下記のように指定することで、cpu負荷が落ち着いた。</p>
+<pre><code>-cpu core2duo,+lahf_lm
+</code></pre>
+<p>その後、試行錯誤し、現在は下記の通り指定している。</p>
+<pre><code>-cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+</code></pre>
+<p>(仮想)ストレージの指定。準仮想化ドライバを利用すると、スループットが上がるらしい。
+(Windows等で利用する場合は、仮想マシン上でドライバを入れる必要がある。)</p>
+<pre><code>-drive if=virtio,file=image.qcow2
+</code></pre>
+<p>ネットワークインターフェースの指定(従来方式)</p>
+<pre><code>-net nic,macaddr=xx:xx:xx:xx:xx:xx,model=virtio
+-net tap,ifname=vnet0
+</code></pre>
+<p>vncコンソールとキーマップの指定。</p>
+<pre><code>-vnc 192.168.xx.xx:xx -k ja
+</code></pre>
+<p>コンソールのマウスカーソルの位置がずれるときは以下を指定
+(WindowsではCPU負荷が高くなるらしい)</p>
+<pre><code>-usbdevice tablet
+</code></pre>
+<p>デーモンとして起動</p>
+<pre><code>-daemonize
+</code></pre>
+<p>物理デバイスのパススルー</p>
+<p><em>example</em></p>
+<p>boot ultra lite linux distribution microcore linux for network configure test</p>
+<pre><code>kvm -drive if=virtio,file=linux-microcore-6.4.img -netdev tap,id=tap0 -device e1000,netdev=tap0,mac=52:54:00:12:34:56
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170311.html" class="u-url">CentOS7 basic operation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170311.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-11T00:00:00Z" itemprop="datePublished" title="2017-03-11 00:00">2017-03-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>パッケージ更新</p>
+<pre><code>uname -a
+yum check-update
+yum update
+</code></pre>
+<p>chronyの設定</p>
+<pre><code>yum list chrony
+ls -l /etc/chrony.conf*
+cp -pi /etc/chrony.conf /etc/chrony.conf.000
+ls -l /etc/chrony.conf*
+diff -u /etc/chrony.conf{,.000}
+
+systemctl status chronyd.service
+ps -ef | grep chronyd | grep -v grep
+chronyc sources
+chronyc tracking
+chronyc sourcestats
+chronyc -a makestep
+
+systemctl restart chronyd.service
+</code></pre>
+<p>サービスの自動起動設定と解除</p>
+<pre><code>systemctl list-unit-files  -t service
+systemctl is-enabled chronyd.service
+
+systemctl disable chronyd.service
+systemctl enable chronyd.service
+</code></pre>
+<p>パッケージ削除と確認</p>
+<pre><code>yum remove chrony
+yum list chrony
+</code></pre>
+<p>パッケージ導入</p>
+<pre><code>yum install ntp
+yum list ntp
+</code></pre>
+<p>サービス起動</p>
+<pre><code>systemctl status ntpd.service
+systemctl start ntpd.service
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170305.html" class="u-url">x window system tools</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170305.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-05T00:00:00Z" itemprop="datePublished" title="2017-03-05 00:00">2017-03-05 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>xmodmap</em></p>
+<p>Xでキーマップのカスタマイズをするコマンド</p>
+<p>[shift]+[ins]でペースト操作をしたいのに、自宅で使っているキーボードでは、[ins]が[fn]と[del]の同時押しになっている。
+そんな時に、xmodmapを活用すると便利。</p>
+<p>設定をファイルに書き込んでおいて、下記のようにロードする。</p>
+<pre><code>xmodmap ~/.xmodmaprc
+</code></pre>
+<p><em>xrandr</em></p>
+<p>Xでディスプレイの表示解像度を変更するコマンド
+表示するディスプレイの切り替えもできる。</p>
+<p>使用可能なモニターと設定の表示</p>
+<pre><code>xrandr
+</code></pre>
+<p>「HDMI」モニターを、「VGA」モニターの右側に表示する</p>
+<pre><code>xrandr --output HDMI --right-of VGA
+</code></pre>
+<p>「HDMI」モニターへの表示を停止する。</p>
+<pre><code>xrandr --output HDMI --off
+</code></pre>
+<p>解像度の変更</p>
+<pre><code>xrandr --output HDMI --mode 1366x768
+</code></pre>
+<p>デフォルトへ変更</p>
+<pre><code>xrandr --output HDMI --auto
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170304.html" class="u-url">cpu governor on raspbian</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170304.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-03-04T00:00:00Z" itemprop="datePublished" title="2017-03-04 00:00">2017-03-04 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>configure cpu governor</em></p>
+<p>cpu情報の確認</p>
+<pre><code>cat /proc/cpuinfo
+</code></pre>
+<p>cpuクロック関連ツール導入</p>
+<pre><code>apt-get install cpufrequtils
+</code></pre>
+<p>現在のクロックやガバナの表示</p>
+<pre><code>cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_min_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+</code></pre>
+<p>状態確認</p>
+<pre><code>cpufreq-info
+cpufreq-info -p
+</code></pre>
+<p>ガバナの変更</p>
+<pre><code>cpufreq-set -g ondemand
+</code></pre>
+<p>os起動時のガバナの指定</p>
+<pre><code>cp -pi /usr/share/doc/cpufrequtils/examples/cpufrequtils.sample /etc/default/cpufrequtils
+vi /etc/default/cpufrequtils
+
+service cpufrequtils restart
+</code></pre>
+<p><em>Disable swap on raspbian buster</em></p>
+<pre><code>systemctl status dphys-swapfile
+
+systemctl stop dphys-swapfile
+systemctl is-active dphys-swapfile
+
+systemctl disable dphys-swapfile
+systemctl is-enabled dphys-swapfile
+
+rm /var/swap
+</code></pre>
+<p><em>Use tmpfs</em></p>
+<pre><code>mount -t tmpfs tmpfs &lt;mount point&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161016.html" class="u-url">basic commands usage</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20161016.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-16T00:00:00Z" itemprop="datePublished" title="2016-10-16 00:00">2016-10-16 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>よく使う基本的コマンドの使用パターンを記載。</p>
+<p><em>sort</em></p>
+<p>IPv4アドレスのソート例</p>
+<pre><code>... | sort -t. -k1n -k2n -k3n -k4n
+</code></pre>
+<p>一部一致した行の行数をそれぞれ数える</p>
+<pre><code>awk '{print $2 $3}' filename | uniq -c
+</code></pre>
+<p><em>uniq</em></p>
+<p>ソートして重複行を除外</p>
+<pre><code>... | sort | uniq
+</code></pre>
+<p><em>seq</em></p>
+<p>通番の範囲で繰り返して実行</p>
+<pre><code>for num in `seq 0 7`; do
+ping -c 1 192.168.0.1${num}
+done
+</code></pre>
+<p><em>grep</em></p>
+<p>ログ確認</p>
+<pre><code>grep -i -E "crit|emer|alert|err|warn" /var/log/messages
+dmesg | grep -i -E "crit|emer|alert|err|warn"
+</code></pre>
+<p>コメント行と空行を除く</p>
+<pre><code>grep -E -v "^#|^$" file
+</code></pre>
+<p>出力を抑止(リターンコード: マッチしたら0、しなかったら1、エラーは2)</p>
+<pre><code>grep -q pattern file
+</code></pre>
+<p>出力の前にファイル名を表示しない</p>
+<pre><code>grep -h pattern file1 file2 ....
+</code></pre>
+<p><em>cat</em></p>
+<p>制御文字(タブ文字、改行文字を含む)を含めて、表示する</p>
+<pre><code>cat -vte filename
+</code></pre>
+<p>行番号を表示</p>
+<pre><code>cat -n filename
+</code></pre>
+<p><em>script</em></p>
+<p>作業ログの取得</p>
+<pre><code>script [-a] [-c command] filename
+</code></pre>
+<p><em>nohup</em></p>
+<p>ジョブをバックグラウンドで動かし、ログアウトしても続行させる。(nohupさせないと、ログアウトしたらジョブが終了する。)
+cshの埋め込みコマンドにも同名のものがある。</p>
+<pre><code>nohup command arg1 arg2 ... &gt; logfile 2&gt;&amp;1 &amp;
+</code></pre>
+<p><em>tail</em></p>
+<p>GNUのtailは複数のファイルを与えることができる</p>
+<pre><code>tail -n 5 file1 file2 ...
+</code></pre>
+<p>追加されたデータを表示する</p>
+<pre><code>... | tail -f
+</code></pre>
+<p><em>mkisofs</em></p>
+<p>isoイメージファイル作成</p>
+<pre><code>mkisofs -r -J -o filename.iso dirname
+</code></pre>
+<p><em>col</em></p>
+<p>manの出力からバックスペースを削除してテキストに出力</p>
+<pre><code>man man | col -b &gt; outfile
+</code></pre>
+<p><em>script</em></p>
+<p>scriptでログを取得し、エスケープシーケンスを適切に処理して閲覧する。</p>
+<pre><code>script [-c command] [-a] [logfile]
+less -R logfile
+</code></pre>
+<p><em>date</em></p>
+<p>3週間前の日付を表示</p>
+<pre><code>date --date "3 weeks ago" "+%Y%m%d"
+</code></pre>
+<p>昨日の日付を表示</p>
+<pre><code>date --date yesterday "+%Y%m%d"
+</code></pre>
+<p>or</p>
+<pre><code>TEMP_TZ=$TZ
+export TZ=JST+15
+yesterday=`date +%Y%m%d`
+export TZ=$TEMP_TZ
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161015.html" class="u-url">dump and restore</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20161015.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-15T00:00:00Z" itemprop="datePublished" title="2016-10-15 00:00">2016-10-15 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>dumpとrestoreは、ファイルシステムレベルでバックアップ、リストアを行います。対応してるのはext2等に限られます。</p>
+<p>他のOS、他のファイルシステムでも、同様のアプリケーションがあります。(<a href="https://www.freebsd.org/cgi/man.cgi?dump(8)">FreeBSDの例</a>)</p>
+<p>以下、使い方の例。</p>
+<p>レベル0バックアップ(フルバックアップ)
+ここではdumpdatesファイルを、デフォルトの/etc配下ではなく、/dirに保存している。</p>
+<pre><code>dump -0u -D /dir/dumpdates -f filename.dump /dev/sdx
+</code></pre>
+<p>レベル0からの増分バックアップする際のダンプレベルの例</p>
+<pre><code>0 1 1 1 1 . . .
+</code></pre>
+<p>前回からの差分バックアップする際のダンプレベルの例</p>
+<pre><code>0 1 2 3 4 . . .
+</code></pre>
+<p>ハノイの塔アルゴリズムの例</p>
+<pre><code>0 3 2 5 4 7 6 9 8  1 3 2 5 4 7 6 9 8  1 3 2 . . .
+レベル0のフルバックアップは長期保存。
+レベル1を週次で取得し、以後のレベルを日次で実施するといった運用。
+</code></pre>
+<p>一括リストア。
+フルリストアの後、適したダンプレベルのリストアを順に行う。</p>
+<pre><code>cd /mnt
+restore -rf filename.dump
+:
+rm restoresymtable
+ハノイの塔アルゴリズムで増分バックした場合:
+レベル8までリストアする例: 0 (1) 2 4 6 8
+レベル9までリストアする例: 0 (1) 2 4 6 9
+</code></pre>
+<p>特定ファイルのみリストア</p>
+<pre><code>restore -xf filename.dump ./file
+</code></pre>
+<p>対話モードで選択してリストア</p>
+<pre><code>cd /mnt
+restore -if filename.dump
+&gt; cd dir
+&gt; ls
+&gt; add file
+&gt; extract
+</code></pre>
+<p>gzipで圧縮し、ssh転送してリモートホストにバックアップ</p>
+<pre><code>dump -0uf - /mountpoint | gzip -c | ssh user@remotehost dd of=/dir/filename.gz
+ssh user@remotehost dd if=/dir/filename.gz | gzip -cd | restore -rf -
+</code></pre>
+<p>gzipで圧縮し、ssh転送してリモートホストでリストア</p>
+<pre><code>dump -0uf - /mountpoint | gzip -c | ssh user@remotehost 'gzip -cd | restore -rf -'
+または
+ssh user@remotehost 'dump -0uf - /mountpoint | gzip -c' | gzip -cd | restore -rf -
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161008.html" class="u-url">rsync</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20161008.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-08T00:00:00Z" itemprop="datePublished" title="2016-10-08 00:00">2016-10-08 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://download.samba.org/pub/rsync/rsync.html">rsync</a> は同期ツールで、バックアップをとるのにとても重宝します。</p>
+<p>以下、使い方のメモ。</p>
+<p>/src配下のdirディレクトリを、/dst配下のdirディレクトリとしてコピー。
+(/src/dirの内容を、/dst/dirの中にコピー。)</p>
+<pre><code>rsync -av /src/dir /dst
+or
+rsync -av /src/dir/ /dst/dir
+</code></pre>
+<p>コピー元で削除されたファイルを、コピー先で削除する。</p>
+<pre><code>rsync -av --delete /src/dir /dst
+</code></pre>
+<p>sshを介して、remotehostの内容をローカルにコピーする。</p>
+<pre><code>rsync -av -e ssh user@remotehost:/dst /src/dir 
+(この場合、リモート側にもrsyncをインストールする必要がある。)
+</code></pre>
+<p>その他オプション</p>
+<pre><code>-n          # テスト実行
+--bwlimit=n # 帯域制限(kbps)
+</code></pre>
+<p>参考: scp の帯域制限は -l n(kbps)</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161005.html" class="u-url">dd</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20161005.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-05T00:00:00Z" itemprop="datePublished" title="2016-10-05 00:00">2016-10-05 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://linuxjm.osdn.jp/html/GNU_coreutils/man1/dd.1.html">dd</a> はディスクイメージを保存・リストアするのに便利なコマンドです。</p>
+<p>ifを指定しなければ標準入力を使用。同様に、ofを指定しなければ標準出力を使用します。</p>
+<p>以下、使い方をメモしておきます。
+(コピー&amp;ペーストで利用する場合は充分気をつけて利用してください)</p>
+<p>ディスクイメージをfilename{へ保存, リストア}する例。
+(リストアのコマンドは、ベンダ等から配布されているisoイメージ等をusbメディア等
+に書き込む際等によく使用されます)</p>
+<pre><code>dd if=/dev/sdx of=filename bs=1M
+dd if=filename of=/dev/sdx bs=1M
+</code></pre>
+<p>gzipで圧縮して{保存, リストア}する例。</p>
+<pre><code>dd if=/dev/sdx bs=1M | gzip -c filename.gz
+gzip -cd filename.gz | dd of=/dev/sdx bs=1M
+</code></pre>
+<p>ディスクイメージを、gzipで圧縮・転送し、remotehostのfilename.gz{へ保存, からリ
+ストア}する例。</p>
+<pre><code>dd if=/dev/sdx bs=1M | gzip -c | ssh user@remotehost dd of=filename.gz
+ssh username@remotehost dd if=filename.gz | gzip -cd | dd of=/dev/sdx bs=1M
+</code></pre>
+<p>ディスクイメージを、gzipで圧縮・転送し、remotehostのディスク{へ, から}直接リス
+トアする。</p>
+<pre><code>dd if=/dev/sdx bs=1M | gzip -c | ssh user@remotehost 'gzip -cd | dd of=/dev/sdx bs=1M'
+または
+ssh user@remotehost 'dd if=/dev/sdx bs=1M | gzip -c' | gzip -cd | dd of=/dev/sdx bs=1M
+</code></pre>
+<p><em>create empty file</em></p>
+<pre><code>dd if=/dev/zero of=file.img bs=1M count=512
+mkfs -t ext4 file.img
+mount -o loop file.img /mnt
+</code></pre>
+<p><em>sparse file</em></p>
+<pre><code>dd if=/dev/zero of=file.img bs=1M count=0 seek=512
+ls -lhs file.img
+tar cSf tarfile.tar file.img
+</code></pre>
+<p>These image files could be used as block devices by loopback device.
+At first find available loop device. Then use it.</p>
+<pre><code>$ losetup -f
+$ losetup /dev/loop0 file.img
+$ losetup -a
+
+$ mkfs -t ext2 /dev/loop0 100
+$ mount -t ext2 /dev/loop0 /mnt
+$ umount /dev/loop0
+$ losetup -d /dev/loop0
+</code></pre>
+<p>When you mount an image backup file which has partition table, it need to specify offset:</p>
+<pre><code>$ fdisk -l file.img
+$ mount -o loop,ro,offset=$((sector_size*start_position)) file.img /mountpoint
+</code></pre>
+<p>or</p>
+<pre><code>$ kpartx -a -v file.img 
+$ mount /dev/mapper/loop0p1 /mountpoint
+$ umount /mountpoint
+$ kpartx -d -v file.img
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161001.html" class="u-url">docker life cycle</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20161001.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-01T00:00:00Z" itemprop="datePublished" title="2016-10-01 00:00">2016-10-01 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>ライフサイクルをざっと。</p>
+<p>dockerデーモンの起動と動作確認。ubuntuの場合。</p>
+<pre><code>$ sudo service docker status
+$ sudo service docker start
+$ sudo docker run --rm hello-world
+</code></pre>
+<p>リポジトリに登録されているイメージを取得する。</p>
+<pre><code>$ sudo docker pull debian:latest
+Pulling repository debian
+6845b83c79fb: Download complete
+575489a51992: Download complete
+Status: Downloaded newer image for debian:latest
+$ 
+$ sudo docker images debian
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+debian              latest              6845b83c79fb        13 days ago         125.1 MB
+$
+</code></pre>
+<p>コンテナを作成して実行。コンソール接続してbashを実行する例。</p>
+<pre><code>$ sudo docker run -it debian:latest /bin/bash
+root@06e1a850e923:/# 
+root@06e1a850e923:/# w
+ 22:20:47 up 29 days, 14:32,  0 users,  load average: 0.36, 0.29, 0.24
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root@06e1a850e923:/#
+root@06e1a850e923:/# uname -a
+Linux 06e1a850e923 3.13.0-63-generic #103-Ubuntu SMP Fri Aug 14 21:42:59 UTC 2015 x86_64 GNU/Linux
+root@06e1a850e923:/#
+root@06e1a850e923:/# cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="8"
+VERSION="8 (jessie)"
+ID=debian
+HOME_URL="http://www.debian.org/"
+SUPPORT_URL="http://www.debian.org/support/"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@06e1a850e923:/#
+</code></pre>
+<p>コンソール接続したコンテナから一旦切断する例。</p>
+<pre><code>root@xxxxxxxxxxxx:/# [Ctl+p]-[Ctl+q]
+$ 
+$ sudo docker ps | grep debian
+xxxxxxxxxxxx        debian:latest       "/bin/bash"         About a minute ago   Up About a minute                       berserk_mayer
+$
+</code></pre>
+<p>再接続する例。</p>
+<pre><code>$ sudo docker attach xxxxxxxxxxxx
+root@xxxxxxxxxxxx:/#
+</code></pre>
+<p>コンテナを終了する例。</p>
+<pre><code>root@06e1a850e923:/# exit
+exit
+$
+</code></pre>
+<p>終了したコンテナを再起動する例。</p>
+<pre><code>$ sudo docker ps -a | grep debian
+xxxxxxxxxxxx        debian:latest            "/bin/bash"            13 minutes ago      Exited (0) 13 seconds ago                                          berserk_mayer
+$
+$ sudo docker start -i xxxxxxxxxxxx
+root@xxxxxxxxxxxx:/# 
+root@xxxxxxxxxxxx:/# exit
+exit
+$
+</code></pre>
+<p>コンテナの状態確認。</p>
+<pre><code>$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+$ 
+$ sudo docker ps -a | grep debian
+06e1a850e923        debian:latest            "/bin/bash"            2 minutes ago       Exited (0) 47 seconds ago                                      evil_kowalevski
+
+$
+</code></pre>
+<p>copy file from/to docker container</p>
+<pre><code>$ sudo docker cp xxxxxxxxxxxx:/dirname/filename destination
+$ sudo docker cp source xxxxxxxxxxxx:/dirname/filename
+</code></pre>
+<p>コンテナの削除。</p>
+<pre><code>$ sudo docker rm 06e1a850e923
+06e1a850e923
+$ 
+$ sudo docker ps -a | grep debian
+$
+</code></pre>
+<p>イメージの削除。</p>
+<pre><code>$ sudo docker rmi debian:latest
+Untagged: debian:latest
+Deleted: 6845b83c79fb642ed6af06cceaca042e155717ca8eb0b5cffa9c43f1f7f70348
+Deleted: 575489a51992d5d30976ff5ba7f7eabdc134acfb51c79ff48883089009594e64
+$
+$ sudo docker images debian
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+$
+</code></pre>
+<p>dockerイメージの作成</p>
+<pre><code>$ mkdir project &amp;&amp; cd project
+$ 
+$ vi Dockerfile
+$ 
+$ sudo docker build -t imagename:tagname . | tee build.log
+$ 
+$ sudo docker images imagename
+$
+</code></pre>
+<p>When you want to use proxy, use --build-arg option like bellow</p>
+<pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
+</code></pre>
+<p>When new image name is <none>, then rename it as below</none></p>
+<pre><code>$ sudo docker tag xxxxxxxxxxxx imagename:tagname
+$ 
+$ sudo docker images imagename
+</code></pre>
+<p>不要なイメージの一括削除</p>
+<pre><code>sudo docker images | awk '$1~/&lt;none&gt;/ {print}'
+sudo docker images | awk '$1~/&lt;none&gt;/ {print $3}' | xargs sudo docker rmi
+</code></pre>
+<p>使用するdockerfileの簡単な例。</p>
+<pre><code>From debian:latest
+RUN apt-get update &amp;&amp; apt-get install -y \
+    screen \
+    openssl \
+    vim \
+   make \
+&amp;&amp; apt-get clean \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160911.html" class="u-url">removal of old kernel packages in ubuntu</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20160911.html" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-11T00:00:00Z" itemprop="datePublished" title="2016-09-11 00:00">2016-09-11 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>新しいカーネルをインストールした後、元のカーネルパッケージを削除せずそのままにしておくと、/bootを小さく切っている場合など、ディスク領域を圧迫してくる場合があります。
+そんな時は、使用していない古いカーネルを削除することで、ディスクに空きを作ることができます。</p>
+<p>以下、Ubuntuで、使用していない古いカーネルを削除する流れです。</p>
+<p>現在のディスク使用状況を確認</p>
+<pre><code>$ df -h /boot
+</code></pre>
+<p>現在のカーネルの情報を確認</p>
+<pre><code>$ uname -a
+</code></pre>
+<p>インストールされているカーネルパッケージのバージョンを確認し、不要なバージョンがどれなのかを調べる。</p>
+<pre><code>$ dpkg -l | awk '$2~/^linux/ {print}'
+</code></pre>
+<p>バージョンを指定して、削除対象のパッケージを抽出する
+(カーネルだけでなく、カーネルソース等の関連パッケージも削除対象とする)</p>
+<pre><code>$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx
+</code></pre>
+<p>削除を実行</p>
+<pre><code>$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx | xargs sudo aptitude -y purge
+</code></pre>
+<p>不要なパッケージが削除されたことを確認</p>
+<pre><code>$ dpkg -l | awk '$2~/^linux/ {print $2}' | grep x.xx.x-xx
+</code></pre>
+<p>現在のディスク使用状況を確認</p>
+<pre><code>$ df -h /boot
+</code></pre>
+<p>以上、不要なバージョンを全て削除するまで繰り返して実行する。</p>
+<p>自分は、現在使っているカーネルの他に、何か問題が発生した際の保険として、一世代前のカーネルも削除せずに残すようにしています。</p>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="linux-2.html" rel="prev">Newer posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

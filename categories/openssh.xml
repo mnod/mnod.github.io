@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about openssh)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/openssh.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>openssh</title><link>https://mnod.github.io/posts/20170319.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;openssh関連ツールについて。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;ssh 鍵ペアの作成&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;ED25519を使うには比較的新しい環境が必要となる(TeraTerm、PuTTyでは既に対応済み)
+鍵作成時に鍵長は指定できない(256ビット)。
+(ssl証明書ではまだed25519に対応してない模様。ECDSAを使わないならRSAを使わざるをえない。)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh-keygen -t ed25519
+ssh-keygen -l -f ~/.ssh/id_ed25519
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sshサーバへ、公開鍵を転送&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat ~/.ssh/&amp;lt;pubkey&amp;gt; | ssh user@host 'cat &amp;gt;&amp;gt; ~/.ssh/authorized_keys'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;known_hostsに登録されているsshサーバ公開鍵の確認と削除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh-keygen -F distname
+ssh-keygen -R distname
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;recreate public key from private key&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Once create pem format public key from private key.  Then import it and output as openssh format key.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen -e -f id_rsa.testkey &amp;gt; id_rsa.testkey.pub.pem
+$ ssh-keygen -i -f id_rsa.testkey.pub.pem &amp;gt; id_rsa.testkey.pub
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接続時のオプション&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh host
+-l user
+-v vervose messages
+-i private key
+-p port
+-X # allow x11 forwarding
+-L localport:remotehost:remoteport # local port forwarding
+-R localport:remotehost:remoteport # remote port forwarding
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;example of port forwarding&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;local port forwarding to access remote rdphost
+$ ssh username@remotehost -L 13389:rdphost:3389
+$ freerdp /v:127.0.0.1:13389
+
+remote port forwarding to allow rdp access
+&amp;lt;localhost &amp;gt;$ ssh username@remotehost -R 13389:rdphost:3389
+&amp;lt;remotehost&amp;gt;$ freerdp /v:127.0.0.1:13389
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;ssh ca&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;create ca certificate&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen -t ed25519 -f ca.key
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;make client certificate (sign client public key with ca key)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen -s ca.key -I certificate-test -n username id_rsa.pub
+$ ssh-keygen -L -f id_rsa-cert.pub
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;send public ca key to ssh server&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ scp -p ca.key.pub username@remotehost:/home/username
+
+$ sudo mv ca.key.pub /etc/ssh/ca.key.pub
+$ sudo chown root:root /etc/ssh/ca.key.pub
+$ echo "TrustedUserCAKeys /etc/ssh/ca.key.pub" | sudo tee -a /etc/ssh/sshd_config
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;make host certificate (sign host public key with ca key)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ scp -p username@remotehost:/etc/ssh/ssh_host_ed25519_key.pub ssh_host_ed25519_key.pub
+
+$ ssh-keygen -s ca.key -h -I certificate-test ssh_host_ed25519_key.pub
+$ ssh-keygen -L -f ssh_host_ed25519_key-cert.pub
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;send host certificate back to ssh server&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ scp -p ssh_host_ed25519_key-cert.pub username@remotehost:/home/username/ssh_host_ed25519_key-cert.pub
+
+$ sudo mv ssh_host_ed25519_key-cert.pub /etc/ssh/ssh_host_ed25519_key-cert.pub
+$ sudo chown root:root /etc/ssh/ssh_host_ed25519_key-cert.pub
+$ echo "HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub" | sudo tee -a /etc/ssh/sshd_config
+
+$ service sshd restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;add public key to known host&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; ~/.ssh/known_hosts
+&amp;gt; @cert-authority *.example.com ssh-ed25519 ...(content of ca.key.pub)...
+&amp;gt; EOF
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;.ssh/config&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;.ssh/config ファイルにあらかじめ設定を書いておけば、接続のたびにコマンドでいろいろ引数指定しなくてすむ。&lt;/p&gt;
+&lt;p&gt;以下の例の場合、ssh myalias と実行すれば
+ssh -l username -p 2222 -i ~/.ssh/I'd_RSA.foo my.example.com
+で接続できる。&lt;/p&gt;
+&lt;p&gt;ワイルドカード指定もできる。
+以下の例の場合、*.example.net へ ssh するとき、
+秘密鍵として ~/.ssh/id_rsa.bar が使われる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Host myalias
+    HostName my.example.com
+    User username
+    Port 2222
+    IdentityFile ~/.ssh/id_rsa.foo
+Host *.example.net
+    IdentityFile ~/.ssh/id_rsa.bar
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>openssh</category><guid>https://mnod.github.io/posts/20170319.html</guid><pubDate>Sun, 19 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>

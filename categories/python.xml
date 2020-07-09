@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about python)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/python.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>json in python</title><link>https://mnod.github.io/posts/20200422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;dictionary&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;add key:value pair to a dictionary&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict = {}
+&amp;gt;&amp;gt;&amp;gt; newdict['foo'] = "bar"
+&amp;gt;&amp;gt;&amp;gt; newdict
+{'foo': 'bar'}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get all keys or values of a dictionary&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict.keys()
+['foo']
+&amp;gt;&amp;gt;&amp;gt; newdict.values()
+['bar']
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get a value for a key from a dictionary&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict['foo']
+'bar'
+&amp;gt;&amp;gt;&amp;gt; newdict.get("foo")
+'bar'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;add a dictionary as a value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict0 = {}
+&amp;gt;&amp;gt;&amp;gt; newdict0["mykey"] = newdict
+&amp;gt;&amp;gt;&amp;gt; newdict0
+{'mykey': {'foo': 'bar'}}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get a value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict0['mykey']['foo']
+'bar'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;add a list as a value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict0["mykey"] = [newdict, {'hoge': 'piyo'}]
+&amp;gt;&amp;gt;&amp;gt; newdict0
+{'mykey': [{'foo': 'bar'}, {'hoge': 'piyo'}]}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get a list&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; for dict in newdict0.get('mykey'):
+...     print dict
+...
+{'foo': 'bar'}
+{'hoge': 'piyo'}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;json&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;dump dictionary as json format string&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import json
+&amp;gt;&amp;gt;&amp;gt; mystr = json.dumps(newdict)
+&amp;gt;&amp;gt;&amp;gt; mystr
+'{"foo": "bar"}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;load json format string to dictionary&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; mydict = json.loads(mystr)
+&amp;gt;&amp;gt;&amp;gt; mydict
+{u'foo': u'bar'}
+&amp;gt;&amp;gt;&amp;gt; mydict.get("foo")
+u'bar'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To show non-ASCII characters, we can use ensure_ascii=False option, otherwise the output are escaped with \uXXXX sequences&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ python26
+&amp;gt;&amp;gt;&amp;gt; import json
+&amp;gt;&amp;gt;&amp;gt; mystr = '{"foo":"ばぁ"}'
+&amp;gt;&amp;gt;&amp;gt; mydict = json.loads(mystr)
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; print(json.dumps(mydict))
+{"foo": "\u3070\u3041"}
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; print(json.dumps(mydict, ensure_ascii=False))
+{"foo": "ばぁ"}
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If locale is not UTF-8, we will met UnicodeEncodeError when it prints UTF-8 strings to stdout.
+In this case, we can use encode() to avoid the error.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ LANG=C python26
+&amp;gt;&amp;gt;&amp;gt; import json
+&amp;gt;&amp;gt;&amp;gt; mystr = '{"foo":"ばぁ"}'
+&amp;gt;&amp;gt;&amp;gt; mydict = json.loads(mystr)
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; print(json.dumps(mydict))
+{"foo": "\u3070\u3041"}
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; print(json.dumps(mydict, ensure_ascii=False))
+Traceback (most recent call last):
+  File "&amp;lt;stdin&amp;gt;", line 1, in &amp;lt;module&amp;gt;
+UnicodeEncodeError: 'ascii' codec can't encode characters in position 14-15: ordinal not in range(128)
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; print(json.dumps(mydict, ensure_ascii=False).encode('utf-8'))
+{"foo": "ばぁ"}
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;write json to a file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mystr = '{"foo":"ばぁ"}
+mydict = json.loads(mystr)
+
+with open('new.json', 'w') as f:
+    json.dump(mydict, f)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;read json from a file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;with open('new.json') as f:
+    myjson = json.load(f)
+    print(json.dumps(myjson, ensure_ascii=False).encode('utf-8'))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;sample script&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;using urllib2 library&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=urllib_sample.py"&gt;&lt;/script&gt;
+
+&lt;p&gt;similar as above but using reauests library&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>json</category><category>python</category><guid>https://mnod.github.io/posts/20200422.html</guid><pubDate>Wed, 22 Apr 2020 00:00:00 GMT</pubDate></item><item><title>sqlite by python</title><link>https://mnod.github.io/posts/20180511.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;pythonでsqliteを利用するとき
+&lt;a href="http://docs.python.jp/2/library/sqlite3.html"&gt;sqlite 3モジュール&lt;/a&gt;
+を使う&lt;/p&gt;
+&lt;p&gt;簡単なpythonスクリプトの例 (古い環境だと、ライブラリ名はsqliteらしい)&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqlite_sample.py"&gt;&lt;/script&gt;
+
+&lt;p&gt;sqliteのデータを
+&lt;a href="https://matplotlib.org"&gt;matplotlib&lt;/a&gt;
+を使ってグラフにプロットする簡単な例。&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>python</category><category>script</category><category>sqlite</category><guid>https://mnod.github.io/posts/20180511.html</guid><pubDate>Fri, 11 May 2018 00:00:00 GMT</pubDate></item></channel></rss>

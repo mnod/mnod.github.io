@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="tech log">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>tech log (old posts, page 7) | tech log</title>
+<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
+<link rel="canonical" href="https://mnod.github.io/index-7.html">
+<link rel="prev" href="index-8.html" type="text/html">
+<link rel="next" href="index-6.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="." title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="archive.html">Archives</a></li>
+                <li><a href="categories/index.html">Tags</a></li>
+                <li><a href="rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200424.html" class="u-url">WiFi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200424.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-04-22T00:00:00Z" itemprop="datePublished" title="2020-04-22 00:00">2020-04-22 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>find wifi device</p>
+<pre><code>$ /sbin/iw dev
+phy#0
+    Interface wls3
+        ifindex 3
+        wdev 0x1
+        addr xx:xx:xx:xx:xx:xx
+        ssid xxxxxxx
+        type managed
+        channel 36 (5180 MHz), width: 20 MHz (no HT), center1: 5180 MHz
+        txpower 15.00 dBm
+</code></pre>
+<p>scan for available N/W</p>
+<pre><code>$ /sbin/iwlist scan
+</code></pre>
+<p><em>for WPA2</em></p>
+<p>install related packages</p>
+<pre><code>$ sudo apt install wpasupplicant
+</code></pre>
+<p>generate psk for a ssid</p>
+<pre><code>$ wpa_passphrase myssid
+# reading passphrase from stdin
+mypassphrase &lt; input from stdin
+network={
+    ssid="myssid"
+    #psk="mypassphrase"
+    psk=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+}
+</code></pre>
+<p>add these lines to /etc/network/interface</p>
+<pre><code>auto wls3
+iface wls3 inet dhcp
+  wpa-ap-scan 1
+  wpa-scan-ssid 1
+  wpa-ssid myssid
+  wpa-psk xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</code></pre>
+<p>change permission /etc/network/interface</p>
+<pre><code>$ chmod 600 /etc/network/interface
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200420.html" class="u-url">mpd</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200420.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-04-20T00:00:00Z" itemprop="datePublished" title="2020-04-20 00:00">2020-04-20 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
+<p>Music Player Daemon. server-client architecture.</p>
+<p><em>mpd.conf</em></p>
+<p>You can specify audio output type and device in /etc/mpd.conf. Various types are available.</p>
+<pre><code>audio_output {
+        type            "alsa"
+        name            "My ALSA Device"
+    device          "hw:1,0"
+}
+</code></pre>
+<p><em>mpc</em></p>
+<p>command line interface of mpd</p>
+<p>option</p>
+<pre><code>-h &lt;host&gt; # specify server
+</code></pre>
+<p>subcommands</p>
+<pre><code>play
+pause
+next
+prev
+
+ls &lt;directory&gt; # lists all files in directory
+listall &lt;file&gt; # lists all files
+add &lt;file&gt; # add file to queue
+clear # empty the queue
+
+search &lt;type&gt; &lt;query&gt; # for example: $ mpc search filename ENYA
+find &lt;type&gt; &lt;query&gt; # similar to search. but match exactly
+list &lt;type&gt; # shows a list of all tags of type
+update &lt;path&gt; # scans for updated files in the path
+
+lsplaylists # lists available playlists
+playlist &lt;playlist name&gt; # lists all songs in playlist
+rm &lt;playlist&gt; # remove playlist
+save &lt;playlist&gt; # save playlist
+
+load &lt;playlist&gt; # load &lt;playlist&gt; in the queue
+</code></pre>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.namelessdev.mpdroid&amp;hl=en">MPDroid</a></em></p>
+<p>client for android</p>
+<p><em><a href="https://apps.apple.com/us/app/maximummpd/id1437096437#?platform=iphone">MaximumMPD</a></em></p>
+<p>client for iOS</p>
+<p><em><a href="https://kodi.wiki/view/Add-on:MPD_Client">KODI Add-on:MPD Client</a></em></p>
+<p>Add-on of KODI formerly known as XBMC.
+If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200409.html" class="u-url">vlc</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200409.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-04-09T00:00:00Z" itemprop="datePublished" title="2020-04-09 00:00">2020-04-09 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
+<p><em>http interface</em></p>
+<p>VLC(or cvlc) could be controlled with http request. See <a href="https://wiki.videolan.org/VLC_HTTP_requests/">VLC HTTP requests</a> for detail</p>
+<p>start cvlc with http interface</p>
+<pre><code>cvlc
+-I HTTP # start http interface
+--http-password &lt;password&gt; # specify http password
+--aout alsa --alsa-audio-device plughw:2,0 # specify audio output device
+vlc://quit
+</code></pre>
+<p>You can control vlc with not only web browser but also command line tool</p>
+<pre><code>curl
+-I # fetche the headers only
+--user ":&lt;mypassword&gt;" # specify http passowrd (user name is null)
+http://127.0.0.1:8080/requests/status.xml 
+?command=pl_play
+?command=pl_pause
+?command=volume&amp;val=+&lt;int&gt;
+?command=volume&amp;val=-&lt;int&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200403.html" class="u-url">postfix</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200403.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-04-03T00:00:00Z" itemprop="datePublished" title="2020-04-03 00:00">2020-04-03 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>alias</p>
+<pre><code>$ postconf -n | grep alias
+$ ls -l /etc/aliases*
+$ postalias hash:/etc/aliases
+$ newaliases
+</code></pre>
+<p>send mail or read mail of Maildir</p>
+<pre><code>$ apt install mailutils
+$ echo "This is body message" | mail -s "My subject" pi
+$ MAILDIR=$HOME/Maildir mail
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200315.html" class="u-url">apt-cacher-ng</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200315.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-03-15T00:00:00Z" itemprop="datePublished" title="2020-03-15 00:00">2020-03-15 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>make a dockerfile</p>
+<pre><code>$ cat Dockerfile
+FROM debian:buster
+
+RUN apt-get update \
+&amp;&amp; apt-get install -y --no-install-recommends apt-cacher-ng \
+&amp;&amp; apt-get clean \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/cache/apt-cacher-ng"]
+EXPOSE 3142
+
+CMD chmod 777 /var/cache/apt-cacher-ng \
+&amp;&amp; /etc/init.d/apt-cacher-ng start \
+&amp;&amp; tail -f /var/log/apt-cacher-ng/*
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build -t apt-cacher-ng:buster . | tee build.log
+$ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
+</code></pre>
+<p>run a container</p>
+<pre><code>$ sudo docker run --rm -d -p 3142:3142 -v /mnt/apt-cacher-ng:/var/cache/apt-cacher-ng apt-cacher-ng:latest
+</code></pre>
+<p>test the address and port </p>
+<pre><code>$ curl 192.168.xxx.xxx:3142
+</code></pre>
+<p><em>how to use the cache server</em></p>
+<p>specify it in a config file</p>
+<pre><code>$ cat &lt;&lt; END | sudo tee /etc/apt/apt.conf.d/01proxy
+&gt; Acquire::http::Proxy "http://192.168.xxx.xxx:3142/";
+&gt; END
+</code></pre>
+<p>specify it in command line</p>
+<pre><code>$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
+</code></pre>
+<p>or
+    $ sudo su -
+    # http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx </p>
+<p>for docker build</p>
+<pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200308.html" class="u-url">tcpdump</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200308.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-03-08T00:00:00Z" itemprop="datePublished" title="2020-03-08 00:00">2020-03-08 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>tcpdump</em></p>
+<pre><code>    tcpdump 
+     -w &lt;output filename&gt;
+     -r &lt;input filename&gt;
+     -i &lt;interface&gt;
+     -c &lt;packet counts&gt;
+
+     -n   # don't convert address and port to names
+     -e   # show link level header 
+     -v   # verbose output
+     -xx  # print the data of each packets with link level header in hex
+     -XX  # print the data of each packets with link level header in hex and ascii
+     -ttt # print a delta between current and previous line
+
+     arp
+     icmp
+     port &lt;port number&gt;
+     host &lt;ip address&gt;
+</code></pre>
+<p><em>wireshark</em></p>
+<pre><code>    wireshark 
+     -r &lt;input filename&gt;
+     -R "read filter"
+</code></pre>
+<p>To know detail of read filter, see man page of wireshark-filter</p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200209.html" class="u-url">ecs</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200209.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-02-09T00:00:00Z" itemprop="datePublished" title="2020-02-09 00:00">2020-02-09 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>cluster</em></p>
+<pre><code>$ aws ecs list-clusters 
+$ aws ecs describe-clusters --clusters &lt;clusterArn&gt;
+
+$ aws ecs create-cluster --cluster-name &lt;cluster-name&gt; --tags '[{"key": "Name","value": "test"}]'
+$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
+
+$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
+</code></pre>
+<p><em>task definition</em></p>
+<pre><code>$ aws ecs list-task-definitions
+$ aws ecs describe-task-definition --task-definition &lt;taskDefinitionArn&gt;
+
+$ jq . task-definition.json
+{
+  "family": "sample-fargate",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "fargate-app",
+      "image": "busybox",
+      "essential": true,
+      "command": [
+        "sleep",
+        "360"
+      ]
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
+$ aws ecs register-task-definition --cli-input-json file://task-definition.json
+
+$ aws ecs deregister-task-definition --task-definition &lt;taskDefinitionArn&gt;
+</code></pre>
+<p><em>task</em></p>
+<p>When you use fargate and retrieve docker image from docker hub, you have to use internet gateway or nat gateway in the vpc.</p>
+<pre><code>$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
+$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
+
+$ jq . network-configuration.json
+{
+  "awsvpcConfiguration": {
+    "subnets": [
+      "&lt;subnet&gt;"
+    ],
+    "securityGroups": [
+      "&lt;securitygroup&gt;"
+    ],
+    "assignPublicIp": "ENABLED"
+  }
+}
+$ aws ecs run-task --task-definition &lt;taskDefinitionArn&gt; --cluster &lt;clusterArn&gt; --count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs stop-task --cluster &lt;clusterArn&gt; --task &lt;taskArn&gt;
+</code></pre>
+<p><em>tags</em></p>
+<pre><code>$ aws ecs list-tags-for-resource --resource-arn &lt;resource-arn&gt;
+$ aws ecs tag-resource --resource-arn &lt;resource-arn&gt; --tags '[{"key": "Name","value": "test"}]'
+</code></pre>
+<p><em>service</em></p>
+<pre><code>$ aws ecs list-services --cluster &lt;clusterArn&gt;
+$ aws ecs describe-services --cluster &lt;clusterArn&gt; --services &lt;serviceArn&gt;
+$ aws ecs create-service --cluster &lt;clusterArn&gt; --service-name &lt;serviceName&gt; --task-definition &lt;task-definition&gt; --desired-count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
+
+$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
+$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
+
+$ aws ecs update-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt; --desired-count 0
+$ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200128.html" class="u-url">dynamodb</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200128.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-28T00:00:00Z" itemprop="datePublished" title="2020-01-28 00:00">2020-01-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create and delete table</em></p>
+<pre><code>$ aws dynamodb list-tables
+$ aws dynamodb describe-table --table-name testtable
+$ aws dynamodb create-table --table-name testtable  \
+ --attribute-definitions '[{"AttributeName":"Artist","AttributeType":"S"},{"AttributeName":"AlbumTitle","AttributeType":"S"}]' \
+ --key-schema '[{"AttributeName":"Artist","KeyType":"HASH"},{"AttributeName":"AlbumTitle","KeyType":"RANGE"}]' \
+ --provisioned-throughput '{"ReadCapacityUnits": 1,"WriteCapacityUnits": 1}' \
+ --tags '[{"Key": "Name","Value": "test"}]'
+
+$ aws dynamodb delete-table --table-name testtable
+</code></pre>
+<p><em>put item</em></p>
+<pre><code>$ jq '.' put-item.json
+{
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+$ aws dynamodb put-item --table-name testtable --item file://put-item.json
+</code></pre>
+<p><em>get and delete item</em></p>
+<pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+$ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>sample python script</em></p>
+<p>put-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+item = {
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.put_item(TableName=tablename, Item=item)
+print (json.dumps(res))
+</code></pre>
+<p>get-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.get_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+</code></pre>
+<p>delete-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.delete_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+# print (json.dumps(res['ResponseMetadata']['HTTPStatusCode']))
+</code></pre>
+<p><em>cloudformation template</em></p>
+<pre><code>    TestDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "TestDynamoDBTable"
+        Tags:
+          - Key: "Name"
+            Value: "test"
+        AttributeDefinitions:
+          - AttributeName: "subject"
+            AttributeType: "S"
+          - AttributeName: "year"
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: "subject"
+            KeyType: "HASH"
+          - AttributeName: "year"
+            KeyType: "RANGE"
+        BillingMode: "PROVISIONED"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200127.html" class="u-url">cryptsetup</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200127.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-27T00:00:00Z" itemprop="datePublished" title="2020-01-27 00:00">2020-01-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>luks</p>
+<p><em>install a package</em></p>
+<pre><code>$ sudo apt install cryptsetup
+</code></pre>
+<p><em>format</em></p>
+<pre><code>$ sudo cryptsetup luksFormat /dev/md0 
+$ sudo cryptsetup luksDump /dev/md0
+</code></pre>
+<p><em>open</em></p>
+<pre><code>$ sudo cryptsetup open /dev/md0 cryptfs
+$ sudo cryptsetup status cryptfs
+</code></pre>
+<p><em>open tcrypt device</em></p>
+<pre><code>$ sudo cryptsetup open --type tcrypt /dev/md0
+</code></pre>
+<p><em>format mount</em></p>
+<pre><code>$ sudo mkfs -t ext4 /dev/mapper/cryptfs 
+$ sudo mount /dev/mapper/cryptfs /mnt
+$ df -h /mnt
+</code></pre>
+<p><em>umount and close</em></p>
+<pre><code>$ sudo umount /mnt 
+$ sudo cryptsetup close cryptfs
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200126.html" class="u-url">mdadm</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200126.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-26T00:00:00Z" itemprop="datePublished" title="2020-01-26 00:00">2020-01-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>software raid</p>
+<p><em>install mdadm package</em></p>
+<pre><code>$ sudo apt-get install mdadm
+</code></pre>
+<p><em>make dummy files for test</em></p>
+<pre><code>$ dd if=/dev/zero of=file.img bs=2M count=0 seek=512
+$ cp -p file.img file0.img
+$ cp -p file.img file1.img
+$ cp -p file.img file2.img
+$ cp -p file.img file3.img
+$ cp -p file.img file4.img
+$ ls -lhs file*img
+</code></pre>
+<p>losetup</p>
+<pre><code>$ sudo losetup /dev/loop0 file0.img
+$ sudo losetup /dev/loop1 file1.img
+$ sudo losetup /dev/loop2 file2.img
+$ sudo losetup /dev/loop3 file3.img
+$ sudo losetup /dev/loop4 file4.img
+</code></pre>
+<p><em>raid0</em></p>
+<pre><code>$ sudo mdadm --create /dev/md0 -l raid0 -n 2 /dev/loop0 /dev/loop1
+$ cat /proc/mdstat
+$ sudo mdadm --detail /dev/md0
+
+$ sudo mdadm --detail --scan
+$ sudo mdadm --detail --scan &gt; /etc/mdadm.conf
+</code></pre>
+<p>mkfs and mount </p>
+<pre><code>$ sudo mkfs -t ext4 /dev/md0
+$ sudo mount /dev/md0 /mnt
+$ df -h /mnt
+</code></pre>
+<p><em>stop and remove settings</em></p>
+<pre><code>$ sudo mdadm --stop /dev/md0
+$ sudo mdadm --zero-superblock /dev/loop0
+$ sudo mdadm --zero-superblock /dev/loop1
+( $ sudo rm -i /etc/mdadm.conf )
+</code></pre>
+<p><em>raid1</em></p>
+<pre><code>$ sudo mdadm --create /dev/md0 -l raid1 -n 2 /dev/loop0 /dev/loop1
+</code></pre>
+<p><em>make fail</em></p>
+<pre><code>$ sudo mdadm --stop /dev/md0
+$ sudo losetup -d /dev/loop1
+</code></pre>
+<p>recover</p>
+<pre><code>$ sudo mdadm --assemble --scan -v
+$ sudo mdadm --examine /dev/loop0
+
+$ sudo mdadm --add /dev/md0 /dev/loop2
+$ sudo mdadm --detail --scan &gt; /etc/mdadm.conf
+</code></pre>
+<p><em>add extra disk</em></p>
+<pre><code>$ sudo losetup /dev/loop1 file1.img
+$ sudo mdadm --add /dev/md0 /dev/loop1
+</code></pre>
+<p><em>make fail</em></p>
+<pre><code>$ sudo mdadm --stop /dev/md0
+$ sudo losetup -d /dev/loop1
+</code></pre>
+<p>recover</p>
+<pre><code>$ sudo mdadm --assemble --scan -v
+$ sudo mdadm --examine /dev/loop0
+$ sudo mdadm --grow /dev/md0 --raid-devices=2
+</code></pre>
+<p><em>when disk alert has come.</em></p>
+<pre><code>$ sudo mdadm --fail /dev/md0 /dev/loop1
+$ sudo mdadm --remove /dev/md0 /dev/loop1
+$ sudo mdadm --add /dev/md0 /dev/loop3
+</code></pre>
+<p>if md0 has extra disk, when disk alert has come, automatically rebuild</p>
+<pre><code>$ sudo losetup /dev/loop0 file0.img
+$ sudo mdadm --add /dev/md0 /dev/loop0
+$ sudo mdadm --fail /dev/md0 /dev/loop2
+$ sudo mdadm --remove /dev/md0 /dev/loop2
+</code></pre>
+<p><em>raid5</em></p>
+<p>/dev/loop3 is extra disk for spare</p>
+<pre><code>$ sudo mdadm --create /dev/md0 -l raid5 -n 3 /dev/loop0 /dev/loop1 /dev/loop2 -x 1 /dev/loop3
+</code></pre>
+<p><em>raid10</em></p>
+<p>/dev/loop4 is extra disk for spare</p>
+<pre><code>$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="index-8.html" rel="prev">Newer posts</a>
+            </li>
+            <li class="next">
+                <a href="index-6.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

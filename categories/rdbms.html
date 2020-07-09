@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about rdbms | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/rdbms.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag rdbms" hreflang="en" href="rdbms.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about rdbms</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="rdbms.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180512.html" class="u-url">sql for sqlite</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20180512.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-12T00:00:00Z" itemprop="datePublished" title="2018-05-12 00:00">2018-05-12 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://www.sqlite.org/lang.html">SQliteで使える言語</a> について</p>
+<p>SQliteは、型を指定しなくても CREATE  TABLE できるのが特徴。
+型指定するなら、integer, real, text, blob型を使える。</p>
+<pre><code>CREATE TABLE IF NOT EXISTS mytable (
+id INT,
+description TEXT,
+score REAL
+);
+</code></pre>
+<p>トランザクション</p>
+<pre><code>BEGIN TRANSACTION;
+:
+COMMIT or ROLLBACK;
+</code></pre>
+<p>クエリ計画の表示</p>
+<pre><code>EXPLAIN QUERY PLAN ～;
+</code></pre>
+<p>パフォーマンス対策</p>
+<pre><code>REINDEX [target];
+VACUUM;
+ANALYZE;
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_datefunc.html">日付・時刻関数</a></em></p>
+<p>日付・時刻の型は無いが、関数を使って扱うことができる。</p>
+<p>現在日時の例(デフォルトでUTCとして扱われる)</p>
+<pre><code>SELECT current_timestamp, date('now'), time();
+</code></pre>
+<p>文字列で特定日時を指定する。</p>
+<pre><code>SELECT datetime('1970-01-01 00:00:00')||' はUTCの時刻';
+</code></pre>
+<p>修飾子にlocaltimeを指定すると、ローカルのタイムゾーンに変換。(JSTの場合、9時間後)</p>
+<pre><code>SELECT datetime('1970-01-01 00:00:00+09:00')||' はUTCなので、JSTは '||datetime('1970-01-01 00:00:00+09:00', 'localtime');
+SELECT datetime('now')||' はUTCなので、JSTは '|| datetime('now', 'localtime')x;
+</code></pre>
+<p>修飾子にutcを指定すると、対象の日付がローカルのタイムゾーンのものとして、utcに変換。(JSTの場合、9時間前)</p>
+<pre><code>SELECT datetime('now')||' がJSTだとしたら、UTCは '||datetime('now', 'utc');
+</code></pre>
+<p>その他、修飾子を使うことができる。</p>
+<pre><code>SELECT datetime('now', '+1years', '+1months', '+1days', '+1hours', '+1minutes', '+1seconds');
+SELECT '今年の第1月曜日は '||date(datetime('now', 'start of year'), 'weekday 1');
+</code></pre>
+<p>条件式として使うことができる</p>
+<pre><code>SELECT * FROM mytable WHERE date BETWEEN datetime('now', '-3hours') AND datetime('now');
+SELECT * FROM mytable WHERE date(date) = date('now');
+</code></pre>
+<p>strftime書式を使うことができる</p>
+<pre><code>SELECT strftime('%s', '1970-02-01 00:00:00', '-1 minutes');
+SELECT datetime(strftime('%s', '1970-01-01 00:00:00'), 'unixepoch');
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_aggfunc.html">集約関数</a></em></p>
+<p>ccount, avg, min, maxなどの集約関数が使える。</p>
+<pre><code>SELECT col1 AS c1, aggregate(col2) AS c2
+FROM mytable
+WHERE condition 集計する対象を絞り込む。
+GROUP BY c1
+HAVING c2 &lt;&gt; 0; 集計結果から、出力する対象を絞り込む
+</code></pre>
+<p><em><a href="https://www.sqlite.org/lang_corefunc.html">コア関数</a></em></p>
+<p>引数の中で、最初に現れたNULLでない値を返す
+(この例では「全部null」)</p>
+<pre><code>SELECT coalesce(null, null+'any', null+1, null*1, null/1, 1/0, '全部null');
+</code></pre>
+<p><em>制約について</em></p>
+<p>CHECK制約の列制約の例</p>
+<pre><code>CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT CHECK(length(pointname) &lt;= 8),
+  latitude  REAL NOT NULL CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  longitude REAL NOT NULL CHECK(longitude BETWEEN -180.0 AND 180.0),
+  CONSTRAINT point_primary PRIMARY KEY (pointname)
+);
+</code></pre>
+<p>表制約の例(制約名は省略可能)</p>
+<pre><code>DROP TABLE IF EXISTS point;
+CREATE TABLE IF NOT EXISTS point (
+  pointname TEXT PRIMARY KEY,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  CHECK(length(pointname) &lt;= 8),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+</code></pre>
+<p>外部キーの例</p>
+<p>列制約</p>
+<pre><code>CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL REFERENCES point(pointname),
+  PRIMARY KEY (routename, seq)
+);
+</code></pre>
+<p>表制約</p>
+<pre><code>DROP TABLE IF EXISTS route;
+CREATE TABLE IF NOT EXISTS route (
+  routename TEXT CHECK(length(routename) &lt;= 8),
+  seq       INT  NOT NULL,
+  pointname TEXT NOT NULL,
+  PRIMARY KEY(routename, seq),
+  FOREIGN KEY(pointname) REFERENCES point(pointname)
+);
+</code></pre>
+<p>SQlite 3.6.19から外部キーの機能が導入されたが、デフォルトでは機能しない。
+(外部キーのDDLはエラーにならない。外部キー制約で拒否されるはずの値が拒否されない。)
+制約を有効にするためには(データベースを開くたびに)設定が必要。</p>
+<pre><code>PRAGMA foreign_keys;
+0→オフ
+1→オン
+PRAGMA foreign_keys = [ON|OFF];
+</code></pre>
+<p>(補足: sqlite_version()関数でバージョンを確認できる。)</p>
+<p>デフォルト値</p>
+<pre><code>DROP TABLE IF EXISTS track;
+CREATE TABLE IF NOT EXISTS track (
+  trackname TEXT,
+  timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+  latitude  REAL NOT NULL,
+  longitude REAL NOT NULL,
+  PRIMARY KEY(trackname, timestamp),
+  CHECK(length(trackname) &lt;= 8),
+  CHECK(datetime(timestamp) IS NOT NULL
+    AND datetime(timestamp) &gt;= datetime('1970-01-01 00:00:00')),
+  CHECK(latitude  BETWEEN  -90.0 AND  90.0),
+  CHECK(longitude BETWEEN -180.0 AND 180.0)
+);
+</code></pre>
+<p><em>結合</em></p>
+<p>内部結合</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p, route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+WHERE r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+ON r.pointname = p.pointname;
+
+SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+JOIN route AS r
+USING (pointname);
+</code></pre>
+<p>外部結合
+(LEFT OUTER JOINは実装されているが、RIGHT と FULL OUTER JOINは実装されていない。)</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+LEFT OUTER JOIN route AS r
+ON r.pointname = p.pointname;
+</code></pre>
+<p>自然結合</p>
+<pre><code>SELECT r.routename, r.seq, p.latitude, p.longitude FROM point AS p
+NATURAL JOIN route AS r;
+</code></pre>
+<p><em>その他</em></p>
+<p>CASE文</p>
+<pre><code>SELECT
+  CASE strftime('%M','now') % 3
+    WHEN 0 THEN 'is 0'
+    WHEN 1 THEN 'is 1'
+    ELSE 'is 2'
+  END,
+  CASE
+    WHEN strftime('%M','now') % 2 = 0 THEN 'even'
+    ELSE 'odd'
+  END
+;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170819.html" class="u-url">sqlite</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20170819.html" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-19T00:00:00Z" itemprop="datePublished" title="2017-08-19 00:00">2017-08-19 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>SQLiteはRDBMSのデータベースエンジン。サーバではなくライブラリで、とても小さく軽量。</p>
+<ul>
+<li><a href="https://www.sqlite.org/docs.html">ドキュメント</a></li>
+</ul>
+<p>ここでは <a href="https://www.sqlite.org/cli.html">コマンドラインインタフェース</a> sqlite3 の利用について記載する。</p>
+<p>データベースファイルを指定して起動</p>
+<pre><code>sqlite3 database.db
+-column 左寄せのカラム形式で表示
+-header 列の見出しを表示
+</code></pre>
+<p>コマンドラインでSQL実行</p>
+<pre><code>sqlite3 database.db 'SELECT count(*) FROM mytable;'
+
+echo 'SELECT count(*) FROM mytable;' | sqlite3 database.db
+
+cat &lt;&lt; quit | sqlite3 database.db
+SELECT count(*) FROM mytable;
+quit
+
+sqlite3 database.db &lt; filename.sql
+</code></pre>
+<p><em>主なメタコマンド</em></p>
+<p>データベースファイルの確認</p>
+<pre><code>.databases
+</code></pre>
+<p>存在する表の確認</p>
+<pre><code>.tables
+</code></pre>
+<p>表のDDLの確認</p>
+<pre><code>.schema
+</code></pre>
+<p>表のインデックス名の確認</p>
+<pre><code>.indices 表名
+</code></pre>
+<p>DDLとデータ内容をSQLでダンプ</p>
+<pre><code>.dump [表名]
+表名を省略すると全てのテーブルが対象。
+</code></pre>
+<p>ファイルに記載されたSQLを実行</p>
+<pre><code>.read ファイル名
+</code></pre>
+<p>CSV形式で表示</p>
+<pre><code>.header on
+.mode csv
+.output ファイル名
+SELECT * FROM ...;
+.output stdout
+</code></pre>
+<p>CSVファイルの内容を表へインポート</p>
+<pre><code>.import database.csv mytable
+</code></pre>
+<p>データベース全体のダンプとリストア</p>
+<pre><code>sqlite3 database.db .dump | gzip -c &gt; database.dump.gz
+zcat database.dump.gz | sqlite3 database_test.db
+(ダンプはSQLなので、sqlite以外の環境へもリストア可能)
+</code></pre>
+<p>バックアップとリストア</p>
+<pre><code>cat &gt;&gt; test1.sql &lt;&lt; END
+SELECT count(*) FROM test;
+.backup tmp.backup
+DROP TABLE test;
+SELECT count(*) FROM test;
+.restore tmp.backup
+SELECT count(*) FROM test;
+END
+</code></pre>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

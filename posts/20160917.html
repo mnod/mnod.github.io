@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>development tools on android | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20160917.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20160915.html" title="svg" type="text/html">
+<link rel="next" href="20160918.html" title="remote access tool on android" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="development tools on android">
+<meta property="og:url" content="https://mnod.github.io/posts/20160917.html">
+<meta property="og:description" content="Androidで動作する開発関連ツールのご紹介。
+*Termux
+Android で動作する terminal ソフト。bash
+各種ソフトをインストールすることができる。
+Pythonを入れることができる。
+Android端末だけであれこれできる。
+MGit
+下記 SGit の開発は終了したようです。非常にありがたいプロジェクトなので残念でした。
+その後を引き継いで別の方が開発を続けているものが">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-09-17T00:00:00Z">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="software">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">development tools on android</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2016-09-17T00:00:00Z" itemprop="datePublished" title="2016-09-17 00:00">2016-09-17 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Androidで動作する開発関連ツールのご紹介。</p>
+<p>*<a href="#">Termux</a></p>
+<p>Android で動作する terminal ソフト。bash
+各種ソフトをインストールすることができる。
+Pythonを入れることができる。
+Android端末だけであれこれできる。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=com.manichord.mgit">MGit</a></em></p>
+<p>下記 SGit の開発は終了したようです。非常にありがたいプロジェクトなので残念でした。
+その後を引き継いで別の方が開発を続けているものが MGit です。</p>
+<p>sshを使う場合、パスフレーズつきの秘密鍵にも対応しているようです。</p>
+<p>基本的な事柄ですが、commit等する前に、アプリの設定でユーザ名とメールアドレスの設定を済ませておかないとエラーとなります。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=me.sheimi.sgit">SGit</a></em></p>
+<p>フリーのgitクライアントです。</p>
+<p>Androidタブレット端末でこのサイトのメンテナンスをする際などに利用しています。</p>
+<p>gitでできる全てのことに対応しているわけではないようですが、clone → add → commit → pushといった基本的なことは一通り実行できます。</p>
+<p>https、sshなどに対応してます。
+ssh鍵について、<a href="https://github.com/sheimi/SGit">ソースコード</a>をざっと眺めてみたところ、使っているライブラリの関係で、(本稿執筆時点では)dsaかrsaしか使えないようです。
+また、パスフレーズについては対応予定となっており、今のところはパスフレーズ無しのものだけの対応のようです。ssh鍵を使う方は注意して確認してみてください。</p>
+<p><em><a href="https://play.google.com/store/apps/details?id=jp.sblo.pandora.jota">Jota Text Editor</a></em></p>
+<p>フリーのテキストエディタです。</p>
+<p>現在は開発を終了しており、機能追加等の予定はないとのことですが、現状で問題なく使えるようになってます。</p>
+<p>100万文字程度まで対応とありますが、「Alphabetで1MBytes」だそうで、通常はファイルサイズ制限で困ることは少ないのではないかと思います。
+よく使う機能をボタンに割り当てることができます。初期状態では、コピペ系やアンドゥ、リドゥなどが割り当てられてます。</p>
+<p>コードの色分け表示や自動インデント機能などはありますが、一方、デスクトップのエディタにあるような便利な機能はありません。
+デスクトップと同じ作業をこなすことはできない可能性がありますが、簡易な作業なら充分対応可能だと思います。</p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/android.html" rel="tag">android</a></li>
+            <li><a class="tag p-category" href="../categories/software.html" rel="tag">software</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20160915.html" rel="prev" title="svg">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20160918.html" rel="next" title="remote access tool on android">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

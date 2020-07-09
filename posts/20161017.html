@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>bash | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20161017.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20161016.html" title="basic commands usage" type="text/html">
+<link rel="next" href="20170304.html" title="cpu governor on raspbian" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="bash">
+<meta property="og:url" content="https://mnod.github.io/posts/20161017.html">
+<meta property="og:description" content='bashスクリプト等でよく使う機能の利用パターンを記載。
+trap
+When the script exits, remove tmpfile
+tmpfile=/tmp/tmpfile.$$
+trap "rm ${tmpfile}" EXIT
+
+basename, dirname
+use script file name and directory in the script
+echo $(bas'>
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-10-17T00:00:00Z">
+<meta property="article:tag" content="shell">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">bash</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2016-10-17T00:00:00Z" itemprop="datePublished" title="2016-10-17 00:00">2016-10-17 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>bashスクリプト等でよく使う機能の利用パターンを記載。</p>
+<p><em>trap</em></p>
+<p>When the script exits, remove tmpfile</p>
+<pre><code>tmpfile=/tmp/tmpfile.$$
+trap "rm ${tmpfile}" EXIT
+</code></pre>
+<p><em>basename, dirname</em></p>
+<p>use script file name and directory in the script</p>
+<pre><code>echo $(basename $0 .sh)
+echo $(dirname $0)
+</code></pre>
+<p><em>pushd, popd</em></p>
+<p>pushd、popdは標準出力にメッセージを吐く。スクリプトで使用する際は不要なので捨てる。</p>
+<pre><code>pushd . &gt; /dev/null
+cd dir
+:
+popd    &gt; /dev/null
+</code></pre>
+<p><em>read</em></p>
+<p>標準入力からの入力を変数dummyへ入れる。
+(-pでプロンプトを指定。-sを指定するとエコーバックしない)</p>
+<pre><code>read -p "input? " [-s] dummy
+</code></pre>
+<p><em>比較演算</em></p>
+<p>条件を満たせばtrue</p>
+<table>
+<thead><tr>
+<th>演算子</th>
+<th>説明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>-z</td>
+<td>文字列の長さ0</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>文字列の長さ1以上</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>ファイルサイズが1以上</td>
+</tr>
+</tbody>
+</table>
+<p><em>if</em></p>
+<p>文字列の比較</p>
+<pre><code>if [ $str = "hoge" ]; then
+:
+else
+:
+fi
+</code></pre>
+<p><em>case</em></p>
+<pre><code>case "$?" in
+  0)
+    echo ok
+    ;;
+  1)
+    echo ng
+    ;;
+  *)
+    echo error
+    ;;
+esac
+</code></pre>
+<p><em>for loop</em></p>
+<pre><code>for file in /etc/ssh/ssh_host*key* ; do
+:
+done
+</code></pre>
+<p><em>while loop</em></p>
+<p>条件がtrueの時だけ実行する。</p>
+<pre><code>while true; do
+:
+sleep 300
+done
+</code></pre>
+<p>全ての引数に対して処理を実行する。</p>
+<pre><code>while [ $1 ]; do
+echo $1
+shift
+done
+</code></pre>
+<p>while とread</p>
+<pre><code>while read line; do
+echo $line
+done &lt; filename
+</code></pre>
+<p>または</p>
+<pre><code>cat filename | while read line; do
+echo $line
+done
+</code></pre>
+<p>printf</p>
+<pre><code>printf 'INSERT INTO mytable (temprature, humidity) VALUES (%f, %f);' 20.0 50.0 | sqlite3 database.db
+</code></pre>
+<p><em>組み込みコマンドgetoptsの使い方の例</em></p>
+<pre><code>#! /bin/bash
+
+while getopts "hw:" opt; do
+  case ${opt} in
+    h)
+      echo usaage
+      exit
+      ;;
+    w)
+      dow=${OPTARG}
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+while [ $1 ]; do
+  :
+  shift
+done
+</code></pre>
+<p><em>indirection reference</em></p>
+<p>using shell </p>
+<pre><code>key=slackpkg
+pkg_slackpkg=skackware
+myos=pkg_${key}
+echo ${!myos}
+</code></pre>
+<p>using eval</p>
+<pre><code>pkg_slackpkg=slackware
+key=slackpkg
+eval myos=\"\${pkg_${key}}\"
+echo ${myos}
+</code></pre>
+<p>when variable is array</p>
+<pre><code>pkg_apt=(debian ubuntu raspbian)
+pkg_yum=(rhel fedora centos)
+
+for key in apt yum; do
+  echo ${key}
+  for i in `seq 0 2`; do
+    eval myos=\"\${pkg_${key}[i]}\"
+    echo ${i}: ${myos}
+  done
+done
+</code></pre>
+<p><em>その他</em></p>
+<p>スクリプトの改行文字をCR+LFで書くと、CRが(shebang等の)コマンド(の一部)として認識され、実行エラーとなる。
+スクリプトの改行文字はLFで書く。</p>
+<pre><code>$ bash myscript.sh
+: command not found
+$ chmod +x myscript.sh
+$ ./myscript.sh
+-bash: ./myscript.sh: /bin/bash^M: bad interpreter: そのようなファイルやディレクトリはありません
+</code></pre>
+<p>rename the file using a part of original file name.</p>
+<pre><code>$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/shell.html" rel="tag">shell</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20161016.html" rel="prev" title="basic commands usage">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20170304.html" rel="next" title="cpu governor on raspbian">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

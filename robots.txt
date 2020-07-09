@@ -1,0 +1,4 @@
+Sitemap: https://mnod.github.io/sitemapindex.xml
+
+User-Agent: *
+Host: mnod.github.io

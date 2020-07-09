@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>terraform docker container | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20200516.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20200510.html" title="first step of terraform" type="text/html">
+<link rel="next" href="20200612.html" title="systemctl" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="terraform docker container">
+<meta property="og:url" content="https://mnod.github.io/posts/20200516.html">
+<meta property="og:description" content="Dockerfile
+From centos:centos8
+
+ARG VERSION=0.12.25
+RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
+    yum clean all &amp;&amp; \
+    curl -s https://releases.hashicorp.com/terraform/${VERSION}/ter">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-05-16T00:00:00Z">
+<meta property="article:tag" content="ansible">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="terraform">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">terraform docker container</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-16T00:00:00Z" itemprop="datePublished" title="2020-05-16 00:00">2020-05-16 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Dockerfile</p>
+<pre><code>From centos:centos8
+
+ARG VERSION=0.12.25
+RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
+    yum clean all &amp;&amp; \
+    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;&amp; \
+    unzip terraform.zip &amp;&amp; \
+    rm terraform.zip &amp;&amp; \
+    mv terraform /usr/local/bin &amp;&amp; \
+    pip2 install ansible boto boto3 awscli &amp;&amp; \
+    ln -s /usr/bin/python2.7 /usr/bin/python &amp;&amp; \
+    mkdir /tmp/terraform &amp;&amp; \
+    useradd -m docker
+
+VOLUME ["/tmp/terraform"]
+USER "docker"
+WORKDIR "/tmp/terraform"
+CMD ["/bin/bash"]
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
+$ sudo docker tag terraform:0.12.25 terraform:latest
+</code></pre>
+<p>test the image</p>
+<pre><code>$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
+$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
+</code></pre>
+<p>create variable file /mydir/credentials </p>
+<pre><code>AWS_ACCESS_KEY_ID=xxxx
+AWS_SECRET_ACCESS_KEY=xxxx
+AWS_DEFAULT_REGION=xxxx
+</code></pre>
+<p>create wrapper script infradeploy.sh</p>
+<pre><code>docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
+</code></pre>
+<p>test terraform and ansible work</p>
+<pre><code>$ sudo sh infradeploy.sh terraform show
+$ sudo sh infradeploy.sh ./ec2.py --list
+$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
+$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
+</code></pre>
+<p>As described at <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html">this site</a> we can use ec2.py and ec2.ini(optional) for dynamic inventory
+When I ran ec2.py I got <code>ImportError: No module named ansible.module_utils</code> in the case I installed ansible from ubuntu repository.
+It seems ansible should be installed with pip if you want to use ec2.py</p>
+<p>playbook sample</p>
+<pre><code>- name: test playbook
+  hosts: tag_Name_tagname
+  remote_user: admin
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "./id_rsa.mykey"
+  tasks:
+    - name: install some packages
+      apt:
+        name: ['make','screen']
+        state: present
+        install_recommends: no
+      when: ansible_pkg_mgr == 'apt'
+      tags: packages
+
+    - name: create a directory
+      file:
+        path: /my/direcoty
+        state: directory
+        owner: admin
+        mode: '0755'
+
+$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
+$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/ansible.html" rel="tag">ansible</a></li>
+            <li><a class="tag p-category" href="../categories/docker.html" rel="tag">docker</a></li>
+            <li><a class="tag p-category" href="../categories/terraform.html" rel="tag">terraform</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20200510.html" rel="prev" title="first step of terraform">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20200612.html" rel="next" title="systemctl">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

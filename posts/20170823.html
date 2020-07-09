@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>network commands on linux | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20170823.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20170822.html" title="expect" type="text/html">
+<link rel="next" href="20170826.html" title="resource monitoring" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="network commands on linux">
+<meta property="og:url" content="https://mnod.github.io/posts/20170823.html">
+<meta property="og:description" content="確認コマンド
+show mac address table
+ip [-6] neigh
+arp -an
+
+show interface mac address
+ip link
+ifconfig
+
+show host ip address
+ip [-6] addr
+ifconfig
+
+show routing table
+ip [-6] route
+netstat -rn
+route -n
+
+sho">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-08-23T00:00:00Z">
+<meta property="article:tag" content="linux">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">network commands on linux</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2017-08-23T00:00:00Z" itemprop="datePublished" title="2017-08-23 00:00">2017-08-23 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p><em>確認コマンド</em></p>
+<p>show mac address table</p>
+<pre><code>ip [-6] neigh
+arp -an
+</code></pre>
+<p>show interface mac address</p>
+<pre><code>ip link
+ifconfig
+</code></pre>
+<p>show host ip address</p>
+<pre><code>ip [-6] addr
+ifconfig
+</code></pre>
+<p>show routing table</p>
+<pre><code>ip [-6] route
+netstat -rn
+route -n
+</code></pre>
+<p>show tcp and udp port status</p>
+<pre><code>ss -an
+netstat -an
+</code></pre>
+<p>query domain name server</p>
+<pre><code>dig &lt;@nameserver&gt; domainname [a|any|mx|ns|...]
+
+cat &lt;&lt; END &gt; list.dig
+@xxx.xxx.xxx.xxx example.com
+@xxx.xxx.xxx.yyy example.com
+END
+
+dig -f list.dig
+
+
+nslookup domainname &lt;nameserver&gt;
+
+nslookup &lt;&lt; exit
+server xxx.xxx.xxx.xxx
+example.org
+example.com
+exit
+</code></pre>
+<p><em>設定コマンド</em></p>
+<p>down and up the link</p>
+<pre><code>ip link set br0 down
+ip link set br0 up
+</code></pre>
+<p>delete and add from/to interface</p>
+<pre><code>ifconfig eth0 0.0.0.0
+ifconfig eth0 192.168.0.1 netmask 255.255.255.0
+ip address delete 192.168.0.1/24 dev enp0s25    
+ip address add 192.168.0.1/24 brd + dev enp0s25
+</code></pre>
+<p>delete and add default gateway</p>
+<pre><code>ip route delete default
+ip route add default via 192.168.0.254
+</code></pre>
+<p><em>operate virtual bridge</em></p>
+<p>show information of virtual bridge</p>
+<pre><code>brctl show
+ip link show master br0
+bridge link show
+</code></pre>
+<p>add and delete virtual bridge</p>
+<pre><code>ip link add br0 type bridge
+ip link del br0
+brctl addbr br0
+brctl delbr br0
+</code></pre>
+<p>add and dlete interface to virtual bridge</p>
+<pre><code>ip link set dev enp0s25 master br0
+ip link set dev tap0 master br0
+ip link set dev enp0s25 nomaster
+brctl addif br0 eth0
+brctl addif br0 tap0
+brctl delif br0 eth0
+</code></pre>
+<p>write below to network config file and execute <code>service networking restart</code></p>
+<pre><code>auto eth0
+iface eth0 inet static
+  address 0.0.0.0
+auto br0
+iface br0 inet static
+  address 192.168.0.1
+  netmask 255.255.255.0
+  bridge_ports eth0
+</code></pre>
+<p><em>openvswitch</em></p>
+<p>show information of virtual bridge</p>
+<pre><code>ovs-vsctl show
+</code></pre>
+<p>add and delete virtual bridge</p>
+<pre><code>ovs-vsctl add-br br0
+ovs-vsctl del-br br0
+</code></pre>
+<p>add and dlete interface to virtual bridge</p>
+<pre><code>ovs-vsctl add-port br0 eth0
+ovs-vsctl add-port br0 tap0
+ip link set br0 up
+ovs-vsctl del-port br0 tap0
+ovs-vsctl del-port br0 eth0
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/linux.html" rel="tag">linux</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20170822.html" rel="prev" title="expect">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="20170826.html" rel="next" title="resource monitoring">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2020         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

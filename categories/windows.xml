@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 07 Jul 2020 12:48:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;スクリプトの呼び出し。
+アイコンのダブルクリックや、アイコンへのドラッグ&amp;amp;ドロップでも起動できる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cscript script.js //Nologo
+wscript script.js //Nologo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;メッセージの表示。cscript ... で実行するとターミナルに表示される。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;WScript.Echo( "メッセージ" + foo);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;バッチファイルを呼び出す&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var openssl     = "C:\\Users\\public\\Documents\\bin\\openssl.exe";
+var shell   = WScript.CreateObject("WScript.Shell");
+
+try {
+  oExec = shell.Exec( openssl + " version" );
+  //oExec = shell.Exec( openssl + " --help" );
+  while ( ! oExec.StdOut.AtEndOfStream ) {
+    WScript.Echo(oExec.StdOut.readline());
+  }
+  while ( ! oExec.StdErr.AtEndOfStream ) {
+    WScript.Echo(oExec.StdErr.readline());
+  }
+}
+catch (e){ 
+  WScript.Echo(e)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;引数のぶんだけ繰り返して実行する&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+
+for (i = 0; i &amp;lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+    fin = fso.OpenTextFile(file, 1, false);
+    while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+    }
+    fin.Close();
+  }
+  catch (e) {
+    WScript.Echo(e);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ファイルを開き一行ずつ読み込んで処理。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var objArgs = WScript.Arguments;
+var fso     = new ActiveXObject("Scripting.FileSystemObject");
+var file;
+var fin;
+
+for (i = 0; i &amp;lt; objArgs.length; i++) {
+  try {
+    file = fso.GetFile( objArgs(i) );
+  }
+  catch(e) {
+    WScript.Echo(e);
+    continue;
+  }
+  fin = fso.OpenTextFile(file, 1, false);
+  while ( ! fin.AtEndOfStream ) {
+      line = fin.readline();
+      WScript.Echo(line);
+  }
+  fin.Close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;アクセスファイルを開き、マクロを呼び出す。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var dbfile='C:\\Users\\public\\Documents\\Database1.accdb';
+var timeout = 500; // milliseconds
+try {
+  var AccessApp = new ActiveXObject( "Access.Application" );
+  // AccessApp.Visible = true;
+  WScript.Sleep( timeout );
+
+  try {
+    AccessApp.OpenCurrentDatabase( dbfile );
+    WScript.Sleep( timeout );
+    // マクロを実行する例
+    // AccessApp.DoCmd.RunMacro( "マクロ名" );
+  }
+  catch(e) {
+    WScript.Echo(e);
+  }
+  finally {
+    AccessApp.CloseCurrentDatabase();
+  }
+}
+catch(e) {
+    WScript.Echo(e);
+}
+finally {
+  AccessApp.Quit();
+  AccessApp = null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;excel&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var excelfile = "c:\\users\\public\\documents\\test.xlsm"
+var updatelinks = true;
+var readonly = true;
+
+try {
+  var ExcelApp = new ActiveXObject("Excel.Application");
+  // ExcelApp.Visible = true;
+  // ExcelApp.DisplayAlerts = true;
+
+  try {
+    // var book = ExcelApp.Workbooks.Open(excelfile);
+    var book = ExcelApp.Workbooks.Open(excelfile, updatelinks, readonly);
+    // マクロを実行する例
+    ExcelApp.Run("マクロ名")
+
+    // シートに記入して保存する例
+    // var sheet = book.sheets(1);
+    // sheet.Cells(2, 1).value = "message...";
+    // book.Save();
+  }
+  catch(e) {
+    WScript.Echo(e)
+  }
+  finally {
+    book.Close();
+  }
+}
+catch(e) {
+  WScript.Echo(e)
+}
+finally {
+  ExcelApp.Quit();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>jscript</category><category>windows</category><guid>https://mnod.github.io/posts/20170930.html</guid><pubDate>Sat, 30 Sep 2017 00:00:00 GMT</pubDate></item><item><title>ms windows commands</title><link>https://mnod.github.io/posts/20170318.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;カレントディレクトリの*txtに対して処理を繰り返して実行する&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for /r . %i in (*txt) do type "%i" | sort
+    バッチの中では%%のようにする。
+    doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
+    doの中にパイプを含むことができる。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;複数のファイルを、指定したディレクトリに問い合わせ無しでコピーする。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;xcopy /y *.txt distdir
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ファイルのハッシュ値表示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;certutil -hashfile ファイル名 [MD5|SHA1|SHA256]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;base64エンコード/デコード&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;certutil -encode infile file.b64
+    エンコードすると、pem形式のファイル(ヘッダ・フッタあり)が得られる。
+certutil -decode file.b64 outfile
+    デコードするファイルは、pem形式ではないものでOK。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;シンボリックリンクの作成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;コマンドプロンプトを「管理者で実行」で開いて実行
+ディレクトリのリンクの作成と削除
+mklink /d &amp;lt;link&amp;gt; &amp;lt;original&amp;gt;
+rmdir &amp;lt;link&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;共有ドライブのマウント、アンマウント&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;net use y:
+net use y: \\server\share
+永続設定 
+net use y: \\server\share\dir /persistent:yes
+net use y: /delete
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;date変数の部分文字列を切り出す例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;set YYYYMMDD=%date:~0,4%%date:~5,2%%date:~8,2%
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;その他稀にしか使わないけど便利なコマンド&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;画面解像度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;desk.cpl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ネットワーク接続&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ncpa.cpl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;送るメニューを開く&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;start shell:sendto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;スタートアップを開く&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;start shell:startup
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;IME2010ユーザ辞書ツール&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;C:\Program Files\Common Files\microsoft shared\IME14\IMEJP\IMJPDCT.EXE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;時刻同期&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;w32tm /query /status /verbose
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ディレクトリバックアップバッチ例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if exist z:\. net use z: /delete
+if not exist z:\. net use z: \\backupserver\backupvol
+set logfile=c:\log\copyall.log
+xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20170318.html</guid><pubDate>Sat, 18 Mar 2017 00:00:00 GMT</pubDate></item><item><title>my favorite desktop tools for windows</title><link>https://mnod.github.io/posts/20160910.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="http://www2s.biglobe.ne.jp/~geoph/"&gt;Clock Launcher&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Clock Launcherは、たくさんの機能が付属したフリーのランチャーアプリです。&lt;/p&gt;
+&lt;p&gt;ランチャー機能以外に、自分は以下のような機能を使用しています。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;クリップボード管理&lt;/li&gt;
+&lt;li&gt;デスクトップ付箋&lt;/li&gt;
+&lt;li&gt;カレンダー&lt;/li&gt;
+&lt;li&gt;デジタル時計&lt;/li&gt;
+&lt;li&gt;タイマー&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ランチャー本体を操作してもランチャーメニューを表示できますが、
+自分は、デスクトップの何もないところをダブルクリックするとランチャーメニューが起動するように設定しています。&lt;/p&gt;
+&lt;p&gt;普通のアプリケーションだけでなく、ユーザ辞書ツール(imjpdct.exe)や、自家製バッチ等を登録する等、とても便利に使わせてもらってます。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;a href="http://salt.car.coocan.jp/VD.htm"&gt;Virtual Desktop for Win32&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Virtual Desktopはフリーの仮想デスクトップソフトです。&lt;/p&gt;
+&lt;p&gt;現在の最新バージョン(0.95)では、Windows7までの対応となっています。&lt;/p&gt;
+&lt;p&gt;デスクトップの拡張だけでなく、いくつか便利な機能があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;指定したウィンドウの半透明化。&lt;/li&gt;
+&lt;li&gt;ウィンドウの位置やサイズを数値で表示。&lt;/li&gt;
+&lt;li&gt;ウィンドウのスナップ。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160910.html</guid><pubDate>Sat, 10 Sep 2016 00:00:00 GMT</pubDate></item><item><title>WinMerge</title><link>https://mnod.github.io/posts/20160904.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの差分表示ツール、WinMergeのご紹介です。&lt;/p&gt;
+&lt;p&gt;WinMergeは、Windowsで動作する、フリーの差分表示、マージツールです。が、自分は差分表示機能しか使いこなしておりません。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://winmerge.org/"&gt;http://winmerge.org/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;こちらも、&lt;a href="http://portableapps.com/"&gt;PortableApps&lt;/a&gt; で、&lt;a href="http://portableapps.com/apps/utilities/winmerge_portable"&gt;WinMerge Portable&lt;/a&gt; としても配布されています。&lt;/p&gt;
+&lt;p&gt;日本語化している方がいらっしゃるので、私は、日本語版のほうを使用しています。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html"&gt;http://www.geocities.co.jp/SiliconValley-SanJose/8165/winmerge.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;3ファイル(ディレクトリ)の比較も可能。&lt;/li&gt;
+&lt;li&gt;シンタックスハイライト。&lt;/li&gt;
+&lt;li&gt;各種文字コードに対応。&lt;/li&gt;
+&lt;li&gt;プラグインによるエクセルファイルの比較。&lt;/li&gt;
+&lt;li&gt;バッチファイル出力機能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以前は別のツールを使用していたのですが、諸事情あって、乗り換えることになりました。空白や改行コードの違い等を無視するか、比較するか、必要に応じて細かく指定することができるので、とても便利です。&lt;/p&gt;
+&lt;p&gt;差分表示をGitHub同様のカラースキーマに設定することができます。GitHubに慣れている方には良いのではないでしょうか。(自分はGitHubを使いこなしてはいませんが、自分には見やすいです。)&lt;/p&gt;
+&lt;p&gt;エクセルファイルの比較は思った以上に便利です。お勧めです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160904.html</guid><pubDate>Sun, 04 Sep 2016 00:00:00 GMT</pubDate></item><item><title>PuTTY</title><link>https://mnod.github.io/posts/20160903.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。&lt;/p&gt;
+&lt;p&gt;PuTTYは、Windowsまたは、Un&lt;em&gt;xで動作するフリーのターミナルエミュレータです。(ここではWindows版についての情報を掲載します。Un&lt;/em&gt;x版については触れません。)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/"&gt;http://www.chiark.greenend.org.uk/%7Esgtatham/putty/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="http://portableapps.com/"&gt;PortableApps&lt;/a&gt; で、 &lt;a href="http://portableapps.com/apps/internet/putty_portable"&gt;PuTTY Portable&lt;/a&gt; としても配布されています。
+(PortableAppsは、アプリをUSBメモリ等にインストールして持ち運んで、いつもと異なる端末でも、いつもと同じような環境で作業できるようにするというプロジェクトです。)&lt;/p&gt;
+&lt;p&gt;日本語化している方がいらっしゃるので、私は、日本語版(PuTTYjp)を使用しています。&lt;/p&gt;
+&lt;p&gt;(私ごとですが、よく見かける"有志の方がxxしている"という表現がどうにも好きではありません。酸っぱいスメルを感じてぞわぞわします。)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html"&gt;http://hp.vector.co.jp/authors/VA024651/PuTTYkj.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、シリアル、ssh接続等。&lt;/li&gt;
+&lt;li&gt;GUIのPuTTY本体(putty.exe)だけでなく、コマンドライン用のsshクライアント(plink.exe)が付属している。&lt;/li&gt;
+&lt;li&gt;scp(pscp.exe)、sftp(psftp.exe)等のコマンドラインツールが付属している。&lt;/li&gt;
+&lt;li&gt;フルスクリーン表示ができる。
+(スクロールやタイトルバー等が表示されなくなり、画面全体でターミナル画面を表示するようになる)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。&lt;/p&gt;
+&lt;p&gt;TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
+(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item><item><title>TeraTerm</title><link>https://mnod.github.io/posts/20160902.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ttssh2.osdn.jp/"&gt;https://ttssh2.osdn.jp/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://osdn.jp/projects/ttssh2/"&gt;https://osdn.jp/projects/ttssh2/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;TeraTermは、Windowsで動作するフリーのターミナルエミュレータです。&lt;/p&gt;
+&lt;p&gt;ネットワーク・コンピュータ関連業界界隈の方だったら使ったことが無い人はいないのではないか、というくらいの定番ですね。毎日のようにお世話になっております。&lt;/p&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;telnet、シリアル、ssh接続等。&lt;/li&gt;
+&lt;li&gt;sshポート転送。&lt;/li&gt;
+&lt;li&gt;scpによるファイル転送。&lt;/li&gt;
+&lt;li&gt;各種日本語文字コードに対応&lt;/li&gt;
+&lt;li&gt;非常に高機能なマクロ機能。&lt;/li&gt;
+&lt;li&gt;作業ログ保存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;後述する予定のPuTTyも便利ではあるのですが、ログの保存が思ったようにできないことがあるため、使用する場面が限られてしまいます。&lt;/p&gt;
+&lt;p&gt;一方、こちらのTeraTermは、自分にとっては、非の打ちどころがほとんどありません。&lt;/p&gt;
+&lt;p&gt;機能追加の希望があるとすれば、Linux等のターミナルソフトでよくあるような、タブ切り替え機能が標準で使えるようになると嬉しいかもしれません。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;ペースト(貼り付け)操作について&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;TeraTermでは、ペーストのショートカットはAlt+Vになっています。&lt;/p&gt;
+&lt;p&gt;Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？&lt;/p&gt;
+&lt;p&gt;Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。&lt;/p&gt;
+&lt;p&gt;また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。&lt;/p&gt;
+&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item><item><title>sakura editor</title><link>https://mnod.github.io/posts/20160628.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://sakura-editor.sourceforge.net"&gt;http://sakura-editor.sourceforge.net&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://sourceforge.net/projects/sakura-editor/"&gt;https://sourceforge.net/projects/sakura-editor/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;サクラエディタは、Windows で動作するタブ式のテキストエディタです。&lt;/p&gt;
+&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;多様な文字コード、改行コードに対応。
+(un*xで作成したテキストファイルも問題なく編集することができます。)&lt;/li&gt;
+&lt;li&gt;正規表現による検索。置換。
+("行頭が#で始まる行(#の前に空白があるものも含む)"などといった、複雑な指定が可能)&lt;/li&gt;
+&lt;li&gt;grep機能。タグジャンプ機能。
+(複数のファイルから検索。みつけた場所にワンキーで移動可能)&lt;/li&gt;
+&lt;li&gt;指定したキーワードの色分け。&lt;/li&gt;
+&lt;li&gt;矩形編集。&lt;/li&gt;
+&lt;li&gt;キーボードマクロ。
+(一連のキー操作の記録、保存。呼び出し。)&lt;/li&gt;
+&lt;li&gt;選択範囲のソート、重複排除など。
+(シェルを使わずに、エディタ内でsort | uniq ができる)&lt;/li&gt;
+&lt;li&gt;動作が比較的軽い。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。&lt;/p&gt;
+&lt;p&gt;いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。&lt;/p&gt;
+&lt;p&gt;是非テキストエディタの活用をおすすめします。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160628.html</guid><pubDate>Sun, 28 Aug 2016 00:00:00 GMT</pubDate></item></channel></rss>
