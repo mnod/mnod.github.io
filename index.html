@@ -258,6 +258,14 @@ git push -u origin master
 id_rsa
 END
 </code></pre>
+<p><em>initialize history of repository</em></p>
+<pre><code>rm -rf .git
+git init
+git add .
+git commit -a -m "&lt;commit message&gt;"
+git remote add origin &lt;url&gt;
+git push -u origin master -f
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200616.html" class="u-url">screen and tmux</a></h1>

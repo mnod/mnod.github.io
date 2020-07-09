@@ -112,6 +112,14 @@ git push -u origin master
 id_rsa
 END
 </code></pre>
+<p><em>initialize history of repository</em></p>
+<pre><code>rm -rf .git
+git init
+git add .
+git commit -a -m "&lt;commit message&gt;"
+git remote add origin &lt;url&gt;
+git push -u origin master -f
+</code></pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">

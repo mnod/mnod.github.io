@@ -35,7 +35,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/git.xml</loc>
-  <lastmod>2020-07-07T12:48:00Z</lastmod>
+  <lastmod>2020-07-09T13:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/hosting.xml</loc>
@@ -150,15 +150,11 @@
   <lastmod>2020-07-07T12:48:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>https://mnod.github.io/galleries/rss.xml</loc>
-  <lastmod>2020-07-09T00:38:00Z</lastmod>
- </sitemap>
- <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2020-06-29T13:38:00Z</lastmod>
+  <lastmod>2020-07-09T13:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2020-07-09T00:38:00Z</lastmod>
+  <lastmod>2020-07-09T13:39:00Z</lastmod>
  </sitemap>
 </sitemapindex>

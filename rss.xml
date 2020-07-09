@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 29 Jun 2020 13:38:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 09 Jul 2020 13:33:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
@@ -183,6 +183,14 @@ git push -u origin master
 &lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; END | tee -a .gitignore
 id_rsa
 END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;initialize history of repository&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;rm -rf .git
+git init
+git add .
+git commit -a -m "&amp;lt;commit message&amp;gt;"
+git remote add origin &amp;lt;url&amp;gt;
+git push -u origin master -f
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>git</category><guid>https://mnod.github.io/posts/20200617.html</guid><pubDate>Wed, 17 Jun 2020 00:00:00 GMT</pubDate></item><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;table&gt;
 &lt;tr&gt;&lt;th&gt;command&lt;/th&gt;&lt;th&gt;screen&lt;/th&gt;&lt;th&gt;tmux&lt;/th&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th&gt;list&lt;/th&gt;&lt;td&gt;-ls&lt;/td&gt;&lt;td&gt;ls&lt;/td&gt;&lt;/tr&gt;

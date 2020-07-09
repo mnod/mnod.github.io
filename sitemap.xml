@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://mnod.github.io/</loc>
-  <lastmod>2020-07-07T12:21:00Z</lastmod>
+  <lastmod>2020-07-09T12:30:00Z</lastmod>
  </url>
  <url>
   <loc>https://mnod.github.io/2016/</loc>
@@ -32,13 +32,5 @@
  <url>
   <loc>https://mnod.github.io/categories/</loc>
   <lastmod>2020-07-07T12:48:00Z</lastmod>
- </url>
- <url>
-  <loc>https://mnod.github.io/galleries/</loc>
-  <lastmod>2020-06-29T12:44:00Z</lastmod>
- </url>
- <url>
-  <loc>https://mnod.github.io/listings/</loc>
-  <lastmod>2020-06-29T12:44:00Z</lastmod>
  </url>
 </urlset>
