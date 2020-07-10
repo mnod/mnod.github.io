@@ -1,7 +1,7 @@
 body {
     margin: 0em;
+    padding: 0em;
     font-size: medium;
-    padding: 0.5em;
 }
 #container {
     margin: 0.5em;
@@ -10,7 +10,7 @@ body {
 pre {
     color: #eeeeee;
     background-color: #222222;
-    padding: 0.5em 1em;
+    padding: 0.5em;
     overflow: auto;
     white-space: pre-wrap;
 }
