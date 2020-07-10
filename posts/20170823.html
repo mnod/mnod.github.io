@@ -173,6 +173,40 @@ iface br0 inet static
   netmask 255.255.255.0
   bridge_ports eth0
 </code></pre>
+<p>Alternatively you can use systemd-networkd for handling virtual bridge.
+At first put these 3 files in /etc/systemd/network</p>
+<p>eth0.network</p>
+<pre><code>[Match]
+Name=eth0
+
+[Network]
+Bridge=br0
+## if you want to use this interface, comment out above line
+## and specify dhcp or static address
+#DHCP=ipv4
+#Address=192.168.0.1
+#Gateway=192.168.0.254
+#DNS=192.168.0.254
+</code></pre>
+<p>br0.netdev</p>
+<pre><code>[NetDev]
+Name=br0
+Kind=bridge
+</code></pre>
+<p>br0.network</p>
+<pre><code>[Match]
+Name=br0
+
+[Network]
+# DHCP=ipv4
+Address=192.168.0.1
+Gateway=192.168.0.254
+DNS=192.168.0.254
+</code></pre>
+<p>then enable and start systemd-networkd</p>
+<pre><code>systemctl enable  systemd-networkd
+systemctl restart systemd-networkd
+</code></pre>
 <p><em>openvswitch</em></p>
 <p>show information of virtual bridge</p>
 <pre><code>ovs-vsctl show
