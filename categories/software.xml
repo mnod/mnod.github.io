@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 10 Jul 2020 00:31:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 12 Jul 2020 01:40:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
+&lt;li&gt;Theme is written in Mako or Jinja2.
+The user can use any existing theme or can create your own theme inherits from existing one.&lt;/li&gt;
+&lt;li&gt;The user can specify deployment procedure and run it.&lt;/li&gt;
+&lt;li&gt;Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
 &lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
 &lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
 (物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
@@ -199,28 +207,4 @@ ssh鍵について、&lt;a href="https://github.com/sheimi/SGit"&gt;ソースコ
 &lt;p&gt;Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？&lt;/p&gt;
 &lt;p&gt;Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。&lt;/p&gt;
 &lt;p&gt;また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。&lt;/p&gt;
-&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item><item><title>sakura editor</title><link>https://mnod.github.io/posts/20160628.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="http://sakura-editor.sourceforge.net"&gt;http://sakura-editor.sourceforge.net&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://sourceforge.net/projects/sakura-editor/"&gt;https://sourceforge.net/projects/sakura-editor/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;サクラエディタは、Windows で動作するタブ式のテキストエディタです。&lt;/p&gt;
-&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;多様な文字コード、改行コードに対応。
-(un*xで作成したテキストファイルも問題なく編集することができます。)&lt;/li&gt;
-&lt;li&gt;正規表現による検索。置換。
-("行頭が#で始まる行(#の前に空白があるものも含む)"などといった、複雑な指定が可能)&lt;/li&gt;
-&lt;li&gt;grep機能。タグジャンプ機能。
-(複数のファイルから検索。みつけた場所にワンキーで移動可能)&lt;/li&gt;
-&lt;li&gt;指定したキーワードの色分け。&lt;/li&gt;
-&lt;li&gt;矩形編集。&lt;/li&gt;
-&lt;li&gt;キーボードマクロ。
-(一連のキー操作の記録、保存。呼び出し。)&lt;/li&gt;
-&lt;li&gt;選択範囲のソート、重複排除など。
-(シェルを使わずに、エディタ内でsort | uniq ができる)&lt;/li&gt;
-&lt;li&gt;動作が比較的軽い。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。&lt;/p&gt;
-&lt;p&gt;いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。&lt;/p&gt;
-&lt;p&gt;是非テキストエディタの活用をおすすめします。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160628.html</guid><pubDate>Sun, 28 Aug 2016 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

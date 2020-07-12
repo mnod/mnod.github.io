@@ -63,7 +63,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/linux.xml</loc>
-  <lastmod>2020-07-07T12:48:00Z</lastmod>
+  <lastmod>2020-07-10T08:11:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/multimedia.xml</loc>
@@ -79,7 +79,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/perl.xml</loc>
-  <lastmod>2020-07-07T12:48:00Z</lastmod>
+  <lastmod>2020-07-10T00:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/postgres.xml</loc>
@@ -111,7 +111,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/software.xml</loc>
-  <lastmod>2020-07-07T12:48:00Z</lastmod>
+  <lastmod>2020-07-10T11:56:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/sqlite.xml</loc>
@@ -151,10 +151,10 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2020-07-09T13:33:00Z</lastmod>
+  <lastmod>2020-07-10T11:56:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2020-07-09T13:39:00Z</lastmod>
+  <lastmod>2020-07-10T11:56:00Z</lastmod>
  </sitemap>
 </sitemapindex>

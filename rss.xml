@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 10 Jul 2020 08:11:58 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 12 Jul 2020 01:40:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
+&lt;li&gt;Theme is written in Mako or Jinja2.
+The user can use any existing theme or can create your own theme inherits from existing one.&lt;/li&gt;
+&lt;li&gt;The user can specify deployment procedure and run it.&lt;/li&gt;
+&lt;li&gt;Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
@@ -717,11 +725,4 @@ $ ansible-playbook --check -e @extravars.json apply.playbook
 $ ansible-playbook -e @extravars.json apply.playbook
 $ ansible-playbook --check -e @extravars.json destroy.playbook
 $ ansible-playbook -e @extravars.json destroy.playbook
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>terraform</category><guid>https://mnod.github.io/posts/20200510.html</guid><pubDate>Sun, 10 May 2020 00:00:00 GMT</pubDate></item><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cat file | tr -d '\n'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;url encoding and decoding&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;echo 'http://example.com' | nkf -WwMQ | sed 's/=$//g' | tr = % | tr -d '\n'
-
-echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20200506.html</guid><pubDate>Wed, 06 May 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>terraform</category><guid>https://mnod.github.io/posts/20200510.html</guid><pubDate>Sun, 10 May 2020 00:00:00 GMT</pubDate></item></channel></rss>

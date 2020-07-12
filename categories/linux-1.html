@@ -521,6 +521,13 @@ $ mount /dev/mapper/loop0p1 /mountpoint
 $ umount /mountpoint
 $ kpartx -d -v file.img
 </code></pre>
+<p><em>wipe a disk</em></p>
+<pre><code>$ dd if=/dev/zero of=/dev/sdx bs=4096
+$ dd if=/dev/urandom of=/dev/sdx bs=4096
+</code></pre>
+<p>or you can use shred command.</p>
+<pre><code>$ shred --verbose --random-source=/dev/urandom -n 1 /dev/sdx
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161001.html" class="u-url">docker life cycle</a></h1>
