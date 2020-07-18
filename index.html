@@ -67,8 +67,7 @@ The user can use any existing theme or can create your own theme inherits from e
 <li>Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.</li>
 </ul>
 <p>As described in the footer of this page, I use it now.</p>
-<p>This is a sample Dockerfile. The docker image will become about 427MB.
-When I make a similar image with ubuntu:20.04, the size is 505MB.</p>
+<p>This is a sample Dockerfile. The docker image will become about 427MB.</p>
 <pre><code>FROM alpine:3.12
 
 RUN apk --update --no-cache add py-pip git bash \
@@ -83,6 +82,10 @@ USER "docker"
 WORKDIR "/tmp/nikola"
 CMD ["/bin/bash"]
 </code></pre>
+<p><code>nikola github_deploy</code> does not work with this image. I get this message when I run it.</p>
+<pre><code>git: 'fast-import' is not a git command. See 'git --help'.
+</code></pre>
+<p>So I use ubuntu:20.04 for a base image.</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200622.html" class="u-url">backend and lock</a></h1>

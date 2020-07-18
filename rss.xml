@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 15:19:05 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 15:40:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
 &lt;li&gt;Theme is written in Mako or Jinja2.
@@ -8,8 +8,7 @@ The user can use any existing theme or can create your own theme inherits from e
 &lt;li&gt;Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;
-&lt;p&gt;This is a sample Dockerfile. The docker image will become about 427MB.
-When I make a similar image with ubuntu:20.04, the size is 505MB.&lt;/p&gt;
+&lt;p&gt;This is a sample Dockerfile. The docker image will become about 427MB.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM alpine:3.12
 
 RUN apk --update --no-cache add py-pip git bash \
@@ -23,7 +22,11 @@ EXPOSE 80
 USER "docker"
 WORKDIR "/tmp/nikola"
 CMD ["/bin/bash"]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;nikola github_deploy&lt;/code&gt; does not work with this image. I get this message when I run it.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git: 'fast-import' is not a git command. See 'git --help'.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So I use ubuntu:20.04 for a base image.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
