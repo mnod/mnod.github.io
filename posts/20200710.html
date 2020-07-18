@@ -81,6 +81,22 @@ The user can use any existing theme or can create your own theme inherits from e
 <li>Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.</li>
 </ul>
 <p>As described in the footer of this page, I use it now.</p>
+<p>This is a sample Dockerfile. The docker image will become about 427MB.
+When I make a similar image with ubuntu:20.04, the size is 505MB.</p>
+<pre><code>FROM alpine:3.12
+
+RUN apk --update --no-cache add py-pip git bash \
+gcc musl-dev python3-dev libxml2-dev libxslt-dev libjpeg-turbo-dev \
+&amp;&amp; pip install nikola jinja2 ghp-import2 \
+&amp;&amp; mkdir /tmp/nikola \
+&amp;&amp; adduser -H -D docker
+
+VOLUME ["/tmp/nikola"]
+EXPOSE 80
+USER "docker"
+WORKDIR "/tmp/nikola"
+CMD ["/bin/bash"]
+</code></pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
