@@ -1135,16 +1135,29 @@ $ aws glacier delete-vault --account-id - --vault-name &lt;Vault Name&gt;
         </div>
     </header><div class="e-content entry-content">
     <div>
-<p><em>bucket</em></p>
-<pre><code>$ aws s3api list-buckets
-$ aws s3api create-bucket --bucket mybucketname --region ap-northeast-1 --create-bucket-configuration LocationConstraint=ap-northeast-1
-$ aws s3api delete-bucket --bucket mybucketname
-</code></pre>
-<p><em>file</em></p>
+<p><em>objects</em></p>
 <pre><code>$ aws s3 ls s3://mybucketname/
 $ aws s3 cp testfile.txt s3://mybucketname/
 $ aws s3 cp s3://mybucketname/testfile.txt testfile2.txt
 $ aws s3 rm s3://mybucketname/testfile.txt
+</code></pre>
+<p><em>bucket</em></p>
+<pre><code>$ aws s3api list-buckets
+$ aws s3api list-buckets --query 'Buckets[?Name == `mybucketname`]'
+$ aws s3api create-bucket --bucket mybucketname --region ap-northeast-1 --create-bucket-configuration LocationConstraint=ap-northeast-1
+$ aws s3api delete-bucket --bucket mybucketname
+</code></pre>
+<p><em>default encryption for a bucket</em></p>
+<pre><code>$ aws s3api get-bucket-encryption --bucket mybucketname
+$ aws s3api put-bucket-encryption --bucket mybucketname \
+--server-side-encryption-configuration '{"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]}'
+
+$ aws s3api head-object --bucket mybucketname --key testfile.txt
+</code></pre>
+<p><em><a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html">public access block</a></em></p>
+<pre><code>$ aws s3api get-public-access-block --bucket mybucketname
+$ aws s3api put-public-access-block --bucket mybucketname \
+--public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
 </code></pre>
 <p><em>versioning</em></p>
 <p>enable and disable versioning for a bucket</p>
@@ -1156,7 +1169,8 @@ $ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configurati
 <pre><code>$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt
 $ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt --query 'Versions[?IsLatest==`true`].VersionId'
 </code></pre>
-<p>remove all versions for a file</p>
+<p>remove all versions for a file
+(When a file remains in a bucket, you can not delete the bucket)</p>
 <pre><code>$ delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix testfile.txt \
 &gt; --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
 
@@ -1218,13 +1232,16 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: "{{ BucketName }}" 
-      AccessControl: Private
+      BucketName: !Ref BucketName
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
         IgnorePublicAcls: True
         RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
       VersioningConfiguration:
         Status: "Enabled"
       Tags:
