@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 08:50:39 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 09:08:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
 &lt;li&gt;Theme is written in Mako or Jinja2.
@@ -153,6 +153,51 @@ aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
 
 terraform destroy 
 terraform show
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sample yaml file for stack of CloudFormation to build backend S3 bucket and DynamoDB table&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  BucketName:
+    Type: String
+  TableName:
+    Type: String
+Resources:
+  BackendBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: "Enabled"
+      Tags:
+        - "Key": "Name"
+          "Value": "test"
+  LockctrlTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      AttributeDefinitions:
+        - AttributeName: "LockID"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "LockID"
+          KeyType: "HASH"
+      BillingMode: "PROVISIONED"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      Tags:
+        - Key: "Name"
+          Value: "test"
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>terraform</category><guid>https://mnod.github.io/posts/20200622.html</guid><pubDate>Mon, 22 Jun 2020 00:00:00 GMT</pubDate></item><item><title>github</title><link>https://mnod.github.io/posts/20200617.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;adding ssh public key&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;You can use github without ssh key. 
 But when you add ssh key and you use ssh private key without passphrase, it is convinient for scripting.&lt;/p&gt;
