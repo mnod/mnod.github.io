@@ -491,12 +491,42 @@ $ openssl rsa -aes256 -in id_rsa.testkey.nopass -out id_rsa.testkey
 $ chmod 600 id_rsa.testkey
 ($ rm id_rsa.testkey.json id_rsa.testkey.nopass)
 </code></pre>
+<p><em>volume</em></p>
+<pre><code>$ aws ec2 describe-volumes
+$ aws ec2 create-volume --volume-type gp2 --size &lt;size&gt; --availability-zone &lt;az&gt;
+$ aws ec2 delete-volume --volume-id &lt;volume&gt;
+</code></pre>
+<p>attach a volume to a instance</p>
+<pre><code>$ aws ec2 describe-instances --filters Name=instance-id,Values=&lt;instance&gt; --query 'Reservations[].Instances[].BlockDeviceMappings[]'
+$ aws ec2 attach-volume --volume-id &lt;volume&gt; --instance-id &lt;instance&gt; --device /dev/xvdb
+</code></pre>
+<p>after the image attached, then make partition table, partition and file system on the os side.</p>
+<pre><code>$ lsblk
+$ sudo fdisk -l /dev/nvme1n1
+$ sudo fdisk /dev/nvme1n1
+$ sudo mkswap /dev/nvme1n1p1
+$ sudo swapon /dev/nvme1n1p1
+$ cat /proc/swaps
+$ ls -l /dev/disk/by-uuid/
+$ echo "UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx     none        swap   defaults          0   0" | sudo tee -a /etc/fstab
+</code></pre>
+<p>extend volume</p>
+<pre><code>$ aws ec2 describe-volumes --filters Name=volume-id,Values=&lt;volume&gt;
+$ aws ec2 modify-volume --size &lt;size&gt; --volume-id &lt;volume&gt;
+</code></pre>
+<p>after that, extend partition and file system</p>
+<pre><code>$ df
+$ sudo growpart /dev/nvme0n1 1
+$ lsblk
+$ sudo xfs_growfs -d /
+</code></pre>
 <p><em>ami</em></p>
 <pre><code>$ aws ec2 describe-images --filters "Name=owner-id,Values=&lt;id&gt;"
 $ aws ec2 describe-images --filters "Name=image-id,Values=&lt;ami&gt;"
 $ aws ec2 create-image --instance-id &lt;instance&gt; --name &lt;name&gt;
 $ aws ec2 deregister-image --image-id &lt;ami&gt;
 </code></pre>
+<p>after deregister-image, need to delete snapshots and volumes</p>
 <p><em>snapshot</em></p>
 <pre><code>$ aws ec2 describe-snapshots --filters Name=owner-id,Values=&lt;id&gt;
 $ aws ec2 describe-snapshots --filters Name=snapshot-id,Values=&lt;snapshot&gt;

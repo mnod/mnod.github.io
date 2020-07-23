@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about shell)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/shell.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about shell)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/shell.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Jul 2020 10:17:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cat file | tr -d '\n'
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;url encoding and decoding&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;echo 'http://example.com' | nkf -WwMQ | sed 's/=$//g' | tr = % | tr -d '\n'
 
 echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;handle files which name may include spaces&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;find dirname -print0 | xargs -0 ls
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20200506.html</guid><pubDate>Wed, 06 May 2020 00:00:00 GMT</pubDate></item><item><title>sample of simple bash scripts</title><link>https://mnod.github.io/posts/20170913.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;ファイルバックアップスクリプト&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;引数に与えられたファイルを3ケタの連番をつけてコピーする。
 まだいま一ついけてない。&lt;/p&gt;

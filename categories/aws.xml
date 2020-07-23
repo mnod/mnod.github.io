@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ecs</title><link>https://mnod.github.io/posts/20200209.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;cluster&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Jul 2020 10:17:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ecs</title><link>https://mnod.github.io/posts/20200209.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;cluster&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws ecs list-clusters 
 $ aws ecs describe-clusters --clusters &amp;lt;clusterArn&amp;gt;
 
@@ -376,12 +376,42 @@ $ openssl rsa -aes256 -in id_rsa.testkey.nopass -out id_rsa.testkey
 $ chmod 600 id_rsa.testkey
 ($ rm id_rsa.testkey.json id_rsa.testkey.nopass)
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;volume&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-volumes
+$ aws ec2 create-volume --volume-type gp2 --size &amp;lt;size&amp;gt; --availability-zone &amp;lt;az&amp;gt;
+$ aws ec2 delete-volume --volume-id &amp;lt;volume&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;attach a volume to a instance&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-instances --filters Name=instance-id,Values=&amp;lt;instance&amp;gt; --query 'Reservations[].Instances[].BlockDeviceMappings[]'
+$ aws ec2 attach-volume --volume-id &amp;lt;volume&amp;gt; --instance-id &amp;lt;instance&amp;gt; --device /dev/xvdb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;after the image attached, then make partition table, partition and file system on the os side.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ lsblk
+$ sudo fdisk -l /dev/nvme1n1
+$ sudo fdisk /dev/nvme1n1
+$ sudo mkswap /dev/nvme1n1p1
+$ sudo swapon /dev/nvme1n1p1
+$ cat /proc/swaps
+$ ls -l /dev/disk/by-uuid/
+$ echo "UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx     none        swap   defaults          0   0" | sudo tee -a /etc/fstab
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;extend volume&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-volumes --filters Name=volume-id,Values=&amp;lt;volume&amp;gt;
+$ aws ec2 modify-volume --size &amp;lt;size&amp;gt; --volume-id &amp;lt;volume&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;after that, extend partition and file system&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ df
+$ sudo growpart /dev/nvme0n1 1
+$ lsblk
+$ sudo xfs_growfs -d /
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;ami&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws ec2 describe-images --filters "Name=owner-id,Values=&amp;lt;id&amp;gt;"
 $ aws ec2 describe-images --filters "Name=image-id,Values=&amp;lt;ami&amp;gt;"
 $ aws ec2 create-image --instance-id &amp;lt;instance&amp;gt; --name &amp;lt;name&amp;gt;
 $ aws ec2 deregister-image --image-id &amp;lt;ami&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;after deregister-image, need to delete snapshots and volumes&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;snapshot&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws ec2 describe-snapshots --filters Name=owner-id,Values=&amp;lt;id&amp;gt;
 $ aws ec2 describe-snapshots --filters Name=snapshot-id,Values=&amp;lt;snapshot&amp;gt;
