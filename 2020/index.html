@@ -57,7 +57,51 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200710.html" class="u-url">nikola</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200924.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-09-24T00:00:00Z" itemprop="datePublished" title="2020-09-24 00:00">2020-09-24 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Windows can mount vhd file as a virtual drive.
+We can use it for application install space or document storage area.</p>
+<p>When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.</p>
+<pre><code>parted /dev/sdb print
+parted /dev/sdb rm 1
+parted /dev/sdb mkpart primary ntfs 0% 100%
+mkfs.ntfs -Q /dev/sdb1
+mount /dev/sdb1 /mnt
+</code></pre>
+<p>At first a raw image file, make label, and make partition.</p>
+<pre><code>dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
+losetup -f
+losetup /dev/loop1 file.img
+losetup -a
+parted /dev/loop1 print
+parted /dev/loop1 mklabel msdos
+parted /dev/loop1 mkpart primary ntfs 0% 100%
+losetup -d /dev/loop1
+</code></pre>
+<p>Then format the partition in ntfs format.</p>
+<pre><code>kpartx -a -v file.img
+mkfs.ntfs -Q /dev/loop1p1
+kpartx -d -v file.img
+</code></pre>
+<p>The vhd file must not be sparse file.
+So after we convert it to vhd format, then we should convert it to normal file.</p>
+<pre><code>cp --sparse=never file.img file_new.img
+qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
+cp -pi --sparse=never output.vhd.sparse file.vhd
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200710.html" class="u-url">nikola</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -754,281 +798,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200510.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-05-10T00:00:00Z" itemprop="datePublished" title="2020-05-10 00:00">2020-05-10 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p><em>install</em></p>
-<pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
-$ unzip terraform_x.xx.xx_linux_amd64.zip
-$ cp terraform /usr/local/bin
-</code></pre>
-<p><em>sample varible file</em></p>
-<p>terraform.tfvars </p>
-<pre><code># region   = "ap-northeast-2"
-# az = {
-#   zone0    = "ap-northeast-2a"
-#   zone1    = "ap-northeast-2b"
-# }
-# ami     = "ami-0d79f772de48b11f7"
-cidr_block   = "172.16.0.0/16"
-cidr_subnet0 = "172.16.0.0/24"
-cidr_subnet1 = "172.16.10.0/24"
-</code></pre>
-<p><em>sample tf file</em></p>
-<p>test.tf</p>
-<pre><code>variable "region" {
-  default = "ap-northeast-1"
-}
-variable "az" {
-  default = {
-    zone0 = "ap-northeast-1a"
-    zone1 = "ap-northeast-1c"
-  }
-}
-variable "ami" {
-  default = "ami-03a1ce3bba6d67270"
-}
-variable "instance_type" {
-  default = "t3.nano"
-}
-variable "cidr_block" {}
-variable "cidr_subnet0" {}
-variable "cidr_subnet1" {}
-variable "operation_addr" {}
-variable "key_name" {}
-variable "private_key" {}
-
-provider "aws" {
-  region = var.region
-}
-
-resource "aws_vpc" "terraform_test_vpc" {
-  cidr_block           = var.cidr_block
-  instance_tenancy     = "default"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_subnet" "terraform_test_subnet0" {
-  vpc_id            = aws_vpc.terraform_test_vpc.id
-  cidr_block        = var.cidr_subnet0
-  availability_zone = var.az.zone0
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_subnet" "terraform_test_subnet1" {
-  vpc_id            = aws_vpc.terraform_test_vpc.id
-  cidr_block        = var.cidr_subnet1
-  availability_zone = var.az.zone1
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_internet_gateway" "terraform_test_igw" {
-  vpc_id = aws_vpc.terraform_test_vpc.id
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_route_table" "terraform_test_route" {
-  vpc_id = aws_vpc.terraform_test_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.terraform_test_igw.id
-  }
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_route_table_association" "terraform_test_subnet0" {
-  subnet_id      = aws_subnet.terraform_test_subnet0.id
-  route_table_id = aws_route_table.terraform_test_route.id
-}
-
-resource "aws_route_table_association" "terraform_test_subnet1" {
-  subnet_id      = aws_subnet.terraform_test_subnet1.id
-  route_table_id = aws_route_table.terraform_test_route.id
-}
-
-resource "aws_security_group" "sg_ssh_web" {
-  name = "terraform_test_security_group"
-  description = "allow inbound ssh and web traffic"
-  vpc_id = aws_vpc.terraform_test_vpc.id
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = [var.operation_addr]
-  }
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_instance" "ec2_public" {
-    ami           = var.ami
-    instance_type = var.instance_type
-    key_name      = var.key_name
-    vpc_security_group_ids = [
-      aws_security_group.sg_ssh_web.id,
-    ]
-    subnet_id = aws_subnet.terraform_test_subnet0.id
-    associate_public_ip_address = "true"
-    user_data = file("userdata.sh")
-    connection {
-      user = "admin"
-      host = self.public_ip
-      private_key = file(var.private_key)
-    }
-    provisioner "file" {
-      source      = "index.html"
-      destination = "~/index.html"
-    }
-    provisioner "remote-exec" {
-      inline = [
-        "sudo apt update",
-        "sudo apt install -y nginx",
-        "sudo mv ~/index.html /var/www/html"
-      ]
-    }
-
-    tags = {
-        Name = "terraform_test"
-    }
-}
-
-output "public_dns" {
-  value = aws_instance.ec2_public.public_dns
-}
-</code></pre>
-<p><em>ininialize</em></p>
-<p>install plugin file under the current directory</p>
-<pre><code>$ terraform init
-</code></pre>
-<p><em>validate tf file</em></p>
-<pre><code>$ terraform validate
-</code></pre>
-<p><em>apply</em></p>
-<pre><code>$ terraform plan -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
-$ terraform apply -auto-approve "apply.plan"
-</code></pre>
-<p>or when destroy</p>
-<pre><code>$ terraform plan -destroy -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey' -target aws_instance.web1
-$ terraform apply -auto-approve "destroy.plan"
-</code></pre>
-<p>confirm result</p>
-<pre><code>$ terraform show
-</code></pre>
-<p><em>destroy</em></p>
-<pre><code>$ terraform destroy -auto-approve -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
-</code></pre>
-<p><em>sample ansible playbook</em></p>
-<p>apply.playbook</p>
-<pre><code>- hosts: localhost
-  connection: local
-  gather_facts: no
-
-  tasks:
-    - name: terraform plan
-      terraform:
-        project_path: './'
-        state: planned
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-
-    - name: terraform apply
-      terraform:
-        project_path: './'
-        state: present
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      when: not ansible_check_mode
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-      when: not ansible_check_mode
-</code></pre>
-<p>destroy.playbook</p>
-<pre><code>- hosts: localhost
-  connection: local
-  gather_facts: no
-
-  tasks:
-    - name: terraform destroy
-      terraform:
-        project_path: './'
-        state: absent
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      when: not ansible_check_mode
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-      when: not ansible_check_mode
-</code></pre>
-<p>apply and destroy with ansible</p>
-<pre><code>$ jq . extravars.json
-{
-  "operation_addr": "xxx.xxx.xxx.xxx/xx",
-  "key_name": "mykey",
-  "private_key": "id_rsa.mykey"
-}
-$ ansible-playbook --check -e @extravars.json apply.playbook
-$ ansible-playbook -e @extravars.json apply.playbook
-$ ansible-playbook --check -e @extravars.json destroy.playbook
-$ ansible-playbook -e @extravars.json destroy.playbook
 </code></pre>
 </div>
     </div>

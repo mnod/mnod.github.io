@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Jul 2020 10:17:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 24 Sep 2020 12:31:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+We can use it for application install space or document storage area.&lt;/p&gt;
+&lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;parted /dev/sdb print
+parted /dev/sdb rm 1
+parted /dev/sdb mkpart primary ntfs 0% 100%
+mkfs.ntfs -Q /dev/sdb1
+mount /dev/sdb1 /mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At first a raw image file, make label, and make partition.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
+losetup -f
+losetup /dev/loop1 file.img
+losetup -a
+parted /dev/loop1 print
+parted /dev/loop1 mklabel msdos
+parted /dev/loop1 mkpart primary ntfs 0% 100%
+losetup -d /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then format the partition in ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kpartx -a -v file.img
+mkfs.ntfs -Q /dev/loop1p1
+kpartx -d -v file.img
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The vhd file must not be sparse file.
+So after we convert it to vhd format, then we should convert it to normal file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cp --sparse=never file.img file_new.img
+qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
+cp -pi --sparse=never output.vhd.sparse file.vhd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
 &lt;li&gt;Theme is written in Mako or Jinja2.
@@ -529,264 +558,4 @@ It seems ansible should be installed with pip if you want to use ec2.py&lt;/p&gt
 
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item><item><title>first step of terraform</title><link>https://mnod.github.io/posts/20200510.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;install&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
-$ unzip terraform_x.xx.xx_linux_amd64.zip
-$ cp terraform /usr/local/bin
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;sample varible file&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;terraform.tfvars &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# region   = "ap-northeast-2"
-# az = {
-#   zone0    = "ap-northeast-2a"
-#   zone1    = "ap-northeast-2b"
-# }
-# ami     = "ami-0d79f772de48b11f7"
-cidr_block   = "172.16.0.0/16"
-cidr_subnet0 = "172.16.0.0/24"
-cidr_subnet1 = "172.16.10.0/24"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;sample tf file&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;test.tf&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;variable "region" {
-  default = "ap-northeast-1"
-}
-variable "az" {
-  default = {
-    zone0 = "ap-northeast-1a"
-    zone1 = "ap-northeast-1c"
-  }
-}
-variable "ami" {
-  default = "ami-03a1ce3bba6d67270"
-}
-variable "instance_type" {
-  default = "t3.nano"
-}
-variable "cidr_block" {}
-variable "cidr_subnet0" {}
-variable "cidr_subnet1" {}
-variable "operation_addr" {}
-variable "key_name" {}
-variable "private_key" {}
-
-provider "aws" {
-  region = var.region
-}
-
-resource "aws_vpc" "terraform_test_vpc" {
-  cidr_block           = var.cidr_block
-  instance_tenancy     = "default"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_subnet" "terraform_test_subnet0" {
-  vpc_id            = aws_vpc.terraform_test_vpc.id
-  cidr_block        = var.cidr_subnet0
-  availability_zone = var.az.zone0
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_subnet" "terraform_test_subnet1" {
-  vpc_id            = aws_vpc.terraform_test_vpc.id
-  cidr_block        = var.cidr_subnet1
-  availability_zone = var.az.zone1
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_internet_gateway" "terraform_test_igw" {
-  vpc_id = aws_vpc.terraform_test_vpc.id
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_route_table" "terraform_test_route" {
-  vpc_id = aws_vpc.terraform_test_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.terraform_test_igw.id
-  }
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-
-resource "aws_route_table_association" "terraform_test_subnet0" {
-  subnet_id      = aws_subnet.terraform_test_subnet0.id
-  route_table_id = aws_route_table.terraform_test_route.id
-}
-
-resource "aws_route_table_association" "terraform_test_subnet1" {
-  subnet_id      = aws_subnet.terraform_test_subnet1.id
-  route_table_id = aws_route_table.terraform_test_route.id
-}
-
-resource "aws_security_group" "sg_ssh_web" {
-  name = "terraform_test_security_group"
-  description = "allow inbound ssh and web traffic"
-  vpc_id = aws_vpc.terraform_test_vpc.id
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = [var.operation_addr]
-  }
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_instance" "ec2_public" {
-    ami           = var.ami
-    instance_type = var.instance_type
-    key_name      = var.key_name
-    vpc_security_group_ids = [
-      aws_security_group.sg_ssh_web.id,
-    ]
-    subnet_id = aws_subnet.terraform_test_subnet0.id
-    associate_public_ip_address = "true"
-    user_data = file("userdata.sh")
-    connection {
-      user = "admin"
-      host = self.public_ip
-      private_key = file(var.private_key)
-    }
-    provisioner "file" {
-      source      = "index.html"
-      destination = "~/index.html"
-    }
-    provisioner "remote-exec" {
-      inline = [
-        "sudo apt update",
-        "sudo apt install -y nginx",
-        "sudo mv ~/index.html /var/www/html"
-      ]
-    }
-
-    tags = {
-        Name = "terraform_test"
-    }
-}
-
-output "public_dns" {
-  value = aws_instance.ec2_public.public_dns
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;ininialize&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;install plugin file under the current directory&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform init
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;validate tf file&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform validate
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;apply&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform plan -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
-$ terraform apply -auto-approve "apply.plan"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or when destroy&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform plan -destroy -out=apply.plan -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey' -target aws_instance.web1
-$ terraform apply -auto-approve "destroy.plan"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm result&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;destroy&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ terraform destroy -auto-approve -var 'operation_addr=xxx.xxx.xxx.xxx/xx' -var 'key_name=mykey' -var 'private_key=./id_rsa.mykey'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;sample ansible playbook&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;apply.playbook&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;- hosts: localhost
-  connection: local
-  gather_facts: no
-
-  tasks:
-    - name: terraform plan
-      terraform:
-        project_path: './'
-        state: planned
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-
-    - name: terraform apply
-      terraform:
-        project_path: './'
-        state: present
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      when: not ansible_check_mode
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-      when: not ansible_check_mode
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;destroy.playbook&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;- hosts: localhost
-  connection: local
-  gather_facts: no
-
-  tasks:
-    - name: terraform destroy
-      terraform:
-        project_path: './'
-        state: absent
-        plan_file: ansible.plan
-        variables:
-          operation_addr: "{{ operation_addr }}"
-          key_name: "{{ key_name }}"
-          private_key: "{{ private_key }}"
-      when: not ansible_check_mode
-      register: result
-
-    - name: debug result
-      debug: 
-        var: result
-      when: not ansible_check_mode
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;apply and destroy with ansible&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq . extravars.json
-{
-  "operation_addr": "xxx.xxx.xxx.xxx/xx",
-  "key_name": "mykey",
-  "private_key": "id_rsa.mykey"
-}
-$ ansible-playbook --check -e @extravars.json apply.playbook
-$ ansible-playbook -e @extravars.json apply.playbook
-$ ansible-playbook --check -e @extravars.json destroy.playbook
-$ ansible-playbook -e @extravars.json destroy.playbook
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>terraform</category><guid>https://mnod.github.io/posts/20200510.html</guid><pubDate>Sun, 10 May 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item></channel></rss>

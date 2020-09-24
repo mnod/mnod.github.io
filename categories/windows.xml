@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:06 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;スクリプトの呼び出し。
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 24 Sep 2020 12:31:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+We can use it for application install space or document storage area.&lt;/p&gt;
+&lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;parted /dev/sdb print
+parted /dev/sdb rm 1
+parted /dev/sdb mkpart primary ntfs 0% 100%
+mkfs.ntfs -Q /dev/sdb1
+mount /dev/sdb1 /mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At first a raw image file, make label, and make partition.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
+losetup -f
+losetup /dev/loop1 file.img
+losetup -a
+parted /dev/loop1 print
+parted /dev/loop1 mklabel msdos
+parted /dev/loop1 mkpart primary ntfs 0% 100%
+losetup -d /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then format the partition in ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kpartx -a -v file.img
+mkfs.ntfs -Q /dev/loop1p1
+kpartx -d -v file.img
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The vhd file must not be sparse file.
+So after we convert it to vhd format, then we should convert it to normal file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cp --sparse=never file.img file_new.img
+qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
+cp -pi --sparse=never output.vhd.sparse file.vhd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;スクリプトの呼び出し。
 アイコンのダブルクリックや、アイコンへのドラッグ&amp;amp;ドロップでも起動できる。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cscript script.js //Nologo
 wscript script.js //Nologo

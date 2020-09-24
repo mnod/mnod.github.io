@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;table&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 24 Sep 2020 12:31:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+We can use it for application install space or document storage area.&lt;/p&gt;
+&lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;parted /dev/sdb print
+parted /dev/sdb rm 1
+parted /dev/sdb mkpart primary ntfs 0% 100%
+mkfs.ntfs -Q /dev/sdb1
+mount /dev/sdb1 /mnt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At first a raw image file, make label, and make partition.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
+losetup -f
+losetup /dev/loop1 file.img
+losetup -a
+parted /dev/loop1 print
+parted /dev/loop1 mklabel msdos
+parted /dev/loop1 mkpart primary ntfs 0% 100%
+losetup -d /dev/loop1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then format the partition in ntfs format.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kpartx -a -v file.img
+mkfs.ntfs -Q /dev/loop1p1
+kpartx -d -v file.img
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The vhd file must not be sparse file.
+So after we convert it to vhd format, then we should convert it to normal file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cp --sparse=never file.img file_new.img
+qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
+cp -pi --sparse=never output.vhd.sparse file.vhd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;table&gt;
 &lt;tr&gt;&lt;th&gt;command&lt;/th&gt;&lt;th&gt;screen&lt;/th&gt;&lt;th&gt;tmux&lt;/th&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th&gt;list&lt;/th&gt;&lt;td&gt;-ls&lt;/td&gt;&lt;td&gt;ls&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th&gt;with name&lt;/th&gt;&lt;td&gt;-S name&lt;/td&gt;&lt;td&gt;new -s name&lt;/td&gt;&lt;/tr&gt;
@@ -291,88 +320,4 @@ $ df -h /mnt
 &lt;p&gt;&lt;em&gt;umount and close&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo umount /mnt 
 $ sudo cryptsetup close cryptfs
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200127.html</guid><pubDate>Mon, 27 Jan 2020 00:00:00 GMT</pubDate></item><item><title>mdadm</title><link>https://mnod.github.io/posts/20200126.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;software raid&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;install mdadm package&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo apt-get install mdadm
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;make dummy files for test&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ dd if=/dev/zero of=file.img bs=2M count=0 seek=512
-$ cp -p file.img file0.img
-$ cp -p file.img file1.img
-$ cp -p file.img file2.img
-$ cp -p file.img file3.img
-$ cp -p file.img file4.img
-$ ls -lhs file*img
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;losetup&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop0 file0.img
-$ sudo losetup /dev/loop1 file1.img
-$ sudo losetup /dev/loop2 file2.img
-$ sudo losetup /dev/loop3 file3.img
-$ sudo losetup /dev/loop4 file4.img
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;raid0&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid0 -n 2 /dev/loop0 /dev/loop1
-$ cat /proc/mdstat
-$ sudo mdadm --detail /dev/md0
-
-$ sudo mdadm --detail --scan
-$ sudo mdadm --detail --scan &amp;gt; /etc/mdadm.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;mkfs and mount &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mkfs -t ext4 /dev/md0
-$ sudo mount /dev/md0 /mnt
-$ df -h /mnt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;stop and remove settings&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
-$ sudo mdadm --zero-superblock /dev/loop0
-$ sudo mdadm --zero-superblock /dev/loop1
-( $ sudo rm -i /etc/mdadm.conf )
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;raid1&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid1 -n 2 /dev/loop0 /dev/loop1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;make fail&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
-$ sudo losetup -d /dev/loop1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;recover&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --assemble --scan -v
-$ sudo mdadm --examine /dev/loop0
-
-$ sudo mdadm --add /dev/md0 /dev/loop2
-$ sudo mdadm --detail --scan &amp;gt; /etc/mdadm.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;add extra disk&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop1 file1.img
-$ sudo mdadm --add /dev/md0 /dev/loop1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;make fail&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --stop /dev/md0
-$ sudo losetup -d /dev/loop1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;recover&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --assemble --scan -v
-$ sudo mdadm --examine /dev/loop0
-$ sudo mdadm --grow /dev/md0 --raid-devices=2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;when disk alert has come.&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --fail /dev/md0 /dev/loop1
-$ sudo mdadm --remove /dev/md0 /dev/loop1
-$ sudo mdadm --add /dev/md0 /dev/loop3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;if md0 has extra disk, when disk alert has come, automatically rebuild&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo losetup /dev/loop0 file0.img
-$ sudo mdadm --add /dev/md0 /dev/loop0
-$ sudo mdadm --fail /dev/md0 /dev/loop2
-$ sudo mdadm --remove /dev/md0 /dev/loop2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;raid5&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;/dev/loop3 is extra disk for spare&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid5 -n 3 /dev/loop0 /dev/loop1 /dev/loop2 -x 1 /dev/loop3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;raid10&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;/dev/loop4 is extra disk for spare&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200126.html</guid><pubDate>Sun, 26 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200127.html</guid><pubDate>Mon, 27 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
