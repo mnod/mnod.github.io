@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 26 Sep 2020 09:33:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 26 Sep 2020 10:05:36 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://docs.docker.com/engine/install/debian/"&gt;How to install&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -fsSL https://get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh --dry-run
+$ sudo sh get-docker.sh
+$ systemctl is-active docker
+$ systemctl is-enabled docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;change the docker root directory where we store the images and containers.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker info | grep Root
+$ sudo systemctl stop docker
+$ sudo mv /var/lib/docker /path/to/
+$ sudo ln -s /path/to/docker /var/lib/docker
+$ sudo systemctl start docker
+$ sudo docker run --rm hello-world
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -it alpine
+/ #
+/ # uptime
+ 03:17:44 up 1 day,  2:47,  load average: 0.02, 0.05, 0.01
+/ #
+/ # uname -a
+Linux 4db177a44a14 5.4.42-v8+ #1319 SMP PREEMPT Wed May 20 14:18:56 BST 2020 aarch64 Linux
+/ #
+/ # free -m
+              total        used        free      shared  buff/cache   available
+Mem:           7816         315        6339           2        1161        7460
+Swap:          8191           0        8191
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.&lt;/p&gt;
 &lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;parted /dev/sdb print
@@ -522,75 +551,4 @@ systemctl unmask unit
 &lt;p&gt;reboot or poweroff the system&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;systemctl reboot
 systemctl poweroff
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200612.html</guid><pubDate>Fri, 12 Jun 2020 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;From centos:centos8
-
-ARG VERSION=0.12.25
-RUN yum install -y unzip python2-pip openssh-clients &amp;amp;&amp;amp; \
-    yum clean all &amp;amp;&amp;amp; \
-    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;amp;&amp;amp; \
-    unzip terraform.zip &amp;amp;&amp;amp; \
-    rm terraform.zip &amp;amp;&amp;amp; \
-    mv terraform /usr/local/bin &amp;amp;&amp;amp; \
-    pip2 install ansible boto boto3 awscli &amp;amp;&amp;amp; \
-    ln -s /usr/bin/python2.7 /usr/bin/python &amp;amp;&amp;amp; \
-    mkdir /tmp/terraform &amp;amp;&amp;amp; \
-    useradd -m docker
-
-VOLUME ["/tmp/terraform"]
-USER "docker"
-WORKDIR "/tmp/terraform"
-CMD ["/bin/bash"]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;build an image&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
-$ sudo docker tag terraform:0.12.25 terraform:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;test the image&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
-$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
-$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create variable file /mydir/credentials &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;AWS_ACCESS_KEY_ID=xxxx
-AWS_SECRET_ACCESS_KEY=xxxx
-AWS_DEFAULT_REGION=xxxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create wrapper script infradeploy.sh&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;test terraform and ansible work&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo sh infradeploy.sh terraform show
-$ sudo sh infradeploy.sh ./ec2.py --list
-$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
-$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As described at &lt;a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html"&gt;this site&lt;/a&gt; we can use ec2.py and ec2.ini(optional) for dynamic inventory
-When I ran ec2.py I got &lt;code&gt;ImportError: No module named ansible.module_utils&lt;/code&gt; in the case I installed ansible from ubuntu repository.
-It seems ansible should be installed with pip if you want to use ec2.py&lt;/p&gt;
-&lt;p&gt;playbook sample&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;- name: test playbook
-  hosts: tag_Name_tagname
-  remote_user: admin
-  become: yes
-  vars:
-    ansible_ssh_private_key_file: "./id_rsa.mykey"
-  tasks:
-    - name: install some packages
-      apt:
-        name: ['make','screen']
-        state: present
-        install_recommends: no
-      when: ansible_pkg_mgr == 'apt'
-      tags: packages
-
-    - name: create a directory
-      file:
-        path: /my/direcoty
-        state: directory
-        owner: admin
-        mode: '0755'
-
-$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
-$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200612.html</guid><pubDate>Fri, 12 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

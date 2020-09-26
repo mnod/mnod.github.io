@@ -57,7 +57,51 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200926.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-09-26T00:00:00Z" itemprop="datePublished" title="2020-09-26 00:00">2020-09-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a></p>
+<p><a href="https://docs.docker.com/engine/install/debian/">How to install</a></p>
+<pre><code>$ curl -fsSL https://get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh --dry-run
+$ sudo sh get-docker.sh
+$ systemctl is-active docker
+$ systemctl is-enabled docker
+</code></pre>
+<p>change the docker root directory where we store the images and containers.</p>
+<pre><code>$ sudo docker info | grep Root
+$ sudo systemctl stop docker
+$ sudo mv /var/lib/docker /path/to/
+$ sudo ln -s /path/to/docker /var/lib/docker
+$ sudo systemctl start docker
+$ sudo docker run --rm hello-world
+</code></pre>
+<p>confirm the result</p>
+<pre><code>$ sudo docker run --rm -it alpine
+/ #
+/ # uptime
+ 03:17:44 up 1 day,  2:47,  load average: 0.02, 0.05, 0.01
+/ #
+/ # uname -a
+Linux 4db177a44a14 5.4.42-v8+ #1319 SMP PREEMPT Wed May 20 14:18:56 BST 2020 aarch64 Linux
+/ #
+/ # free -m
+              total        used        free      shared  buff/cache   available
+Mem:           7816         315        6339           2        1161        7460
+Swap:          8191           0        8191
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -747,92 +791,6 @@ systemctl unmask unit
 <p>reboot or poweroff the system</p>
 <pre><code>systemctl reboot
 systemctl poweroff
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200516.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-05-16T00:00:00Z" itemprop="datePublished" title="2020-05-16 00:00">2020-05-16 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
-<pre><code>From centos:centos8
-
-ARG VERSION=0.12.25
-RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
-    yum clean all &amp;&amp; \
-    curl -s https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip -o terraform.zip &amp;&amp; \
-    unzip terraform.zip &amp;&amp; \
-    rm terraform.zip &amp;&amp; \
-    mv terraform /usr/local/bin &amp;&amp; \
-    pip2 install ansible boto boto3 awscli &amp;&amp; \
-    ln -s /usr/bin/python2.7 /usr/bin/python &amp;&amp; \
-    mkdir /tmp/terraform &amp;&amp; \
-    useradd -m docker
-
-VOLUME ["/tmp/terraform"]
-USER "docker"
-WORKDIR "/tmp/terraform"
-CMD ["/bin/bash"]
-</code></pre>
-<p>build an image</p>
-<pre><code>$ sudo docker build --build-arg VERSION=0.12.25 -t terraform:0.12.25 .
-$ sudo docker tag terraform:0.12.25 terraform:latest
-</code></pre>
-<p>test the image</p>
-<pre><code>$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest terraform --version
-$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest ansible --version
-$ sudo docker run -v /mylocal/terraform:/tmp/terraform --rm -it terraform:latest bash
-</code></pre>
-<p>create variable file /mydir/credentials </p>
-<pre><code>AWS_ACCESS_KEY_ID=xxxx
-AWS_SECRET_ACCESS_KEY=xxxx
-AWS_DEFAULT_REGION=xxxx
-</code></pre>
-<p>create wrapper script infradeploy.sh</p>
-<pre><code>docker run -v /mylocal/terraform:/tmp/terraform --env-file /mydir/credentials --rm -it terraform:latest $*
-</code></pre>
-<p>test terraform and ansible work</p>
-<pre><code>$ sudo sh infradeploy.sh terraform show
-$ sudo sh infradeploy.sh ./ec2.py --list
-$ sudo sh infradeploy.sh ansible -i ec2.py -u admin ec2 -m ping --private-key id_rsa.mykey
-$ sudo sh infradeploy.sh ansible-playbook --check -e @extravars.json playbook.yml
-</code></pre>
-<p>As described at <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html">this site</a> we can use ec2.py and ec2.ini(optional) for dynamic inventory
-When I ran ec2.py I got <code>ImportError: No module named ansible.module_utils</code> in the case I installed ansible from ubuntu repository.
-It seems ansible should be installed with pip if you want to use ec2.py</p>
-<p>playbook sample</p>
-<pre><code>- name: test playbook
-  hosts: tag_Name_tagname
-  remote_user: admin
-  become: yes
-  vars:
-    ansible_ssh_private_key_file: "./id_rsa.mykey"
-  tasks:
-    - name: install some packages
-      apt:
-        name: ['make','screen']
-        state: present
-        install_recommends: no
-      when: ansible_pkg_mgr == 'apt'
-      tags: packages
-
-    - name: create a directory
-      file:
-        path: /my/direcoty
-        state: directory
-        owner: admin
-        mode: '0755'
-
-$ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
-$ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
 </div>
     </div>
