@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 24 Sep 2020 12:31:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 26 Sep 2020 09:33:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.&lt;/p&gt;
 &lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;parted /dev/sdb print
@@ -28,6 +28,41 @@ So after we convert it to vhd format, then we should convert it to normal file.&
 &lt;pre&gt;&lt;code&gt;cp --sparse=never file.img file_new.img
 qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
 cp -pi --sparse=never output.vhd.sparse file.vhd
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;diskpart&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In windows os, we can handle partition and filesystem with sub commands of diskpart command.&lt;/p&gt;
+&lt;p&gt;format usb drive&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;list volume
+select volume=2
+format fs=ntfs quick
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create a vhd file and attach it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;list volume
+create vdisk file="d:\image.vhd" maximum=1024
+select vdisk file="d:\image.vhd"
+attach vdisk
+list vdisk
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create partition in the vhd file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select disk 2
+list disk
+create partition primary
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;format in ntfs and assign drive letter&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;list volume
+select volume=3
+format fs=ntfs quick
+assign letter=e:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;detach the vhd file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
+detach vdisk
+list vdisk
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;next time, just attach it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
+attach vdisk
+list vdisk
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;

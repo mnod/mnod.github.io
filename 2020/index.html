@@ -99,6 +99,41 @@ So after we convert it to vhd format, then we should convert it to normal file.<
 qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
 cp -pi --sparse=never output.vhd.sparse file.vhd
 </code></pre>
+<p><strong>diskpart</strong></p>
+<p>In windows os, we can handle partition and filesystem with sub commands of diskpart command.</p>
+<p>format usb drive</p>
+<pre><code>list volume
+select volume=2
+format fs=ntfs quick
+</code></pre>
+<p>create a vhd file and attach it</p>
+<pre><code>list volume
+create vdisk file="d:\image.vhd" maximum=1024
+select vdisk file="d:\image.vhd"
+attach vdisk
+list vdisk
+</code></pre>
+<p>create partition in the vhd file</p>
+<pre><code>select disk 2
+list disk
+create partition primary
+</code></pre>
+<p>format in ntfs and assign drive letter</p>
+<pre><code>list volume
+select volume=3
+format fs=ntfs quick
+assign letter=e:
+</code></pre>
+<p>detach the vhd file</p>
+<pre><code>select vdisk file="d:\image.vhd"
+detach vdisk
+list vdisk
+</code></pre>
+<p>next time, just attach it</p>
+<pre><code>select vdisk file="d:\image.vhd"
+attach vdisk
+list vdisk
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200710.html" class="u-url">nikola</a></h1>
