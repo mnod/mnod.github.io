@@ -1,5 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about kvm)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/kvm.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:06 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm virtualization</title><link>https://mnod.github.io/posts/20170325.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;qcow2 イメージ&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about kvm)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/kvm.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 27 Sep 2020 00:03:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
+&lt;p&gt;related packages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;boot alpine linux&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;get kernel and initra from the iso file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mount -o loop alpine-standard-3.12.0-aarch64.iso /media/tmp
+$ sudo cp /media/tmp/boot/initramfs-lts .
+$ sudo cp /media/tmp/boot/vmlinuz-lts .
+$ sudo umount /media/tmp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;boot&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -nographic -m 512 \
+&amp;gt; -kernel vmlinuz-lts -initrd initramfs-lts \
+&amp;gt; -drive if=none,id=image,file=alpine-standard-3.12.0-aarch64.iso -device virtio-blk-device,drive=image \
+&amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&amp;gt; -monitor telnet:localhost:10025,server,nowait
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;install debian10&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;download kernel and initrd file and create an empty virtual image file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ wget -O linux http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/linux
+$ wget -O initrd.gz http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/initrd.gz
+$ qemu-img create -f qcow2 hda.qcow2 16G
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;boot the installer with downloaded kernel and initrd file and install to the virtual image file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
+&amp;gt; -kernel linux -initrd initrd.gz \
+&amp;gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
+&amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&amp;gt; -monitor telnet:localhost:10025,server,nowait \
+&amp;gt; -no-reboot -vnc :1
+
+$ vncviewer xxx.xxx.xxx.xxx:5901
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get kernel and initrd file from qcow2 file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ lsmod | grep nbd
+$ sudo modprobe nbd
+$ sudo qemu-nbd -c /dev/nbd0 debian10.qcow2
+$ sudo kpartx -av /dev/nbd0
+$ sudo mount /dev/mapper/nbd0p1 /media/tmp
+
+$ cp /media/tmp/initrd.img-4.19.0-11-arm64 .
+$ cp /media/tmp/vmlinuz-4.19.0-11-arm64 .
+
+$ sudo umount /media/tmp
+$ sudo kpartx -dv /dev/nbd0
+$ sudo qemu-nbd -d /dev/nbd0
+$ sudo rmmod nbd
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;boot&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
+&amp;gt; -kernel vmlinuz-4.19.0-11-arm64 -initrd initrd.img-4.19.0-11-arm64 \
+&amp;gt; -append 'root=/dev/vda2' \
+&amp;gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
+&amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&amp;gt; -monitor telnet:localhost:10025,server,nowait \
+&amp;gt; -nographic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>kvm virtualization</title><link>https://mnod.github.io/posts/20170325.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;qcow2 イメージ&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;作成。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;qemu-img create -f qcow2 image.qcow2 xxG
 &lt;/code&gt;&lt;/pre&gt;

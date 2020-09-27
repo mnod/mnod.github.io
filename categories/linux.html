@@ -57,7 +57,79 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200927.html" class="u-url">kvm on raspberrypi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200927.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-09-27T00:00:00Z" itemprop="datePublished" title="2020-09-27 00:00">2020-09-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>kvm On Raspberry Pi OS (64bit) beta test version</p>
+<p>related packages</p>
+<pre><code>$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
+</code></pre>
+<p><strong>boot alpine linux</strong></p>
+<p>get kernel and initra from the iso file</p>
+<pre><code>$ sudo mount -o loop alpine-standard-3.12.0-aarch64.iso /media/tmp
+$ sudo cp /media/tmp/boot/initramfs-lts .
+$ sudo cp /media/tmp/boot/vmlinuz-lts .
+$ sudo umount /media/tmp
+</code></pre>
+<p>boot</p>
+<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -nographic -m 512 \
+&gt; -kernel vmlinuz-lts -initrd initramfs-lts \
+&gt; -drive if=none,id=image,file=alpine-standard-3.12.0-aarch64.iso -device virtio-blk-device,drive=image \
+&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&gt; -monitor telnet:localhost:10025,server,nowait
+</code></pre>
+<p><strong>install debian10</strong></p>
+<p>download kernel and initrd file and create an empty virtual image file.</p>
+<pre><code>$ wget -O linux http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/linux
+$ wget -O initrd.gz http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/initrd.gz
+$ qemu-img create -f qcow2 hda.qcow2 16G
+</code></pre>
+<p>boot the installer with downloaded kernel and initrd file and install to the virtual image file.</p>
+<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
+&gt; -kernel linux -initrd initrd.gz \
+&gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
+&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&gt; -monitor telnet:localhost:10025,server,nowait \
+&gt; -no-reboot -vnc :1
+
+$ vncviewer xxx.xxx.xxx.xxx:5901
+</code></pre>
+<p>get kernel and initrd file from qcow2 file</p>
+<pre><code>$ lsmod | grep nbd
+$ sudo modprobe nbd
+$ sudo qemu-nbd -c /dev/nbd0 debian10.qcow2
+$ sudo kpartx -av /dev/nbd0
+$ sudo mount /dev/mapper/nbd0p1 /media/tmp
+
+$ cp /media/tmp/initrd.img-4.19.0-11-arm64 .
+$ cp /media/tmp/vmlinuz-4.19.0-11-arm64 .
+
+$ sudo umount /media/tmp
+$ sudo kpartx -dv /dev/nbd0
+$ sudo qemu-nbd -d /dev/nbd0
+$ sudo rmmod nbd
+</code></pre>
+<p>boot</p>
+<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
+&gt; -kernel vmlinuz-4.19.0-11-arm64 -initrd initrd.img-4.19.0-11-arm64 \
+&gt; -append 'root=/dev/vda2' \
+&gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
+&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
+&gt; -monitor telnet:localhost:10025,server,nowait \
+&gt; -nographic
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -563,45 +635,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200308.html" class="u-url">tcpdump</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200308.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-03-08T00:00:00Z" itemprop="datePublished" title="2020-03-08 00:00">2020-03-08 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p><em>tcpdump</em></p>
-<pre><code>    tcpdump 
-     -w &lt;output filename&gt;
-     -r &lt;input filename&gt;
-     -i &lt;interface&gt;
-     -c &lt;packet counts&gt;
-
-     -n   # don't convert address and port to names
-     -e   # show link level header 
-     -v   # verbose output
-     -xx  # print the data of each packets with link level header in hex
-     -XX  # print the data of each packets with link level header in hex and ascii
-     -ttt # print a delta between current and previous line
-
-     arp
-     icmp
-     port &lt;port number&gt;
-     host &lt;ip address&gt;
-</code></pre>
-<p><em>wireshark</em></p>
-<pre><code>    wireshark 
-     -r &lt;input filename&gt;
-     -R "read filter"
-</code></pre>
-<p>To know detail of read filter, see man page of wireshark-filter</p>
 </div>
     </div>
     </article>
