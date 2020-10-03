@@ -378,7 +378,13 @@ ip link del br0
 brctl addbr br0
 brctl delbr br0
 </code></pre>
-<p>add and dlete interface to virtual bridge</p>
+<p>create tap0 and set pormiscuous mode</p>
+<pre><code>ip tuntap add dev tap0 mode tap
+ip link set tap0 up promisc on
+ip link set tap0 down promisc off
+ip tuntap del dev tap0 mode tap
+</code></pre>
+<p>add and delete interface to virtual bridge</p>
 <pre><code>ip link set dev enp0s25 master br0
 ip link set dev tap0 master br0
 ip link set dev enp0s25 nomaster
