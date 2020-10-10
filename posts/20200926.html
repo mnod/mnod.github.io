@@ -83,6 +83,7 @@ $ sudo sh get-docker.sh --dry-run
 $ sudo sh get-docker.sh
 $ systemctl is-active docker
 $ systemctl is-enabled docker
+$ sudo docker version
 </code></pre>
 <p>change the docker root directory where we store the images and containers.</p>
 <pre><code>$ sudo docker info | grep Root
@@ -105,6 +106,12 @@ Linux 4db177a44a14 5.4.42-v8+ #1319 SMP PREEMPT Wed May 20 14:18:56 BST 2020 aar
               total        used        free      shared  buff/cache   available
 Mem:           7816         315        6339           2        1161        7460
 Swap:          8191           0        8191
+</code></pre>
+<p>install docker-compose</p>
+<pre><code>$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt install libffi-dev libssl-dev
+$ sudo pip3 install docker-compose
+$ pip3 show docker-compose
+$ docker-compose version
 </code></pre>
 </div>
     </div>
