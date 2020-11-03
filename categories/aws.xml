@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Jul 2020 10:17:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ecs</title><link>https://mnod.github.io/posts/20200209.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;cluster&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 03 Nov 2020 03:29:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws events list-rules
+$ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
+$ aws events enable-rule --name testrule
+$ aws events disable-rule --name testrule
+$ aws events delete-rule --name testrule
+$ aws events describe-rule --name testrule
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and remove targets&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws events put-targets --rule testrule --targets '{"Input":"{\"interval\":60,\"rss\":\"https://status.aws.amazon.com/rss/ec2-ap-northeast-1.rss\",\"topicarn\":\"arn:aws:sns:ap-northeast-1:xxxxxxxxxxxx:mysnstopic\"}","Id":"1","Arn":"arn:aws:lambda:ap-northeast-1:xxxxxxxxxxxx:function:mylambdafunction"}'
+$ aws events remove-targets --rule testrule --ids 1
+$ aws events list-targets-by-rule --rule testrule
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CloudFormation stack template sample&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EventsRuleRssNotify:
+  Type: 'AWS::Events::Rule'
+  Properties:
+    Description: 'rss notification'
+    Name: rssnotifycf
+    ScheduleExpression: 'rate(15 minutes)'
+    State: ENABLED
+    Targets:
+      - Arn: !GetAtt LambdaRssNotification.Arn
+        Id: "1"
+        Input: !Ref INPUTJSON
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20201028.html</guid><pubDate>Wed, 28 Oct 2020 00:00:00 GMT</pubDate></item><item><title>ecs</title><link>https://mnod.github.io/posts/20200209.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;cluster&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws ecs list-clusters 
 $ aws ecs describe-clusters --clusters &amp;lt;clusterArn&amp;gt;
 
@@ -960,130 +985,4 @@ $ aws glacier get-vault-notifications --account-id - --vault-name &amp;lt;Vault 
 &lt;p&gt;&lt;em&gt;delete vault&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws glacier describe-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
 $ aws glacier delete-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191027.html</guid><pubDate>Sun, 27 Oct 2019 00:00:00 GMT</pubDate></item><item><title>s3</title><link>https://mnod.github.io/posts/20191019.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;objects&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3 ls s3://mybucketname/
-$ aws s3 cp testfile.txt s3://mybucketname/
-$ aws s3 cp s3://mybucketname/testfile.txt testfile2.txt
-$ aws s3 rm s3://mybucketname/testfile.txt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;bucket&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api list-buckets
-$ aws s3api list-buckets --query 'Buckets[?Name == `mybucketname`]'
-$ aws s3api create-bucket --bucket mybucketname --region ap-northeast-1 --create-bucket-configuration LocationConstraint=ap-northeast-1
-$ aws s3api delete-bucket --bucket mybucketname
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;default encryption for a bucket&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api get-bucket-encryption --bucket mybucketname
-$ aws s3api put-bucket-encryption --bucket mybucketname \
---server-side-encryption-configuration '{"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]}'
-
-$ aws s3api head-object --bucket mybucketname --key testfile.txt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;&lt;a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html"&gt;public access block&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api get-public-access-block --bucket mybucketname
-$ aws s3api put-public-access-block --bucket mybucketname \
---public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;versioning&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;enable and disable versioning for a bucket&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api get-bucket-versioning --bucket mybucketname
-$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Enabled"}'
-$ aws s3api put-bucket-versioning --bucket mybucketname --versioning-configuration '{"Status":"Suspended"}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list object versions&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt
-$ aws s3api list-object-versions  --bucket mybucketname --prefix testfile.txt --query 'Versions[?IsLatest==`true`].VersionId'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;remove all versions for a file
-(When a file remains in a bucket, you can not delete the bucket)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix testfile.txt \
-&amp;gt; --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
-
-$ aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;bucket notification configuration&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws s3api get-bucket-notification-configuration --bucket bucketname
-$ jq . notification.json 
-{
-  "QueueConfigurations": [
-    {
-      "Events": [
-        "s3:ObjectCreated:*"
-      ],
-      "QueueArn": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;",
-      "Filter": {
-        "Key": {
-          "FilterRules": [
-            {
-              "Name": "prefix",
-              "Value": "input/"
-            }
-          ]
-        }
-      }
-    }
-  ]
-}
-$ aws s3api put-bucket-notification-configuration --bucket bucketname --notification-configuration file://notification.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before configure bucket notification, add policy to SQS queue like below&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-  "Version": "2012-10-17",
-  "Id": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;/&amp;lt;policyname&amp;gt;",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "*"
-      },
-      "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:&amp;lt;region&amp;gt;:&amp;lt;id&amp;gt;:&amp;lt;queuename&amp;gt;",
-      "Condition": {
-        "ArnEquals": {
-          "aws:SourceArn": "arn:aws:s3:::&amp;lt;bucketname&amp;gt;"
-        }
-      }
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;sample cloudformation template&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
-Parameters:
-  BucketName:
-    Type: String
-Resources:
-  MyPrivBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: !Ref BucketName
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: True
-        BlockPublicPolicy: True
-        IgnorePublicAcls: True
-        RestrictPublicBuckets: True
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
-      VersioningConfiguration:
-        Status: "Enabled"
-      Tags:
-        - "Key": "Name"
-          "Value": "test"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;boto3 client&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;file operation&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import boto3
-import sys
-bucket = "mybucketname"
-try:
-    s3_client = boto3.client('s3')
-    s3_client.upload_file('testfile.txt', bucket, 'dirname/uploaded.txt')
-    s3_client.download_file(bucket, 'dirname/uploaded.txt', 'downloaded.txt')
-    s3_client.delete_object(Bucket = bucket, Key='dirname/uploaded.txt')
-except:
-    print ("error")
-    sys.exit()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191019.html</guid><pubDate>Sat, 19 Oct 2019 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191027.html</guid><pubDate>Sun, 27 Oct 2019 00:00:00 GMT</pubDate></item></channel></rss>

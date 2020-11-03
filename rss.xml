@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 10 Oct 2020 02:16:57 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 03 Nov 2020 03:29:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws events list-rules
+$ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
+$ aws events enable-rule --name testrule
+$ aws events disable-rule --name testrule
+$ aws events delete-rule --name testrule
+$ aws events describe-rule --name testrule
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and remove targets&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws events put-targets --rule testrule --targets '{"Input":"{\"interval\":60,\"rss\":\"https://status.aws.amazon.com/rss/ec2-ap-northeast-1.rss\",\"topicarn\":\"arn:aws:sns:ap-northeast-1:xxxxxxxxxxxx:mysnstopic\"}","Id":"1","Arn":"arn:aws:lambda:ap-northeast-1:xxxxxxxxxxxx:function:mylambdafunction"}'
+$ aws events remove-targets --rule testrule --ids 1
+$ aws events list-targets-by-rule --rule testrule
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CloudFormation stack template sample&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EventsRuleRssNotify:
+  Type: 'AWS::Events::Rule'
+  Properties:
+    Description: 'rss notification'
+    Name: rssnotifycf
+    ScheduleExpression: 'rate(15 minutes)'
+    State: ENABLED
+    Targets:
+      - Arn: !GetAtt LambdaRssNotification.Arn
+        Id: "1"
+        Input: !Ref INPUTJSON
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20201028.html</guid><pubDate>Wed, 28 Oct 2020 00:00:00 GMT</pubDate></item><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
 &lt;p&gt;related packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 &lt;/code&gt;&lt;/pre&gt;
@@ -539,45 +564,4 @@ restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
 &lt;p&gt;confirm commands&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ntpq -pn &amp;lt;address&amp;gt;
 ntpq -c readlist &amp;lt;address&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item><item><title>journalctl</title><link>https://mnod.github.io/posts/20200613.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show all messages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show all messages from boot&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -b
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show messages with explanations&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -x
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show kernel ring buffer&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -k
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show messages of limitted time span&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl --since "2020-06-11"
-journalctl --since "20 min ago"
-journalctl --since "2020-06-11 00:00:00" --untill "2020-06-11 23:59:59"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show specific messages by unit, executable or process&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -u networking
-journalctl /usr/bin/sudo
-journalctl _PID=1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show specific messages by priority or syslog facility&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -p 5
-journalctl -p 0..5
-journalctl SYSLOG_FACILITY=10
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;follow new messages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -f
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;don't pipe output to a pager&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl --no-pager
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Basically journal messages exist under /run/log/journal/ which is volatile directory.
-Below commands move journal messages directory to directory under /var/log/journal/.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;echo "Storage=persistent" | sudo tee -a /etc/systemd/journald.conf
-systemctl force-reload systemd-journald
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can specify directory in which journal messages saved.
-It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -D /mnt/var/log/journal -x
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
