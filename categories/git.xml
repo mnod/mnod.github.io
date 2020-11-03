@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about git)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/git.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>github</title><link>https://mnod.github.io/posts/20200617.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;adding ssh public key&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about git)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/git.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 03 Nov 2020 03:36:15 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>github</title><link>https://mnod.github.io/posts/20200617.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;adding ssh public key&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;You can use github without ssh key. 
 But when you add ssh key and you use ssh private key without passphrase, it is convinient for scripting.&lt;/p&gt;
 &lt;p&gt;Login and follow menu like below:
@@ -57,7 +57,12 @@ git commit -m "commit message"
 git log
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;作業ディレクトリを持たない公開用リポジトリの作成&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;git clone --bare myproject myproject.git
+&lt;pre&gt;&lt;code&gt;git init --bare
+    or
+git clone --bare myproject myproject.git
+
+git log
+git branch
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;単純なリモート作業&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;git clone git://example.com/.../myproject.git # リポジトリのclone
@@ -102,4 +107,8 @@ git stash show -p stash@{0}
 &lt;p&gt;apply stash on top of the current working directory. and remove a stash from the list&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;git stash apply stash@{0}
 git stash drop stash@{0}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;example of URIs&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh://username@serverhostname/var/lib/git/myrepository.git
+    file:///var/lib/git/myrepository.git
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>git</category><category>vcs</category><guid>https://mnod.github.io/posts/20170902.html</guid><pubDate>Sat, 02 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>
