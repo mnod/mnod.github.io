@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 03 Nov 2020 03:38:27 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 14 Dec 2020 10:16:55 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws events list-rules
 $ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
 $ aws events enable-rule --name testrule
@@ -117,6 +117,20 @@ Swap:          8191           0        8191
 $ sudo pip3 install docker-compose
 $ pip3 show docker-compose
 $ docker-compose version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;commands of docker-compose&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;config # Validate and view the Compose file
+ps # List containers
+images # List images
+build # (Re)Build services
+create # Create services
+up # Create and start containers
+start # Start services
+stop # Stop services
+rm -f # Remove stopped containers
+down # Stop and remove containers
+version # Show version information
+help # Show help messages
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.&lt;/p&gt;
 &lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;

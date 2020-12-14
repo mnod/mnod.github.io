@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 10 Oct 2020 02:16:57 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 14 Dec 2020 10:16:55 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://docs.docker.com/engine/install/debian/"&gt;How to install&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ curl -fsSL https://get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh --dry-run
@@ -35,6 +35,20 @@ Swap:          8191           0        8191
 $ sudo pip3 install docker-compose
 $ pip3 show docker-compose
 $ docker-compose version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;commands of docker-compose&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;config # Validate and view the Compose file
+ps # List containers
+images # List images
+build # (Re)Build services
+create # Create services
+up # Create and start containers
+start # Start services
+stop # Stop services
+rm -f # Remove stopped containers
+down # Stop and remove containers
+version # Show version information
+help # Show help messages
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;From centos:centos8
 
