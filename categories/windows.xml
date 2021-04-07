@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 07 Apr 2021 13:29:24 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>WSL2 installation</title><link>https://mnod.github.io/posts/20210407.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;I followed the document &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Windows Subsystem for Linux Installation Guide for Windows 10&lt;/a&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 07 Apr 2021 13:33:29 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>WSL2 installation</title><link>https://mnod.github.io/posts/20210407.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;I followed the document &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Windows Subsystem for Linux Installation Guide for Windows 10&lt;/a&gt;
 My environment is Windows 10 Pro 20H2 OS build 19042.685&lt;/p&gt;
 &lt;p&gt;Run powershell.exe as administrator.
 Then enable the Windows Subsystem for Linux.&lt;/p&gt;
@@ -28,7 +28,7 @@ password updated successfully
 Installation successful!
 
 $ uname -a
-Linux LAPTOP-OETTMNFJ 4.19.128-microsoft-standard #1 SMP Tue Jun 23 12:58:10 UTC 2020 x86_64 GNU/Linux
+Linux xxxxxxxxxxxxxxx 4.19.128-microsoft-standard #1 SMP Tue Jun 23 12:58:10 UTC 2020 x86_64 GNU/Linux
 
 $ cat /etc/debian_version
 10.8
