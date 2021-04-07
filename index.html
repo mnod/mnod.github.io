@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
 <link rel="canonical" href="https://mnod.github.io/">
 <link rel="next" href="index-8.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20201028.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20210407.html" type="text/html">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -46,7 +46,85 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210407.html" class="u-url">WSL2 installation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20210407.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-04-07T00:00:00Z" itemprop="datePublished" title="2021-04-07 00:00">2021-04-07 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
+My environment is Windows 10 Pro 20H2 OS build 19042.685</p>
+<p>Run powershell.exe as administrator.
+Then enable the Windows Subsystem for Linux.</p>
+<pre><code>dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+</code></pre>
+<p>And enable Virtual Machine feature</p>
+<pre><code>dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+</code></pre>
+<p>Download the Linux kernel update package and install it.
+- <a href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi">WSL2 Linux kernel update package for x64 machines</a></p>
+<p>Set WSL 2 as the default version</p>
+<pre><code>wsl --set-default-version 2
+</code></pre>
+<p>Install Linux distribution from <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Microsoft Store</a>
+Then launch it.</p>
+<p>I could not launch it for a long time because of bug of COMODO Internet Security shown at <a href="https://github.com/microsoft/WSL/issues/5329">WSL2 Converstion Failed with Error: 0x80041002 </a>
+<a href="https://forums.comodo.com/news-announcements-feedback-cis/comodo-internet-security-2020-v12228012-released-t126945.0.html">COMODO released new version for fixing it</a></p>
+<pre><code>Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username: xxxx
+New password:
+Retype new password:
+passwd: 
+password updated successfully
+Installation successful!
+
+$ uname -a
+Linux LAPTOP-OETTMNFJ 4.19.128-microsoft-standard #1 SMP Tue Jun 23 12:58:10 UTC 2020 x86_64 GNU/Linux
+
+$ cat /etc/debian_version
+10.8
+
+$ df -k
+Filesystem     1K-blocks     Used Available Use% Mounted on
+/dev/sdb       263174212   280972 249455084   1% /
+tmpfs            3161096        0   3161096   0% /mnt/wsl
+tools          248559384 53031224 195528160  22% /init
+none             3158696        0   3158696   0% /dev
+none             3161096        4   3161092   1% /run
+none             3161096        0   3161096   0% /run/lock
+none             3161096        0   3161096   0% /run/shm
+none             3161096        0   3161096   0% /run/user
+tmpfs            3161096        0   3161096   0% /sys/fs/cgroup
+C:\            248559384 53031224 195528160  22% /mnt/c
+</code></pre>
+<p>From next time, we can launch it with command 'debian'.
+Also we can launch it with wsl command on command prompt or powershell.</p>
+<pre><code>&gt; wsl --list --verbose
+NAME      STATE           VERSION
+* Debian    Stopped         2
+&gt; wsl -d Debian
+&gt; wsl -d Debian -e uname -a
+</code></pre>
+<p>We can omit distribution name for the default one.</p>
+<pre><code>&gt; wsl
+&gt; wsl -e uname -a
+</code></pre>
+<p>We can just execute bash shell or bash shell script as below.</p>
+<pre><code>&gt; bash
+&gt; bash -c "echo uname -a &gt; test.sh"
+&gt; bash -c "./test.sh"
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -745,68 +823,6 @@ bindcmdaddress 192.168.xxx.xxx
 <p>specify a remote host to which chronyd is to be connected (using udp/323)
 default is localhost</p>
 <pre><code>cronyc -h 192.168.xxx.xxx
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200614.html" class="u-url">ntpd</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="posts/20200614.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-06-14T00:00:00Z" itemprop="datePublished" title="2020-06-14 00:00">2020-06-14 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>install</p>
-<pre><code>apt install ntp
-</code></pre>
-<p>sample config
-specify ntp server at <code>server</code></p>
-<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-</code></pre>
-<p>reload configuration</p>
-<pre><code>systemctl status ntp
-journalctl -u ntp -f
-systemctl force-reload ntp
-</code></pre>
-<p>confirm commands</p>
-<pre><code>ntpq -pn
-ntpq -c readlist
-</code></pre>
-<p><em>server</em></p>
-<p>For server settings, at lease a <code>restrict &lt;client address&gt;</code> line to allow ntp clients access.
-If you don't add <code>noquery</code>, you allow the client to query your ntpd status.</p>
-<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
-</code></pre>
-<p>confirm commands</p>
-<pre><code>ntpq -pn &lt;address&gt;
-ntpq -c readlist &lt;address&gt;
 </code></pre>
 </div>
     </div>
