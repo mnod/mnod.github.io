@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about lifestyle)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/lifestyle.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:06 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about lifestyle)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/lifestyle.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 09 Apr 2021 03:49:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Work from home</title><link>https://mnod.github.io/posts/20210409.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。&lt;/p&gt;
+&lt;p&gt;PCは趣味の一つではあるものの、趣味のためにあれこれ購入するのもためらわれ、これまで自宅の作業環境はあまり整っていなかった。
+そのため、在宅勤務での作業効率はあまりよくなかった。これ幸いと？仕方がないので？これまで買わずに我慢していたものをいくつか買いそろえた(自腹)。&lt;/p&gt;
+&lt;h3&gt;モニター&lt;/h3&gt;
+&lt;p&gt;仕事で使っているのは、貸与されてる13.3型ノートPC。FHD対応だが、それだと私には字が小さく読みにくいため解像度を1600x900に設定して使っている。
+会社では比較的大きな外部モニターを接続して使用していたのだが、自宅にあるのは15.6インチ 1366x796という小さなモニターしかなかった。
+趣味のコンピュータの管理ではこのモニターで対応することができていたが、仕事用としては不足だった。&lt;/p&gt;
+&lt;p&gt;これまでの突発的な在宅勤務ではこのモニターで凌いできたが、長期的に継続するとなると、もっと広いものでないと困る。&lt;/p&gt;
+&lt;p&gt;そこで購入したのが15.6型 IPS液晶のFHDモバイルモニター。VESA対応。&lt;/p&gt;
+&lt;p&gt;下記モニターアームを利用して、ノートPCと並べて使用している。13.3インチの 1600x900 と、15.6インチの1920x1080 は画素密度がかなり近いので、並べて使用していてあまり違和感があまりない。
+貸与ノートPCはUSB Type-C非対応のため、HDMIとUSB(電源供給)の2本のケーブルで接続している。&lt;/p&gt;
+&lt;p&gt;聞いたことのない海外社製品で、初回購入時には不良品が届いた。いったん返品して再度購入したら、今度は問題なし。1年間使用してきて、今のところ問題は出ていない。&lt;/p&gt;
+&lt;h3&gt;モニターアーム&lt;/h3&gt;
+&lt;p&gt;ノートPC台が付属している、安いデュアルアームのモニターアーム。
+ノートPCとモニターを左右に並べることができ、目線の高さまで上げることができ、浮かすことによって机上にスペースができる、一石三鳥グッズ。&lt;/p&gt;
+&lt;p&gt;安いので、あまり自由に調整することはできないけど、向きをあちこち動かす必要がないので特に困ることはない。これまでのところ、自分の用途では事足りている。&lt;/p&gt;
+&lt;h3&gt;キーボード&lt;/h3&gt;
+&lt;p&gt;メカニカル、ロープロファイル、リニア、87キーのキーボード。&lt;/p&gt;
+&lt;p&gt;ここのところ、デスクトップのキーボードもノートPCのものに近いパンタグラフのキーボードを使っていた。
+メンブレンのものを含めて、安かろう悪かろうなキーボードを渡り歩いてきたので、使い心地のよいまともな外付けキーボードを使うのは、PC98xxの頃以来かもしれない。&lt;/p&gt;
+&lt;h3&gt;USBオーディオインタフェース&lt;/h3&gt;
+&lt;p&gt;大層なものではない。3.5mm4極ジャックのみで、ボリュームボタン、ミュートボタンがあるだけの簡易なインタフェース。&lt;/p&gt;
+&lt;p&gt;貸与ノートPCに直接イヤフォンマイクを繋げてWeb会議に参加すると、時々音声が聞きづらいと言われたことがあった。
+Bluetoothのものも試したが、別の意味で音質の評判がよくなかった。&lt;/p&gt;
+&lt;p&gt;いつものイヤフォンマイクをこのオーディオインタフェースに接続して使用するようにしてからは、特に音質が悪いと言われることがなくなった。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
 &lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
 &lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
 (物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
