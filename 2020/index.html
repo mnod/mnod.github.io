@@ -593,8 +593,10 @@ END
 <pre><code>ssh -T github.com
 </code></pre>
 <p>When you've already work with any github repository, if you want to use git protocol instad of https, you can use it.</p>
-<pre><code>git config --global url.git@github.com:.insteadOf https://github.com/
-git config --global url.git@gist.github.com:.insteadOf https://gist.github.com/
+<pre><code>git config --local url.git@github.com:.insteadOf https://github.com/
+git config --local url.git@gist.github.com:.insteadOf https://gist.github.com/
+git config --local --list
+git remote -v
 </code></pre>
 <p><em>After <a href="https://github.com/new">Create a new repository</a></em></p>
 <p>when you don't have ever created a git repository</p>

@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 15:40:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 11 Apr 2021 02:04:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+&lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
+同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
+&lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
+内臓脂肪を減らし、血圧を下げ、血中コレステロール濃度を下げ、腹囲と体重を減らしていく努力が、今の自分には切実に求められている。
+そのためには食後血糖値上昇の山を低くし、カロリー収支をマイナスにし、脂肪を減らし筋肉量を増やしていかなくてはならない。
+具体的な取り組みは以下。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;運動: 朝食後、始業時間までの間のウォーキング。&lt;/li&gt;
+&lt;li&gt;食事: 夕食では野菜を多くとり、炭水化物を減らす。脂質を減らす。朝昼晩の三食。&lt;/li&gt;
+&lt;li&gt;できていないこと: 日次の体重測定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;保健指導員におだてられながら、取り組みを続けていきたい。&lt;/p&gt;
+&lt;p&gt;そうは言っても、自宅でくつろぐ時間は何物にも代えがたい。そんなこんなで自宅のメディア視聴・聴取環境の充実をはかっている。&lt;/p&gt;
+&lt;h3&gt;spotify&lt;/h3&gt;
+&lt;p&gt;Linuxデスクトップで常時Spotifyアプリを立ち上げておいて、AndroidタブレットにインストールしたSpotifyアプリからコントロールするという使い方をしている。
+音声はアンプを接続したRaspberry pi に Pulseaudio で飛ばしている。(スマホのスピーカーでずっと聞いていると耳が痛くなる。大きなスピーカーだと大丈夫。)&lt;/p&gt;
+&lt;p&gt;サブスク購入していないが、&lt;a href="https://japanese.engadget.com/spotify-060049978.html"&gt;タブレット・デスクトップからの聴取の制限解除&lt;/a&gt; があったおかげで、垂れ流しBGM としてとても使いやすくなった。
+Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらいから使ってきた。このアップデートはまじで嬉しい。CM有り、シャッフル必須であっても、無料で利用できるのは、すごく助かる。&lt;/p&gt;
+&lt;h3&gt;minidlna&lt;/h3&gt;
+&lt;p&gt;蓄積しているデータを何らかの upnp/dlna クライアントで再生できるように。&lt;/p&gt;
+&lt;h3&gt;shairport-sync&lt;/h3&gt;
+&lt;p&gt;オープンソースの AirPlay サーバ。iPhone のアプリの音声を大きなスピーカーで聞きたいときに。&lt;/p&gt;
+&lt;h3&gt;Fire TV Stick 4K&lt;/h3&gt;
+&lt;p&gt;Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
+アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。&lt;/p&gt;
+&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
 &lt;li&gt;Theme is written in Mako or Jinja2.
@@ -202,28 +228,4 @@ ssh鍵について、&lt;a href="https://github.com/sheimi/SGit"&gt;ソースコ
 &lt;/ul&gt;
 &lt;p&gt;特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。&lt;/p&gt;
 &lt;p&gt;TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
-(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item><item><title>TeraTerm</title><link>https://mnod.github.io/posts/20160902.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://ttssh2.osdn.jp/"&gt;https://ttssh2.osdn.jp/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://osdn.jp/projects/ttssh2/"&gt;https://osdn.jp/projects/ttssh2/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;TeraTermは、Windowsで動作するフリーのターミナルエミュレータです。&lt;/p&gt;
-&lt;p&gt;ネットワーク・コンピュータ関連業界界隈の方だったら使ったことが無い人はいないのではないか、というくらいの定番ですね。毎日のようにお世話になっております。&lt;/p&gt;
-&lt;p&gt;次のような機能、特徴があります。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;telnet、シリアル、ssh接続等。&lt;/li&gt;
-&lt;li&gt;sshポート転送。&lt;/li&gt;
-&lt;li&gt;scpによるファイル転送。&lt;/li&gt;
-&lt;li&gt;各種日本語文字コードに対応&lt;/li&gt;
-&lt;li&gt;非常に高機能なマクロ機能。&lt;/li&gt;
-&lt;li&gt;作業ログ保存&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;後述する予定のPuTTyも便利ではあるのですが、ログの保存が思ったようにできないことがあるため、使用する場面が限られてしまいます。&lt;/p&gt;
-&lt;p&gt;一方、こちらのTeraTermは、自分にとっては、非の打ちどころがほとんどありません。&lt;/p&gt;
-&lt;p&gt;機能追加の希望があるとすれば、Linux等のターミナルソフトでよくあるような、タブ切り替え機能が標準で使えるようになると嬉しいかもしれません。&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;ペースト(貼り付け)操作について&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;TeraTermでは、ペーストのショートカットはAlt+Vになっています。&lt;/p&gt;
-&lt;p&gt;Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？&lt;/p&gt;
-&lt;p&gt;Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。&lt;/p&gt;
-&lt;p&gt;また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。&lt;/p&gt;
-&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
+(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
