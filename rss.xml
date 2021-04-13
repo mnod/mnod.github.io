@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 11 Apr 2021 02:04:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 13 Apr 2021 23:34:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
 &lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
 &lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -118,6 +118,41 @@ NAME      STATE           VERSION
 &lt;pre&gt;&lt;code&gt;&amp;gt; bash
 &amp;gt; bash -c "echo uname -a &amp;gt; test.sh"
 &amp;gt; bash -c "./test.sh"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;export and import a distribution&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --export debian d:\debian.tar.gz
+&amp;gt; wsl --import mydebian d:\wsl\ d:\debian.tar.gz
+&amp;gt; wsl --list -v
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;set new distribution as a default one and set default user.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --set-default mydebian
+&amp;gt; wsl
+# If the user does not exist in this distribution, you have to create it.
+echo -e "[user]\ndefault=myUsername" &amp;gt;&amp;gt; /etc/wsl.conf
+exit
+&amp;gt; wsl --shutdown
+&amp;gt; wsl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;delete distribution&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --unregister debian-work
+&amp;gt; wsl --list -v
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;install docker in wsl2 debian environment&lt;/h3&gt;
+&lt;p&gt;We can install newest release as https://docs.docker.com/engine/install/debian/
+But I prefered to install from debian package&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt install --no-install-recommends docker.io
+sudo service docker start
+sudo service docker status
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At this point, I could not start dockerd.
+I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo touch /etc/fstab
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy  update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+sudo service docker start
+sudo service docker status
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Succeeded to start dockerd.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo docker run --rm -it debian:bullseye-slim
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20210407.html</guid><pubDate>Wed, 07 Apr 2021 00:00:00 GMT</pubDate></item><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws events list-rules
 $ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED

@@ -218,6 +218,41 @@ NAME      STATE           VERSION
 &gt; bash -c "echo uname -a &gt; test.sh"
 &gt; bash -c "./test.sh"
 </code></pre>
+<h3>export and import a distribution</h3>
+<pre><code>&gt; wsl --export debian d:\debian.tar.gz
+&gt; wsl --import mydebian d:\wsl\ d:\debian.tar.gz
+&gt; wsl --list -v
+</code></pre>
+<p>set new distribution as a default one and set default user.</p>
+<pre><code>&gt; wsl --set-default mydebian
+&gt; wsl
+# If the user does not exist in this distribution, you have to create it.
+echo -e "[user]\ndefault=myUsername" &gt;&gt; /etc/wsl.conf
+exit
+&gt; wsl --shutdown
+&gt; wsl
+</code></pre>
+<p>delete distribution</p>
+<pre><code>&gt; wsl --unregister debian-work
+&gt; wsl --list -v
+</code></pre>
+<h3>install docker in wsl2 debian environment</h3>
+<p>We can install newest release as https://docs.docker.com/engine/install/debian/
+But I prefered to install from debian package</p>
+<pre><code>sudo apt install --no-install-recommends docker.io
+sudo service docker start
+sudo service docker status
+</code></pre>
+<p>At this point, I could not start dockerd.
+I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164</p>
+<pre><code>sudo touch /etc/fstab
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy  update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+sudo service docker start
+sudo service docker status
+</code></pre>
+<p>Succeeded to start dockerd.</p>
+<pre><code>sudo docker run --rm -it debian:bullseye-slim
+</code></pre>
 </div>
     </div>
     </article>
