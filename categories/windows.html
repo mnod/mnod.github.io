@@ -167,6 +167,29 @@ sudo service docker status
 <p>Succeeded to start dockerd.</p>
 <pre><code>sudo docker run --rm -it debian:bullseye-slim
 </code></pre>
+<h3>resolve domain name lookup failure problem</h3>
+<p>This workaround resolve domain name lookup failure problem on WSL2 and docker container.
+https://github.com/microsoft/WSL/issues/4285#issuecomment-522201021</p>
+<p>Add these lines in /etc/wsl.conf on your distribution</p>
+<pre><code>[network]
+generateResolvConf = false
+</code></pre>
+<p>Then shutdown wsl2 and restart your distribution</p>
+<pre><code>&gt; wsl --shutdown
+&gt; wsl --list -v
+</code></pre>
+<p>Recreate /etc/resolv.conf</p>
+<pre><code>$ sudo rm /etc/resolv.conf
+$ echo "nameserver 1.1.1.1" &gt; /etc/resolv.conf
+</code></pre>
+<p>Then shutdown wsl2 and restart your distribution again</p>
+<pre><code>&gt; wsl --shutdown
+&gt; wsl --list -v
+</code></pre>
+<p>Confirm your setting and domain name lookup on your distribution and docker container.</p>
+<pre><code>$ cat /etc/resolv.conf
+$ curl -I www.google.com
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
