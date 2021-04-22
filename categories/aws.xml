@@ -1,5 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 03 Nov 2020 03:29:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 22 Apr 2021 12:54:15 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws route53 list-hosted-zones
+aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
+
+aws route53 list-resource-record-sets   --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --query "ResourceRecordSets[?Name == 'example.example.net.']"
+aws route53 test-dns-answer --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --record-name "example.example.net" --record-type "A"
+
+aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://create.json
+aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
+aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://delete.json
+aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "example.example.net",
+        "Type": "A",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxx.xxx.xxx.xxx"
+          }
+        ]
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;delete.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "example.example.net",
+        "Type": "A",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxx.xxx.xxx.xxx"
+          }
+        ]
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;python sample script&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;#! /usr/bin/python2
+import boto3
+import time
+
+client = boto3.client('route53')
+zones = client.list_hosted_zones()
+
+for zone in zones['HostedZones']:
+    id =zone['Id']
+    name = zone['Name']
+    #print(client.get_hosted_zone(Id=id).get('HostedZone'))
+    for set in client.list_resource_record_sets(HostedZoneId=id).get('ResourceRecordSets'):
+        print(set)
+    #action = 'CREATE'
+    action = 'DELETE'
+    address = 'xxx.xxx.xxx.xxx'
+
+    batch = {
+        'Changes': [
+            {
+                'Action': action,
+                'ResourceRecordSet': {
+                    'Name': 'example.%s' % name,
+                    'Type': 'A',
+                    'TTL': 3600,
+                    'ResourceRecords': [
+                        {
+                            "Value": address
+                        },
+                    ],
+                }
+            },
+        ]
+    }
+    response = client.change_resource_record_sets(
+        HostedZoneId=id,
+        ChangeBatch=batch
+    )
+    print(response)
+    responseid = response['ChangeInfo']['Id']
+    status = response['ChangeInfo']['Status']
+    while ( status != 'INSYNC'):
+        response = client.get_change(Id=responseid)
+        status = response['ChangeInfo']['Status']
+        time.sleep(30)
+    else:
+        print(response)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;cloud formation sample stack&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://route53.yml
+aws cloudformation create-stack --template-body file://route53.yml --parameters file://parameters.json --stack-name route53test
+aws cloudformation describe-stack-events --stack-name route53test
+aws cloudformation list-stack-resources --stack-name route53test
+aws cloudformation delete-stack --stack-name route53test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;route53.yml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Parameters:
+  HostedZoneId:
+    Type: String
+  Domain:
+    Type: String
+  Address:
+    Type: String
+Resources:
+  myDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId : 
+         Ref: HostedZoneId
+      Name:  
+        Fn::Join: 
+            - '.'
+            - - 'example'
+              - !Ref Domain
+      ResourceRecords:
+      - Ref: Address
+      TTL: '3600'
+      Type: A
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;parameters.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[
+  {
+      "ParameterKey": "Address",
+      "ParameterValue": "xxx.xxx.xxx.xxx"
+  },
+  {
+      "ParameterKey": "HostedZoneId",
+      "ParameterValue": "xxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+      "ParameterKey": "Domain",
+      "ParameterValue": "example.net"
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create and delete rule&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ aws events list-rules
 $ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
 $ aws events enable-rule --name testrule
@@ -920,69 +1065,4 @@ $ aws sns list-subscriptions
 &lt;pre&gt;&lt;code&gt;$ aws cloudformation delete-stack --stack-name &amp;lt;Stack Name&amp;gt;
 $ aws cloudformation list-stacks --query 'StackSummaries[?StackName==`&amp;lt;Stack Name&amp;gt;`]'
 $ aws cloudformation describe-stacks --stack-name &amp;lt;Stack Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191101.html</guid><pubDate>Fri, 01 Nov 2019 00:00:00 GMT</pubDate></item><item><title>glacier</title><link>https://mnod.github.io/posts/20191027.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create vault&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws glacier create-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-$ aws glacier list-vaults --account-id -
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;set vault notification&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' vault-notifications.json
-{
-  "SNSTopic": "&amp;lt;ARN of SNS Topic&amp;gt;",
-  "Events": [
-    "ArchiveRetrievalCompleted",
-    "InventoryRetrievalCompleted"
-  ]
-}
-$ aws glacier set-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --vault-notification-config file://vault-notifications.json
-$ aws glacier get-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;set strategy of retrieval policy to free tier&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' retrieval-policy.json 
-{
-  "Rules": [
-    {
-      "Strategy": "FreeTier"
-    }
-  ]
-}
-$ aws glacier set-data-retrieval-policy --account-id - --policy file://retrieval-policy.json
-$ aws glacier get-data-retrieval-policy --account-id -
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;upload archive&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws glacier upload-archive --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --body testdata.tar.enc
-$ aws glacier describe-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;retrieve inventory&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' inventory-retrieval.json
-{
-  "Type": "inventory-retrieval"
-}
-$ aws glacier initiate-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-parameters file://inventory-retrieval.json
-$ aws glacier list-jobs --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-
-$ aws glacier describe-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt;
-$ aws glacier get-job-output --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt; output.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;retrieve archive&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' archive-retrieval.json
-{
-  "Type": "archive-retrieval",
-  "ArchiveId": "&amp;lt;Archive ID&amp;gt;"
-}
-$ aws glacier initiate-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-parameters file://archive-retrieval.json
-$ aws glacier list-jobs --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-
-$ aws glacier describe-job --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt;
-$ aws glacier get-job-output --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --job-id &amp;lt;Job ID&amp;gt; output.dat
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete archive&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws glacier delete-archive --account-id - --vault-name &amp;lt;Vault Name&amp;gt; --archive-id &amp;lt;Archive ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete vault notification&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws glacier delete-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-$ aws glacier get-vault-notifications --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete vault&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws glacier describe-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-$ aws glacier delete-vault --account-id - --vault-name &amp;lt;Vault Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191027.html</guid><pubDate>Sun, 27 Oct 2019 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191101.html</guid><pubDate>Fri, 01 Nov 2019 00:00:00 GMT</pubDate></item></channel></rss>

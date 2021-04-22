@@ -57,7 +57,87 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191019.html" class="u-url">s3</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191027.html" class="u-url">glacier</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20191027.html" rel="bookmark">
+            <time class="published dt-published" datetime="2019-10-27T00:00:00Z" itemprop="datePublished" title="2019-10-27 00:00">2019-10-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><em>create vault</em></p>
+<pre><code>$ aws glacier create-vault --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier list-vaults --account-id -
+</code></pre>
+<p><em>set vault notification</em></p>
+<pre><code>$ jq '.' vault-notifications.json
+{
+  "SNSTopic": "&lt;ARN of SNS Topic&gt;",
+  "Events": [
+    "ArchiveRetrievalCompleted",
+    "InventoryRetrievalCompleted"
+  ]
+}
+$ aws glacier set-vault-notifications --account-id - --vault-name &lt;Vault Name&gt; --vault-notification-config file://vault-notifications.json
+$ aws glacier get-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>set strategy of retrieval policy to free tier</em></p>
+<pre><code>$ jq '.' retrieval-policy.json 
+{
+  "Rules": [
+    {
+      "Strategy": "FreeTier"
+    }
+  ]
+}
+$ aws glacier set-data-retrieval-policy --account-id - --policy file://retrieval-policy.json
+$ aws glacier get-data-retrieval-policy --account-id -
+</code></pre>
+<p><em>upload archive</em></p>
+<pre><code>$ aws glacier upload-archive --account-id - --vault-name &lt;Vault Name&gt; --body testdata.tar.enc
+$ aws glacier describe-vault --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>retrieve inventory</em></p>
+<pre><code>$ jq '.' inventory-retrieval.json
+{
+  "Type": "inventory-retrieval"
+}
+$ aws glacier initiate-job --account-id - --vault-name &lt;Vault Name&gt; --job-parameters file://inventory-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &lt;Vault Name&gt;
+
+$ aws glacier describe-job --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt;
+$ aws glacier get-job-output --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt; output.json
+</code></pre>
+<p><em>retrieve archive</em></p>
+<pre><code>$ jq '.' archive-retrieval.json
+{
+  "Type": "archive-retrieval",
+  "ArchiveId": "&lt;Archive ID&gt;"
+}
+$ aws glacier initiate-job --account-id - --vault-name &lt;Vault Name&gt; --job-parameters file://archive-retrieval.json
+$ aws glacier list-jobs --account-id - --vault-name &lt;Vault Name&gt;
+
+$ aws glacier describe-job --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt;
+$ aws glacier get-job-output --account-id - --vault-name &lt;Vault Name&gt; --job-id &lt;Job ID&gt; output.dat
+</code></pre>
+<p><em>delete archive</em></p>
+<pre><code>$ aws glacier delete-archive --account-id - --vault-name &lt;Vault Name&gt; --archive-id &lt;Archive ID&gt;
+</code></pre>
+<p><em>delete vault notification</em></p>
+<pre><code>$ aws glacier delete-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier get-vault-notifications --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+<p><em>delete vault</em></p>
+<pre><code>$ aws glacier describe-vault --account-id - --vault-name &lt;Vault Name&gt;
+$ aws glacier delete-vault --account-id - --vault-name &lt;Vault Name&gt;
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191019.html" class="u-url">s3</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -464,9 +544,7 @@ $ ansible-playbook playbook.yml
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

@@ -56,7 +56,167 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210411.html" class="u-url">Stay at home</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210422.html" class="u-url">route53</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20210422.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-04-22T00:00:00Z" itemprop="datePublished" title="2021-04-22 00:00">2021-04-22 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<h3>aws command</h3>
+<pre><code>aws route53 list-hosted-zones
+aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
+
+aws route53 list-resource-record-sets   --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --query "ResourceRecordSets[?Name == 'example.example.net.']"
+aws route53 test-dns-answer --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --record-name "example.example.net" --record-type "A"
+
+aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://create.json
+aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
+aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://delete.json
+aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
+</code></pre>
+<p>create.json</p>
+<pre><code>{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "example.example.net",
+        "Type": "A",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxx.xxx.xxx.xxx"
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+<p>delete.json</p>
+<pre><code>{
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "example.example.net",
+        "Type": "A",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxx.xxx.xxx.xxx"
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+<h3>python sample script</h3>
+<pre><code>#! /usr/bin/python2
+import boto3
+import time
+
+client = boto3.client('route53')
+zones = client.list_hosted_zones()
+
+for zone in zones['HostedZones']:
+    id =zone['Id']
+    name = zone['Name']
+    #print(client.get_hosted_zone(Id=id).get('HostedZone'))
+    for set in client.list_resource_record_sets(HostedZoneId=id).get('ResourceRecordSets'):
+        print(set)
+    #action = 'CREATE'
+    action = 'DELETE'
+    address = 'xxx.xxx.xxx.xxx'
+
+    batch = {
+        'Changes': [
+            {
+                'Action': action,
+                'ResourceRecordSet': {
+                    'Name': 'example.%s' % name,
+                    'Type': 'A',
+                    'TTL': 3600,
+                    'ResourceRecords': [
+                        {
+                            "Value": address
+                        },
+                    ],
+                }
+            },
+        ]
+    }
+    response = client.change_resource_record_sets(
+        HostedZoneId=id,
+        ChangeBatch=batch
+    )
+    print(response)
+    responseid = response['ChangeInfo']['Id']
+    status = response['ChangeInfo']['Status']
+    while ( status != 'INSYNC'):
+        response = client.get_change(Id=responseid)
+        status = response['ChangeInfo']['Status']
+        time.sleep(30)
+    else:
+        print(response)
+</code></pre>
+<h3>cloud formation sample stack</h3>
+<pre><code>aws cloudformation validate-template --template-body file://route53.yml
+aws cloudformation create-stack --template-body file://route53.yml --parameters file://parameters.json --stack-name route53test
+aws cloudformation describe-stack-events --stack-name route53test
+aws cloudformation list-stack-resources --stack-name route53test
+aws cloudformation delete-stack --stack-name route53test
+</code></pre>
+<p>route53.yml</p>
+<pre><code>Parameters:
+  HostedZoneId:
+    Type: String
+  Domain:
+    Type: String
+  Address:
+    Type: String
+Resources:
+  myDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId : 
+         Ref: HostedZoneId
+      Name:  
+        Fn::Join: 
+            - '.'
+            - - 'example'
+              - !Ref Domain
+      ResourceRecords:
+      - Ref: Address
+      TTL: '3600'
+      Type: A
+</code></pre>
+<p>parameters.json</p>
+<pre><code>[
+  {
+      "ParameterKey": "Address",
+      "ParameterValue": "xxx.xxx.xxx.xxx"
+  },
+  {
+      "ParameterKey": "HostedZoneId",
+      "ParameterValue": "xxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+      "ParameterKey": "Domain",
+      "ParameterValue": "example.net"
+  }
+]
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210411.html" class="u-url">Stay at home</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -295,9 +455,7 @@ $ curl -I www.google.com
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>
