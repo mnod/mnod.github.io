@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 22 Apr 2021 12:54:15 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 28 Apr 2021 15:15:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ses list-identities
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;destination.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "ToAddresses": [
+    "test@example.com"
+  ],
+  "CcAddresses": [],
+  "BccAddresses": []
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;message.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "Subject": {
+    "Data": "test mail",
+    "Charset": "UTF-8"
+  },
+  "Body": {
+    "Text": {
+      "Data": "Hi.\n\nThis is a test mail.",
+      "Charset": "UTF-8"
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses send-email --from noreply@example.net --destination file://destination.json --message file://message.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;template.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "TemplateName": "testtemplate",
+  "SubjectPart": "Greetings, {{name}}!",
+  "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses list-templates
+aws ses create-template --template file://template.json
+aws ses get-template --template testtemplate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;template-parameters.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "name": "john",
+  "favoriteanimal": "cat"
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses test-render-template --template-name testtemplate --template-data file://template-data.json
+aws ses send-templated-email --source noreply@example.net --destination file://destination.json --template testtemplate --template-data file://template-data.json
+aws ses delete-template --template-name testtemplate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;python test script&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/usr/python
+
+import boto3
+import json
+
+fromaddr = 'noreply@example.net'
+destaddr = 'test@example.com'
+destination = {
+    'ToAddresses': [
+        destaddr,
+    ]
+}
+
+client = boto3.client('ses')
+
+## send email
+response = client.send_email(
+    Source = fromaddr,
+    Destination = destination,
+    Message={
+        'Subject': {
+            'Data': 'test mail',
+            'Charset': 'UTF-8'
+        },
+        'Body': {
+            'Text': {
+                'Data': 'Hi.\n\nThis is a test mail',
+                'Charset': 'UTF-8'
+            },
+        }
+    }
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+## create template
+response = client.create_template(
+    Template={
+        "TemplateName": "testtemplate",
+        "SubjectPart": "Greetings, {{name}}!",
+        "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+    }
+)
+templatedata = {
+    "name": "john",
+    "favoriteanimal": "cat"
+}
+
+## send templated email
+response = client.send_templated_email(
+    Source=fromaddr,
+    Destination=destination,
+    Template='testtemplate',
+    TemplateData=json.dumps(templatedata)
+)
+print(response)
+
+## delete template
+response = client.delete_template(
+    TemplateName='testtemplate'
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws route53 list-hosted-zones
 aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
 
@@ -544,195 +670,4 @@ CMD ["/bin/bash"]
 &lt;p&gt;&lt;code&gt;nikola github_deploy&lt;/code&gt; does not work with this image. I get this message when I run it.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;git: 'fast-import' is not a git command. See 'git --help'.
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So I use ubuntu:20.04 for a base image.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>backend and lock</title><link>https://mnod.github.io/posts/20200622.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;resource "aws_s3_bucket" "terraform_state" {
-  bucket = "mybucketname"
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
-
-  tags = {
-    Name = "terraform_backend"
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.bucket
-
-  block_public_acls = true
-  block_public_policy = true
-  ignore_public_acls = true
-  restrict_public_buckets = true
-}
-
-resource "aws_dynamodb_table" "terraform_state_lock" {
-  name = "terraform_state_lock"
-  read_capacity = 1
-  write_capacity = 1
-  hash_key = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-}
-variable "region" {
-  default = "ap-northeast-1"
-}
-
-provider "aws" {
-  region = var.region
-  version = "~&amp;gt; 2.61.0"
-}
-
-terraform {
-  required_version = "&amp;gt;= 0.12.26"
-#  backend "s3" {
-#    bucket = "mybucketname"
-#    key    = "network/terraform.tfstate"
-#    region = "ap-northeast-1"
-#    dynamodb_table = "terraform_state_lock"
-#  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then initialize &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform init 
-terraform show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;at last create bucket and table&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform plan -out terraform.plan -no-color 
-terraform apply "terraform.plan" -no-color 
-terraform show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;change backend to S3&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;at first edit tf file to enable S3 backend&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform {
-  required_version = "&amp;gt;= 0.12.26"
-  backend "s3" {
-    bucket = "mybucketname"
-    key    = "network/terraform.tfstate"
-    region = "ap-northeast-1"
-    dynamodb_table = "terraform_state_lock"
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then initialize&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform init -no-color 
-aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;then you can use S3 backend&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;add tf file content to build aws resource &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;variable "cidr_block" {
-  default = "10.0.0.0/16"
-}
-
-resource "aws_vpc" "terraform_test_vpc" {
-  cidr_block           = var.cidr_block
-  instance_tenancy     = "default"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "terraform_test"
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;plan and apply as usual&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform plan -no-color -out terraform.plan 
-terraform apply "terraform.plan" 
-terraform show
-
-aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;remove all reosources other than S3 bucket and DynamoDB table&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;before change backend from S3 to local again, remove all other resources.&lt;/p&gt;
-&lt;p&gt;at first remove all aws resources from tf file other than S3 bucket for backend and DynamoDB table for lock control.
-then plan and apply&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform plan -no-color -out terraform.plan 
-terraform apply "terraform.plan" 
-terraform show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;change backend from S3 to local&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;comment out or remove backend from tf file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;    terraform {
-      required_version = "&amp;gt;= 0.12.26"
-    #  backend "s3" {
-    #    bucket = "mybucketname"
-    #    key    = "network/terraform.tfstate"
-    #    region = "ap-northeast-1"
-    #    dynamodb_table = "terraform_state_lock"
-    #  }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then initialize.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;terraform init -no-color 
-ls -l terraform.tfstate
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;remove S3 tables and DynamoDB table&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;before remove them, make sure S3 bucket empty&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws s3api list-object-versions  --bucket mybucketname --prefix network/terraform.tfstate --query 'Versions[].{VersionId:VersionId, LastModified:LastModified}'
-delete_objects=$(aws s3api list-object-versions --bucket mybucketname --prefix network/terraform.tfstate \
---query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')
-aws s3api delete-objects --bucket mybucketname --delete "${delete_objects}"
-
-terraform destroy 
-terraform show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Sample yaml file for stack of CloudFormation to build backend S3 bucket and DynamoDB table&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
-Parameters:
-  BucketName:
-    Type: String
-  TableName:
-    Type: String
-Resources:
-  BackendBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: !Ref BucketName
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: True
-        BlockPublicPolicy: True
-        IgnorePublicAcls: True
-        RestrictPublicBuckets: True
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
-      VersioningConfiguration:
-        Status: "Enabled"
-      Tags:
-        - "Key": "Name"
-          "Value": "test"
-  LockctrlTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Ref TableName
-      AttributeDefinitions:
-        - AttributeName: "LockID"
-          AttributeType: "S"
-      KeySchema:
-        - AttributeName: "LockID"
-          KeyType: "HASH"
-      BillingMode: "PROVISIONED"
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-      Tags:
-        - Key: "Name"
-          Value: "test"
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>terraform</category><guid>https://mnod.github.io/posts/20200622.html</guid><pubDate>Mon, 22 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;So I use ubuntu:20.04 for a base image.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item></channel></rss>

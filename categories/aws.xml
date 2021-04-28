@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 22 Apr 2021 12:54:15 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 28 Apr 2021 15:15:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ses list-identities
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;destination.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "ToAddresses": [
+    "test@example.com"
+  ],
+  "CcAddresses": [],
+  "BccAddresses": []
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;message.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "Subject": {
+    "Data": "test mail",
+    "Charset": "UTF-8"
+  },
+  "Body": {
+    "Text": {
+      "Data": "Hi.\n\nThis is a test mail.",
+      "Charset": "UTF-8"
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses send-email --from noreply@example.net --destination file://destination.json --message file://message.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;template.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "TemplateName": "testtemplate",
+  "SubjectPart": "Greetings, {{name}}!",
+  "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses list-templates
+aws ses create-template --template file://template.json
+aws ses get-template --template testtemplate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;template-parameters.json &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  "name": "john",
+  "favoriteanimal": "cat"
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;aws ses test-render-template --template-name testtemplate --template-data file://template-data.json
+aws ses send-templated-email --source noreply@example.net --destination file://destination.json --template testtemplate --template-data file://template-data.json
+aws ses delete-template --template-name testtemplate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;python test script&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/usr/python
+
+import boto3
+import json
+
+fromaddr = 'noreply@example.net'
+destaddr = 'test@example.com'
+destination = {
+    'ToAddresses': [
+        destaddr,
+    ]
+}
+
+client = boto3.client('ses')
+
+## send email
+response = client.send_email(
+    Source = fromaddr,
+    Destination = destination,
+    Message={
+        'Subject': {
+            'Data': 'test mail',
+            'Charset': 'UTF-8'
+        },
+        'Body': {
+            'Text': {
+                'Data': 'Hi.\n\nThis is a test mail',
+                'Charset': 'UTF-8'
+            },
+        }
+    }
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+## create template
+response = client.create_template(
+    Template={
+        "TemplateName": "testtemplate",
+        "SubjectPart": "Greetings, {{name}}!",
+        "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+    }
+)
+templatedata = {
+    "name": "john",
+    "favoriteanimal": "cat"
+}
+
+## send templated email
+response = client.send_templated_email(
+    Source=fromaddr,
+    Destination=destination,
+    Template='testtemplate',
+    TemplateData=json.dumps(templatedata)
+)
+print(response)
+
+## delete template
+response = client.delete_template(
+    TemplateName='testtemplate'
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws route53 list-hosted-zones
 aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
 
@@ -1001,68 +1127,4 @@ $ aws apigateway delete-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
       Properties:
         RestApiId: !Ref ApiGatewayRestApi
         StageName: "devel"
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191110.html</guid><pubDate>Sun, 10 Nov 2019 00:00:00 GMT</pubDate></item><item><title>sns</title><link>https://mnod.github.io/posts/20191101.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;create topic&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws sns create-topic --name &amp;lt;Topic Name&amp;gt;
-$ aws sns list-topics
-$ aws sns get-topic-attributes --topic-arn &amp;lt;Topic ARN&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create subscription&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws lambda list-functions | jq '.Functions[].FunctionArn'
-
-$ aws sns subscribe --topic-arn &amp;lt;Topic ARN&amp;gt; --protocol lambda --notification-endpoint &amp;lt;Lambda ARN&amp;gt;
-$ aws sns list-subscriptions
-$ aws sns get-subscription-attributes --subscription-arn &amp;lt;Subscription ARN&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;publish&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws sns publish --topic-arn &amp;lt;Topic ARN&amp;gt; --subject "test subject" --message "this is test message"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;unsubscribe&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws sns unsubscribe --subscription-arn &amp;lt;Subscription ARN&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete topic&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws sns delete-topic --topic-arn &amp;lt;Topic ARN&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create SNS with CloudFormation&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;prepare yaml file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat sns.yml
-AWSTemplateFormatVersion: 2010-09-09
-Resources:
-  MySNSTopic:
-    Type: 'AWS::SNS::Topic'
-  MySubscription:
-    Type: 'AWS::SNS::Subscription'
-    Properties: 
-      Endpoint: !Ref lambdaARN
-      Protocol: lambda
-      TopicArn: !Ref MySNSTopic
-Parameters:
-  lambdaARN:
-    Type: String
-$ aws cloudformation validate-template --template-body file://sns.yml
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;prepare paremeter file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' sns.parameter
-[
-  {
-    "ParameterKey": "lambdaARN",
-    "ParameterValue": "&amp;lt;lambda ARN&amp;gt;"
-  }
-]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create stack&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws cloudformation create-stack --template-body file://sns.yml --stack-name &amp;lt;Stack Name&amp;gt; --parameters file://sns.parameter
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm CloudFormation&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws cloudformation list-stacks
-$ aws cloudformation describe-stacks --stack-name &amp;lt;Stack Name&amp;gt;
-$ aws cloudformation get-template --stack-name &amp;lt;Stack Name&amp;gt; --query 'TemplateBody' | xargs printf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm SNS&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws sns list-topics
-$ aws sns list-subscriptions
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;delete stack&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws cloudformation delete-stack --stack-name &amp;lt;Stack Name&amp;gt;
-$ aws cloudformation list-stacks --query 'StackSummaries[?StackName==`&amp;lt;Stack Name&amp;gt;`]'
-$ aws cloudformation describe-stacks --stack-name &amp;lt;Stack Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191101.html</guid><pubDate>Fri, 01 Nov 2019 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191110.html</guid><pubDate>Sun, 10 Nov 2019 00:00:00 GMT</pubDate></item></channel></rss>
