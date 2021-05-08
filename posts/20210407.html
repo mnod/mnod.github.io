@@ -157,14 +157,16 @@ exit
 <h3>install docker in wsl2 debian environment</h3>
 <p>We can install newest release as https://docs.docker.com/engine/install/debian/
 But I prefered to install from debian package</p>
-<pre><code>sudo apt install --no-install-recommends docker.io
+<pre><code>sudo apt update
+sudo apt install --no-install-recommends docker.io
 sudo service docker start
 sudo service docker status
 </code></pre>
 <p>At this point, I could not start dockerd.
 I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164</p>
 <pre><code>sudo touch /etc/fstab
-sudo update-alternatives --set iptables /usr/sbin/iptables-legacy  update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+sudo update-alternatives --set iptables  /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 sudo service docker start
 sudo service docker status
 </code></pre>

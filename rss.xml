@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 28 Apr 2021 15:15:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 08 May 2021 07:16:05 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ses list-identities
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;destination.json &lt;/p&gt;
@@ -411,14 +411,16 @@ exit
 &lt;h3&gt;install docker in wsl2 debian environment&lt;/h3&gt;
 &lt;p&gt;We can install newest release as https://docs.docker.com/engine/install/debian/
 But I prefered to install from debian package&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;sudo apt install --no-install-recommends docker.io
+&lt;pre&gt;&lt;code&gt;sudo apt update
+sudo apt install --no-install-recommends docker.io
 sudo service docker start
 sudo service docker status
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;At this point, I could not start dockerd.
 I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo touch /etc/fstab
-sudo update-alternatives --set iptables /usr/sbin/iptables-legacy  update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+sudo update-alternatives --set iptables  /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 sudo service docker start
 sudo service docker status
 &lt;/code&gt;&lt;/pre&gt;
