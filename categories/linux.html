@@ -192,6 +192,13 @@ down # Stop and remove containers
 version # Show version information
 help # Show help messages
 </code></pre>
+<p>When update docker-compose.yml, no need to rebuild the image.</p>
+<pre><code>docker-compose up -d
+</code></pre>
+<p>When update Dockerfile or edit any source codes, need to rebuild the image.</p>
+<pre><code>docker-compose build
+docker-compose up -d
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
