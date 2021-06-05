@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
 <link rel="canonical" href="https://mnod.github.io/">
 <link rel="next" href="index-9.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20210428.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20210605.html" type="text/html">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -46,7 +46,64 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210428.html" class="u-url">ses</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210605.html" class="u-url">devpi-server</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20210605.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-06-05T00:00:00Z" itemprop="datePublished" title="2021-06-05 00:00">2021-06-05 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
+<h3>build a docker container</h3>
+<p>make a dockerfile</p>
+<pre><code>FROM debian:buster-slim
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update &amp;&amp; \
+    apt install --no-install-recommends -y \
+    python3-pip python3-pip python3-setuptools python3-dev build-essential libffi-dev &amp;&amp; \
+    pip3 install devpi-server
+
+EXPOSE 3141
+VOLUME ["/var/cache/devpi"]
+
+CMD chmod 777 /var/cache/devpi &amp;&amp; \
+    devpi-server \
+        --serverdir /var/cache/devpi \
+        --host 0.0.0.0 --port 3141
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t devpi-server:buster-slim .
+$ sudo docker tag devpi-server:buster-slim devpi-server:latest
+</code></pre>
+<p>run a container</p>
+<pre><code>$ sudo docker run --rm -d -p 3141:3141 -v /mnt/devpi:/var/cache/devpi devpi-server:latest
+</code></pre>
+<p>test the address and port</p>
+<pre><code>$ curl http://192.168.xxx.xxx:3141/
+</code></pre>
+<h3>how to use devpi-server</h3>
+<p>specify it in a command line</p>
+<pre><code>$ pip3 install --trusted-host 192.168.xxx.xxx --index-url http://192.168.xxx.xxx:3141/root/pypi matplotlib
+</code></pre>
+<p>or </p>
+<pre><code>$ PIP_TRUSTED_HOST=192.168.xxx.xxx PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi pip3 install matplotlib
+</code></pre>
+<p>for docker build, write below in a Dockerfile</p>
+<pre><code>ARG PIP_TRUSTED_HOST
+ARG PIP_INDEX_URL
+</code></pre>
+<p>then specify devpi-server at build-arg parameter in docker run command line.</p>
+<pre><code>$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210428.html" class="u-url">ses</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -832,48 +889,6 @@ list vdisk
 attach vdisk
 list vdisk
 </code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200710.html" class="u-url">nikola</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="posts/20200710.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-07-10T00:00:00Z" itemprop="datePublished" title="2020-07-10 00:00">2020-07-10 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://getnikola.com/">Nikola</a> is one of <a href="https://www.staticgen.com/">static site generator</a> written in python3.</p>
-<ul>
-<li>It supports some input formats include Markdown.</li>
-<li>Theme is written in Mako or Jinja2.
-The user can use any existing theme or can create your own theme inherits from existing one.</li>
-<li>The user can specify deployment procedure and run it.</li>
-<li>Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.</li>
-</ul>
-<p>As described in the footer of this page, I use it now.</p>
-<p>This is a sample Dockerfile. The docker image will become about 427MB.</p>
-<pre><code>FROM alpine:3.12
-
-RUN apk --update --no-cache add py-pip git bash \
-gcc musl-dev python3-dev libxml2-dev libxslt-dev libjpeg-turbo-dev \
-&amp;&amp; pip install nikola jinja2 ghp-import2 \
-&amp;&amp; mkdir /tmp/nikola \
-&amp;&amp; adduser -H -D docker
-
-VOLUME ["/tmp/nikola"]
-EXPOSE 80
-USER "docker"
-WORKDIR "/tmp/nikola"
-CMD ["/bin/bash"]
-</code></pre>
-<p><code>nikola github_deploy</code> does not work with this image. I get this message when I run it.</p>
-<pre><code>git: 'fast-import' is not a git command. See 'git --help'.
-</code></pre>
-<p>So I use ubuntu:20.04 for a base image.</p>
 </div>
     </div>
     </article>

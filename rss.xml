@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 15 May 2021 02:57:45 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 05 Jun 2021 05:57:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update &amp;amp;&amp;amp; \
+    apt install --no-install-recommends -y \
+    python3-pip python3-pip python3-setuptools python3-dev build-essential libffi-dev &amp;amp;&amp;amp; \
+    pip3 install devpi-server
+
+EXPOSE 3141
+VOLUME ["/var/cache/devpi"]
+
+CMD chmod 777 /var/cache/devpi &amp;amp;&amp;amp; \
+    devpi-server \
+        --serverdir /var/cache/devpi \
+        --host 0.0.0.0 --port 3141
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t devpi-server:buster-slim .
+$ sudo docker tag devpi-server:buster-slim devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3141:3141 -v /mnt/devpi:/var/cache/devpi devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl http://192.168.xxx.xxx:3141/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;how to use devpi-server&lt;/h3&gt;
+&lt;p&gt;specify it in a command line&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ pip3 install --trusted-host 192.168.xxx.xxx --index-url http://192.168.xxx.xxx:3141/root/pypi matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ PIP_TRUSTED_HOST=192.168.xxx.xxx PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi pip3 install matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;for docker build, write below in a Dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ARG PIP_TRUSTED_HOST
+ARG PIP_INDEX_URL
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ses list-identities
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;destination.json &lt;/p&gt;
@@ -652,31 +694,4 @@ list vdisk
 &lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
 attach vdisk
 list vdisk
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>nikola</title><link>https://mnod.github.io/posts/20200710.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://getnikola.com/"&gt;Nikola&lt;/a&gt; is one of &lt;a href="https://www.staticgen.com/"&gt;static site generator&lt;/a&gt; written in python3.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;It supports some input formats include Markdown.&lt;/li&gt;
-&lt;li&gt;Theme is written in Mako or Jinja2.
-The user can use any existing theme or can create your own theme inherits from existing one.&lt;/li&gt;
-&lt;li&gt;The user can specify deployment procedure and run it.&lt;/li&gt;
-&lt;li&gt;Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;
-&lt;p&gt;This is a sample Dockerfile. The docker image will become about 427MB.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;FROM alpine:3.12
-
-RUN apk --update --no-cache add py-pip git bash \
-gcc musl-dev python3-dev libxml2-dev libxslt-dev libjpeg-turbo-dev \
-&amp;amp;&amp;amp; pip install nikola jinja2 ghp-import2 \
-&amp;amp;&amp;amp; mkdir /tmp/nikola \
-&amp;amp;&amp;amp; adduser -H -D docker
-
-VOLUME ["/tmp/nikola"]
-EXPOSE 80
-USER "docker"
-WORKDIR "/tmp/nikola"
-CMD ["/bin/bash"]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;nikola github_deploy&lt;/code&gt; does not work with this image. I get this message when I run it.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;git: 'fast-import' is not a git command. See 'git --help'.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So I use ubuntu:20.04 for a base image.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item></channel></rss>

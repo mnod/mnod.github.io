@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 15 May 2021 02:57:45 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 05 Jun 2021 05:57:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update &amp;amp;&amp;amp; \
+    apt install --no-install-recommends -y \
+    python3-pip python3-pip python3-setuptools python3-dev build-essential libffi-dev &amp;amp;&amp;amp; \
+    pip3 install devpi-server
+
+EXPOSE 3141
+VOLUME ["/var/cache/devpi"]
+
+CMD chmod 777 /var/cache/devpi &amp;amp;&amp;amp; \
+    devpi-server \
+        --serverdir /var/cache/devpi \
+        --host 0.0.0.0 --port 3141
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t devpi-server:buster-slim .
+$ sudo docker tag devpi-server:buster-slim devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3141:3141 -v /mnt/devpi:/var/cache/devpi devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl http://192.168.xxx.xxx:3141/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;how to use devpi-server&lt;/h3&gt;
+&lt;p&gt;specify it in a command line&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ pip3 install --trusted-host 192.168.xxx.xxx --index-url http://192.168.xxx.xxx:3141/root/pypi matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ PIP_TRUSTED_HOST=192.168.xxx.xxx PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi pip3 install matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;for docker build, write below in a Dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ARG PIP_TRUSTED_HOST
+ARG PIP_INDEX_URL
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://docs.docker.com/engine/install/debian/"&gt;How to install&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ curl -fsSL https://get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh --dry-run
@@ -162,9 +204,10 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 &lt;p&gt;specify it in command line&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or
-    $ sudo su -
-    # http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx &lt;/p&gt;
+&lt;p&gt;or&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo su -
+# http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;for docker build&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20200315.html</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;

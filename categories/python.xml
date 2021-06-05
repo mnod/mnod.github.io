@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about python)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/python.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>json in python</title><link>https://mnod.github.io/posts/20200422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;dictionary&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about python)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/python.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 05 Jun 2021 05:57:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update &amp;amp;&amp;amp; \
+    apt install --no-install-recommends -y \
+    python3-pip python3-pip python3-setuptools python3-dev build-essential libffi-dev &amp;amp;&amp;amp; \
+    pip3 install devpi-server
+
+EXPOSE 3141
+VOLUME ["/var/cache/devpi"]
+
+CMD chmod 777 /var/cache/devpi &amp;amp;&amp;amp; \
+    devpi-server \
+        --serverdir /var/cache/devpi \
+        --host 0.0.0.0 --port 3141
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t devpi-server:buster-slim .
+$ sudo docker tag devpi-server:buster-slim devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3141:3141 -v /mnt/devpi:/var/cache/devpi devpi-server:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl http://192.168.xxx.xxx:3141/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;how to use devpi-server&lt;/h3&gt;
+&lt;p&gt;specify it in a command line&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ pip3 install --trusted-host 192.168.xxx.xxx --index-url http://192.168.xxx.xxx:3141/root/pypi matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ PIP_TRUSTED_HOST=192.168.xxx.xxx PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi pip3 install matplotlib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;for docker build, write below in a Dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ARG PIP_TRUSTED_HOST
+ARG PIP_INDEX_URL
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>json in python</title><link>https://mnod.github.io/posts/20200422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;dictionary&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;add key:value pair to a dictionary&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict = {}
 &amp;gt;&amp;gt;&amp;gt; newdict['foo'] = "bar"

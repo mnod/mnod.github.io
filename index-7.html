@@ -266,9 +266,10 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>specify it in command line</p>
 <pre><code>$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
 </code></pre>
-<p>or
-    $ sudo su -
-    # http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx </p>
+<p>or</p>
+<pre><code>$ sudo su -
+# http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx
+</code></pre>
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
