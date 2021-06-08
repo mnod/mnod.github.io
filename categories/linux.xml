@@ -1,5 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 05 Jun 2021 05:57:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 08 Jun 2021 00:54:28 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+RUN apt-get update \
+&amp;amp;&amp;amp; apt install -y squid \
+s&amp;amp;&amp;amp; apt clean \
+&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/spool/squid"]
+EXPOSE 3128
+
+WORKDIR /var/spool/squid
+COPY squid.conf /etc/squid/squid.conf
+
+CMD if [ ! -f /var/spool/squid/swap.state ]; then squid -z ; sleep 2; fi \
+&amp;amp;&amp;amp; squid -N
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample configure file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;acl localnet src 192.168.xxx.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl CONNECT method CONNECT
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+http_port 3128
+cache_dir ufs /var/spool/squid 100 16 256
+coredump_dir /var/spool/squid
+refresh_pattern .               129600  33%     525600
+dns_nameservers 192.168.xxx.xxx 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t squid:test .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker run --rm squid:test squid --version | awk -F: '$1~/options/{print $2}' | sed -e 's/ /\n/g' | grep ssl
+(result will be nothing)
+$ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -D - -s http://192.168.xxx.xxx:3128/ -o /dev/null
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;connecting to HTTP server&lt;/h3&gt;
+&lt;p&gt;without proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+*   Trying 2001:df0:25e:e100::3...
+* TCP_NODELAY set
+* Connected to ftp.yz.yamagata-u.ac.jp (2001:df0:25e:e100::3) port 80 (#0)
+&amp;gt; GET /pub/linux/centos/5.11/readme HTTP/1.1
+&amp;gt; Host: ftp.yz.yamagata-u.ac.jp
+&amp;gt; User-Agent: curl/7.64.0
+&amp;gt; Accept: */*
+&amp;gt;
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Mon, 07 Jun 2021 00:59:01 GMT
+&amp;lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&amp;lt; Upgrade: h2,h2c
+&amp;lt; Connection: Upgrade
+&amp;lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&amp;lt; ETag: "14b-54c418ac05900"
+&amp;lt; Accept-Ranges: bytes
+&amp;lt; Content-Length: 331
+&amp;lt;
+{ [331 bytes data]
+* Connection #0 to host ftp.yz.yamagata-u.ac.jp left intact
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3128/ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+* Uses proxy env variable http_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port 3128 (#0)
+&amp;gt; GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme HTTP/1.1
+&amp;gt; Host: ftp.yz.yamagata-u.ac.jp
+&amp;gt; User-Agent: curl/7.64.0
+&amp;gt; Accept: */*
+&amp;gt; Proxy-Connection: Keep-Alive
+&amp;gt;
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Mon, 07 Jun 2021 00:58:26 GMT
+&amp;lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&amp;lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&amp;lt; ETag: "14b-54c418ac05900"
+&amp;lt; Accept-Ranges: bytes
+&amp;lt; Content-Length: 331
+&amp;lt; X-Cache: MISS from e3b21f81fdd2
+&amp;lt; X-Cache-Lookup: MISS from e3b21f81fdd2:3128
+&amp;lt; Via: 1.1 e3b21f81fdd2 (squid/4.6)
+&amp;lt; Connection: keep-alive
+&amp;lt;
+{ [331 bytes data]
+* Connection #0 to host 192.168.xxx.xxx left intact
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;when cache hit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt; Age: 358
+&amp;lt; X-Cache: HIT from e3b21f81fdd2
+&amp;lt; X-Cache-Lookup: HIT from e3b21f81fdd2:3128
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;squid log&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1623026732.001    265 192.168.xxx.xxx TCP_MISS/200 685 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_DIRECT/133.24.248.17 -
+1623027089.025      0 192.168.xxx.xxx TCP_MEM_HIT/200 693 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_NONE/- -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;connecting to HTTPS server&lt;/h3&gt;
+&lt;p&gt;without proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -v -k -s https://www.google.com/ -o /dev/null 
+*   Trying 142.250.196.132...
+* TCP_NODELAY set
+* Connected to www.google.com (142.250.196.132) port 443 (#0)
+:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ https_proxy=http://192.168.xxx.xxx:3128/ curl -v -k -s https://www.google.com/ -o /dev/null 
+* Uses proxy env variable https_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port xxxxx (#0)
+* allocate connect buffer!
+* Establish HTTP proxy tunnel to www.google.com:443
+&amp;gt; CONNECT www.google.com:443 HTTP/1.1
+&amp;gt; Host: www.google.com:443
+&amp;gt; User-Agent: curl/7.61.1
+&amp;gt; Proxy-Connection: Keep-Alive
+&amp;gt; 
+&amp;lt; HTTP/1.1 200 Connection established
+&amp;lt; 
+* Proxy replied 200 to CONNECT request
+* CONNECT phase completed!
+:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;squid log. The ssl connection is just tunneled.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
 &lt;p&gt;related packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 &lt;/code&gt;&lt;/pre&gt;
@@ -382,45 +527,4 @@ $ newaliases
 &lt;pre&gt;&lt;code&gt;$ apt install mailutils
 $ echo "This is body message" | mail -s "My subject" pi
 $ MAILDIR=$HOME/Maildir mail
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200403.html</guid><pubDate>Fri, 03 Apr 2020 00:00:00 GMT</pubDate></item><item><title>apt-cacher-ng</title><link>https://mnod.github.io/posts/20200315.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;make a dockerfile&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat Dockerfile
-FROM debian:buster
-
-RUN apt-get update \
-&amp;amp;&amp;amp; apt-get install -y --no-install-recommends apt-cacher-ng \
-&amp;amp;&amp;amp; apt-get clean \
-&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
-
-VOLUME ["/var/cache/apt-cacher-ng"]
-EXPOSE 3142
-
-CMD chmod 777 /var/cache/apt-cacher-ng \
-&amp;amp;&amp;amp; /etc/init.d/apt-cacher-ng start \
-&amp;amp;&amp;amp; tail -f /var/log/apt-cacher-ng/*
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;build an image&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker build -t apt-cacher-ng:buster . | tee build.log
-$ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;run a container&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3142:3142 -v /mnt/apt-cacher-ng:/var/cache/apt-cacher-ng apt-cacher-ng:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;test the address and port &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ curl 192.168.xxx.xxx:3142
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;how to use the cache server&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;specify it in a config file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END | sudo tee /etc/apt/apt.conf.d/01proxy
-&amp;gt; Acquire::http::Proxy "http://192.168.xxx.xxx:3142/";
-&amp;gt; END
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;specify it in command line&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo su -
-# http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;for docker build&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20200315.html</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200403.html</guid><pubDate>Fri, 03 Apr 2020 00:00:00 GMT</pubDate></item></channel></rss>

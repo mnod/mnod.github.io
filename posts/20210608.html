@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>squid nobump | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/posts/20210608.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="mnod">
+<link rel="prev" href="20210605.html" title="devpi-server" type="text/html">
+<meta property="og:site_name" content="tech log">
+<meta property="og:title" content="squid nobump">
+<meta property="og:url" content="https://mnod.github.io/posts/20210608.html">
+<meta property="og:description" content="The squid packages of debian doesn not support sslbump.
+It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.
+build a docker container
+make a dockerfile
+FROM debia">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-06-08T00:00:00Z">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="linux">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">squid nobump</a></h1>
+
+        <div class="metadata">
+            <!-- <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2021-06-08T00:00:00Z" itemprop="datePublished" title="2021-06-08 00:00">2021-06-08 00:00</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
+It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.</p>
+<h3>build a docker container</h3>
+<p>make a dockerfile</p>
+<pre><code>FROM debian:buster-slim
+
+RUN apt-get update \
+&amp;&amp; apt install -y squid \
+s&amp;&amp; apt clean \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/spool/squid"]
+EXPOSE 3128
+
+WORKDIR /var/spool/squid
+COPY squid.conf /etc/squid/squid.conf
+
+CMD if [ ! -f /var/spool/squid/swap.state ]; then squid -z ; sleep 2; fi \
+&amp;&amp; squid -N
+</code></pre>
+<p>sample configure file</p>
+<pre><code>acl localnet src 192.168.xxx.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl CONNECT method CONNECT
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+http_port 3128
+cache_dir ufs /var/spool/squid 100 16 256
+coredump_dir /var/spool/squid
+refresh_pattern .               129600  33%     525600
+dns_nameservers 192.168.xxx.xxx 192.168.xxx.xxx
+</code></pre>
+<p>build an image</p>
+<pre><code>$ docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t squid:test .
+</code></pre>
+<p>run a container</p>
+<pre><code>$ docker run --rm squid:test squid --version | awk -F: '$1~/options/{print $2}' | sed -e 's/ /\n/g' | grep ssl
+(result will be nothing)
+$ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
+</code></pre>
+<p>test the address and port</p>
+<pre><code>$ curl -D - -s http://192.168.xxx.xxx:3128/ -o /dev/null
+</code></pre>
+<h3>connecting to HTTP server</h3>
+<p>without proxy</p>
+<pre><code>$ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+*   Trying 2001:df0:25e:e100::3...
+* TCP_NODELAY set
+* Connected to ftp.yz.yamagata-u.ac.jp (2001:df0:25e:e100::3) port 80 (#0)
+&gt; GET /pub/linux/centos/5.11/readme HTTP/1.1
+&gt; Host: ftp.yz.yamagata-u.ac.jp
+&gt; User-Agent: curl/7.64.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 07 Jun 2021 00:59:01 GMT
+&lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&lt; Upgrade: h2,h2c
+&lt; Connection: Upgrade
+&lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&lt; ETag: "14b-54c418ac05900"
+&lt; Accept-Ranges: bytes
+&lt; Content-Length: 331
+&lt;
+{ [331 bytes data]
+* Connection #0 to host ftp.yz.yamagata-u.ac.jp left intact
+</code></pre>
+<p>with proxy</p>
+<pre><code>$ http_proxy=http://192.168.xxx.xxx:3128/ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+* Uses proxy env variable http_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port 3128 (#0)
+&gt; GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme HTTP/1.1
+&gt; Host: ftp.yz.yamagata-u.ac.jp
+&gt; User-Agent: curl/7.64.0
+&gt; Accept: */*
+&gt; Proxy-Connection: Keep-Alive
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 07 Jun 2021 00:58:26 GMT
+&lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&lt; ETag: "14b-54c418ac05900"
+&lt; Accept-Ranges: bytes
+&lt; Content-Length: 331
+&lt; X-Cache: MISS from e3b21f81fdd2
+&lt; X-Cache-Lookup: MISS from e3b21f81fdd2:3128
+&lt; Via: 1.1 e3b21f81fdd2 (squid/4.6)
+&lt; Connection: keep-alive
+&lt;
+{ [331 bytes data]
+* Connection #0 to host 192.168.xxx.xxx left intact
+</code></pre>
+<p>when cache hit</p>
+<pre><code>&lt; Age: 358
+&lt; X-Cache: HIT from e3b21f81fdd2
+&lt; X-Cache-Lookup: HIT from e3b21f81fdd2:3128
+</code></pre>
+<p>squid log</p>
+<pre><code>$ docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1623026732.001    265 192.168.xxx.xxx TCP_MISS/200 685 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_DIRECT/133.24.248.17 -
+1623027089.025      0 192.168.xxx.xxx TCP_MEM_HIT/200 693 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_NONE/- -
+</code></pre>
+<h3>connecting to HTTPS server</h3>
+<p>without proxy</p>
+<pre><code>$ curl -v -k -s https://www.google.com/ -o /dev/null 
+*   Trying 142.250.196.132...
+* TCP_NODELAY set
+* Connected to www.google.com (142.250.196.132) port 443 (#0)
+:
+</code></pre>
+<p>with proxy</p>
+<pre><code>$ https_proxy=http://192.168.xxx.xxx:3128/ curl -v -k -s https://www.google.com/ -o /dev/null 
+* Uses proxy env variable https_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port xxxxx (#0)
+* allocate connect buffer!
+* Establish HTTP proxy tunnel to www.google.com:443
+&gt; CONNECT www.google.com:443 HTTP/1.1
+&gt; Host: www.google.com:443
+&gt; User-Agent: curl/7.61.1
+&gt; Proxy-Connection: Keep-Alive
+&gt; 
+&lt; HTTP/1.1 200 Connection established
+&lt; 
+* Proxy replied 200 to CONNECT request
+* CONNECT phase completed!
+:
+</code></pre>
+<p>squid log. The ssl connection is just tunneled.</p>
+<pre><code>$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
+</code></pre>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/docker.html" rel="tag">docker</a></li>
+            <li><a class="tag p-category" href="../categories/linux.html" rel="tag">linux</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="20210605.html" rel="prev" title="devpi-server">Previous post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>Contents © 2021         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

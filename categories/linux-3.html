@@ -58,7 +58,63 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200308.html" class="u-url">tcpdump</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200315.html" class="u-url">apt-cacher-ng</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200315.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-03-15T00:00:00Z" itemprop="datePublished" title="2020-03-15 00:00">2020-03-15 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>make a dockerfile</p>
+<pre><code>$ cat Dockerfile
+FROM debian:buster
+
+RUN apt-get update \
+&amp;&amp; apt-get install -y --no-install-recommends apt-cacher-ng \
+&amp;&amp; apt-get clean \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/cache/apt-cacher-ng"]
+EXPOSE 3142
+
+CMD chmod 777 /var/cache/apt-cacher-ng \
+&amp;&amp; /etc/init.d/apt-cacher-ng start \
+&amp;&amp; tail -f /var/log/apt-cacher-ng/*
+</code></pre>
+<p>build an image</p>
+<pre><code>$ sudo docker build -t apt-cacher-ng:buster . | tee build.log
+$ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
+</code></pre>
+<p>run a container</p>
+<pre><code>$ sudo docker run --rm -d -p 3142:3142 -v /mnt/apt-cacher-ng:/var/cache/apt-cacher-ng apt-cacher-ng:latest
+</code></pre>
+<p>test the address and port </p>
+<pre><code>$ curl 192.168.xxx.xxx:3142
+</code></pre>
+<p><em>how to use the cache server</em></p>
+<p>specify it in a config file</p>
+<pre><code>$ cat &lt;&lt; END | sudo tee /etc/apt/apt.conf.d/01proxy
+&gt; Acquire::http::Proxy "http://192.168.xxx.xxx:3142/";
+&gt; END
+</code></pre>
+<p>specify it in command line</p>
+<pre><code>$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt-get install xxxx
+</code></pre>
+<p>or</p>
+<pre><code>$ sudo su -
+# http_proxy=http://192.168.xxx.xxx:3142/ apt-get install xxxx
+</code></pre>
+<p>for docker build</p>
+<pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200308.html" class="u-url">tcpdump</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

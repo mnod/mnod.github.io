@@ -1,5 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 05 Jun 2021 05:57:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 08 Jun 2021 00:54:28 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+RUN apt-get update \
+&amp;amp;&amp;amp; apt install -y squid \
+s&amp;amp;&amp;amp; apt clean \
+&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/var/spool/squid"]
+EXPOSE 3128
+
+WORKDIR /var/spool/squid
+COPY squid.conf /etc/squid/squid.conf
+
+CMD if [ ! -f /var/spool/squid/swap.state ]; then squid -z ; sleep 2; fi \
+&amp;amp;&amp;amp; squid -N
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample configure file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;acl localnet src 192.168.xxx.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl CONNECT method CONNECT
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+http_port 3128
+cache_dir ufs /var/spool/squid 100 16 256
+coredump_dir /var/spool/squid
+refresh_pattern .               129600  33%     525600
+dns_nameservers 192.168.xxx.xxx 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t squid:test .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker run --rm squid:test squid --version | awk -F: '$1~/options/{print $2}' | sed -e 's/ /\n/g' | grep ssl
+(result will be nothing)
+$ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -D - -s http://192.168.xxx.xxx:3128/ -o /dev/null
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;connecting to HTTP server&lt;/h3&gt;
+&lt;p&gt;without proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+*   Trying 2001:df0:25e:e100::3...
+* TCP_NODELAY set
+* Connected to ftp.yz.yamagata-u.ac.jp (2001:df0:25e:e100::3) port 80 (#0)
+&amp;gt; GET /pub/linux/centos/5.11/readme HTTP/1.1
+&amp;gt; Host: ftp.yz.yamagata-u.ac.jp
+&amp;gt; User-Agent: curl/7.64.0
+&amp;gt; Accept: */*
+&amp;gt;
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Mon, 07 Jun 2021 00:59:01 GMT
+&amp;lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&amp;lt; Upgrade: h2,h2c
+&amp;lt; Connection: Upgrade
+&amp;lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&amp;lt; ETag: "14b-54c418ac05900"
+&amp;lt; Accept-Ranges: bytes
+&amp;lt; Content-Length: 331
+&amp;lt;
+{ [331 bytes data]
+* Connection #0 to host ftp.yz.yamagata-u.ac.jp left intact
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3128/ curl -v -s http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme -o /dev/null
+* Uses proxy env variable http_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port 3128 (#0)
+&amp;gt; GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme HTTP/1.1
+&amp;gt; Host: ftp.yz.yamagata-u.ac.jp
+&amp;gt; User-Agent: curl/7.64.0
+&amp;gt; Accept: */*
+&amp;gt; Proxy-Connection: Keep-Alive
+&amp;gt;
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Mon, 07 Jun 2021 00:58:26 GMT
+&amp;lt; Server: Apache/2.4.46 (Unix) OpenSSL/1.1.1k
+&amp;lt; Last-Modified: Mon, 03 Apr 2017 11:34:28 GMT
+&amp;lt; ETag: "14b-54c418ac05900"
+&amp;lt; Accept-Ranges: bytes
+&amp;lt; Content-Length: 331
+&amp;lt; X-Cache: MISS from e3b21f81fdd2
+&amp;lt; X-Cache-Lookup: MISS from e3b21f81fdd2:3128
+&amp;lt; Via: 1.1 e3b21f81fdd2 (squid/4.6)
+&amp;lt; Connection: keep-alive
+&amp;lt;
+{ [331 bytes data]
+* Connection #0 to host 192.168.xxx.xxx left intact
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;when cache hit&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt; Age: 358
+&amp;lt; X-Cache: HIT from e3b21f81fdd2
+&amp;lt; X-Cache-Lookup: HIT from e3b21f81fdd2:3128
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;squid log&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1623026732.001    265 192.168.xxx.xxx TCP_MISS/200 685 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_DIRECT/133.24.248.17 -
+1623027089.025      0 192.168.xxx.xxx TCP_MEM_HIT/200 693 GET http://ftp.yz.yamagata-u.ac.jp/pub/linux/centos/5.11/readme - HIER_NONE/- -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;connecting to HTTPS server&lt;/h3&gt;
+&lt;p&gt;without proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -v -k -s https://www.google.com/ -o /dev/null 
+*   Trying 142.250.196.132...
+* TCP_NODELAY set
+* Connected to www.google.com (142.250.196.132) port 443 (#0)
+:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with proxy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ https_proxy=http://192.168.xxx.xxx:3128/ curl -v -k -s https://www.google.com/ -o /dev/null 
+* Uses proxy env variable https_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port xxxxx (#0)
+* allocate connect buffer!
+* Establish HTTP proxy tunnel to www.google.com:443
+&amp;gt; CONNECT www.google.com:443 HTTP/1.1
+&amp;gt; Host: www.google.com:443
+&amp;gt; User-Agent: curl/7.61.1
+&amp;gt; Proxy-Connection: Keep-Alive
+&amp;gt; 
+&amp;lt; HTTP/1.1 200 Connection established
+&amp;lt; 
+* Proxy replied 200 to CONNECT request
+* CONNECT phase completed!
+:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;squid log. The ssl connection is just tunneled.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
+:
+1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
@@ -630,68 +775,4 @@ help # Show help messages
 &lt;p&gt;When update Dockerfile or edit any source codes, need to rebuild the image.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker-compose build
 docker-compose up -d
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
-We can use it for application install space or document storage area.&lt;/p&gt;
-&lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;parted /dev/sdb print
-parted /dev/sdb rm 1
-parted /dev/sdb mkpart primary ntfs 0% 100%
-mkfs.ntfs -Q /dev/sdb1
-mount /dev/sdb1 /mnt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;At first a raw image file, make label, and make partition.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
-losetup -f
-losetup /dev/loop1 file.img
-losetup -a
-parted /dev/loop1 print
-parted /dev/loop1 mklabel msdos
-parted /dev/loop1 mkpart primary ntfs 0% 100%
-losetup -d /dev/loop1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then format the partition in ntfs format.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;kpartx -a -v file.img
-mkfs.ntfs -Q /dev/loop1p1
-kpartx -d -v file.img
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The vhd file must not be sparse file.
-So after we convert it to vhd format, then we should convert it to normal file.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cp --sparse=never file.img file_new.img
-qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
-cp -pi --sparse=never output.vhd.sparse file.vhd
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;diskpart&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In windows os, we can handle partition and filesystem with sub commands of diskpart command.&lt;/p&gt;
-&lt;p&gt;format usb drive&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;list volume
-select volume=2
-format fs=ntfs quick
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create a vhd file and attach it&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;list volume
-create vdisk file="d:\image.vhd" maximum=1024
-select vdisk file="d:\image.vhd"
-attach vdisk
-list vdisk
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create partition in the vhd file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;select disk 2
-list disk
-create partition primary
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;format in ntfs and assign drive letter&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;list volume
-select volume=3
-format fs=ntfs quick
-assign letter=e:
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;detach the vhd file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
-detach vdisk
-list vdisk
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;next time, just attach it&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
-attach vdisk
-list vdisk
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item></channel></rss>
