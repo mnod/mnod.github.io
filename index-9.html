@@ -47,7 +47,79 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200924.html" class="u-url">vhd</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20200926.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-09-26T00:00:00Z" itemprop="datePublished" title="2020-09-26 00:00">2020-09-26 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a></p>
+<p><a href="https://docs.docker.com/engine/install/debian/">How to install</a></p>
+<pre><code>$ curl -fsSL https://get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh --dry-run
+$ sudo sh get-docker.sh
+$ systemctl is-active docker
+$ systemctl is-enabled docker
+$ sudo docker version
+</code></pre>
+<p>change the docker root directory where we store the images and containers.</p>
+<pre><code>$ sudo docker info | grep Root
+$ sudo systemctl stop docker
+$ sudo mv /var/lib/docker /path/to/
+$ sudo ln -s /path/to/docker /var/lib/docker
+$ sudo systemctl start docker
+$ sudo docker run --rm hello-world
+</code></pre>
+<p>confirm the result</p>
+<pre><code>$ sudo docker run --rm -it alpine
+/ #
+/ # uptime
+ 03:17:44 up 1 day,  2:47,  load average: 0.02, 0.05, 0.01
+/ #
+/ # uname -a
+Linux 4db177a44a14 5.4.42-v8+ #1319 SMP PREEMPT Wed May 20 14:18:56 BST 2020 aarch64 Linux
+/ #
+/ # free -m
+              total        used        free      shared  buff/cache   available
+Mem:           7816         315        6339           2        1161        7460
+Swap:          8191           0        8191
+</code></pre>
+<p>install docker-compose</p>
+<pre><code>$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt install libffi-dev libssl-dev
+$ sudo pip3 install docker-compose
+$ pip3 show docker-compose
+$ docker-compose version
+</code></pre>
+<p>commands of docker-compose</p>
+<pre><code>config # Validate and view the Compose file
+ps # List containers
+images # List images
+build # (Re)Build services
+create # Create services
+up # Create and start containers
+start # Start services
+stop # Stop services
+rm -f # Remove stopped containers
+down # Stop and remove containers
+version # Show version information
+help # Show help messages
+</code></pre>
+<p>When update docker-compose.yml, no need to rebuild the image.</p>
+<pre><code>docker-compose up -d
+</code></pre>
+<p>When update Dockerfile or edit any source codes, need to rebuild the image.</p>
+<pre><code>docker-compose build
+docker-compose up -d
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200924.html" class="u-url">vhd</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

@@ -1,5 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 08 Jun 2021 00:54:28 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 10 Jun 2021 00:12:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+This is a sample to build squid using apt source package.&lt;/p&gt;
+&lt;h3&gt;build a docker container&lt;/h3&gt;
+&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
+
+WORKDIR /tmp/buildwork
+RUN echo 'deb-src http://deb.debian.org/debian buster main' &amp;gt;&amp;gt; /etc/apt/sources.list \
+&amp;amp;&amp;amp; apt-get update \
+&amp;amp;&amp;amp; apt install --no-install-recommends -y dpkg-dev devscripts build-essential fakeroot libssl-dev libldap2-dev libpam0g-dev libdb-dev cdbs libsasl2-dev debhelper libcppunit-dev libkrb5-dev comerr-dev libcap2-dev libecap3-dev libexpat1-dev libxml2-dev pkg-config libnetfilter-conntrack-dev nettle-dev libgnutls28-dev dh-apparmor ed libdbi-perl libltdl-dev lsb-release libpopt0 logrotate squid-langpack \
+&amp;amp;&amp;amp; apt source squid \
+&amp;amp;&amp;amp; apt clean \
+&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+RUN sed -i.bak -e '/--with-gnutls$/ s/$/ --with-openssl --enable-ssl --enable-ssl-crtd/' squid-4.6/debian/rules \
+&amp;amp;&amp;amp; squid-4.6/configure \
+&amp;amp;&amp;amp; cd squid-4.6 \
+&amp;amp;&amp;amp; debuild -us -uc -b \
+&amp;amp;&amp;amp; dpkg -i ../squid_*.deb ../squid-common_*.deb \
+&amp;amp;&amp;amp; mkdir -p /var/spool/squid /etc/squid/ssl_cert &amp;amp;&amp;amp; chown proxy:proxy /var/spool/squid \
+&amp;amp;&amp;amp; cd /tmp &amp;amp;&amp;amp; rm -rf /tmp/buildwork
+
+VOLUME ["/var/spool/squid"]
+EXPOSE 3128
+
+WORKDIR /var/spool/squid
+COPY squid.conf /etc/squid/squid.conf
+COPY server.crt /etc/squid/ssl_cert/server.crt
+COPY server.key /etc/squid/ssl_cert/server.key
+
+CMD chmod 600 /etc/squid/ssl_cert/server.key \
+&amp;amp;&amp;amp; if [ ! -f /var/spool/squid/swap.state ]; then squid -z ; fi \
+&amp;amp;&amp;amp; if [ ! -d /var/spool/squid/ssl_db ]; then /usr/lib/squid/security_file_certgen -c -s /var/spool/squid/ssl_db -M 20MB ; chown -R proxy. /var/spool/squid/ssl_db ; fi \
+&amp;amp;&amp;amp; squid -N
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample configure file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;acl localnet src 192.168.xxx.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl CONNECT method CONNECT
+acl intermediate_fetching transaction_initiator certificate-fetching
+http_access allow intermediate_fetching
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+http_port 3128 ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB cert=/etc/squid/ssl_cert/server.crt key=/etc/squid/ssl_cert/server.key
+ssl_bump stare all
+sslproxy_cert_error allow all
+sslcrtd_children 3 startup=1 idle=1
+cache_dir ufs /var/spool/squid 100 16 256
+coredump_dir /var/spool/squid
+refresh_pattern .               129600  33%     525600
+dns_nameservers 192.168.xxx.xxx 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you don't have a CA file and private key for it, you need create them.
+When you already have them, I think you can use intermediate CA signed by your own CA.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout server.key -out server.crt -subj "/CN=192.168.xxx.xxx" -days 3650
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;build an image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t squid:test .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;run a container&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm squid:test squid --version | awk -F: '$1~/options/{print $2}' | sed -e 's/ /\n/g' | grep ssl
+'--with-openssl'
+'--enable-ssl'
+'--enable-ssl-crtd'
+$ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test the address and port&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ curl -D - -s http://192.168.xxx.xxx:3128/ -o /dev/null
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;connecting to HTTPS server&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ https_proxy=http://192.168.xxx.xxx:3128/ curl -v -k -s https://www.google.com/ -o /dev/null
+* Uses proxy env variable https_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port 3128 (#0)
+* allocate connect buffer!
+* Establish HTTP proxy tunnel to www.google.com:443
+&amp;gt; CONNECT www.google.com:443 HTTP/1.1
+&amp;gt; Host: www.google.com:443
+&amp;gt; User-Agent: curl/7.61.1
+&amp;gt; Proxy-Connection: Keep-Alive
+&amp;gt; 
+&amp;lt; HTTP/1.1 200 Connection established
+&amp;lt; 
+* Proxy replied 200 to CONNECT request
+* CONNECT phase completed!
+:
+:
+:
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: C=US; ST=California; L=Mountain View; O=Google LLC; CN=www.google.com
+*  start date: May 10 04:04:06 2021 GMT
+*  expire date: Aug  2 04:04:05 2021 GMT
+*  issuer: CN=192.168.xxx.xxx
+*  SSL certificate verify result: self signed certificate in certificate chain (19), continuing anyway.
+} [5 bytes data]
+&amp;gt; GET / HTTP/1.1
+&amp;gt; Host: www.google.com
+&amp;gt; User-Agent: curl/7.61.1
+&amp;gt; Accept: */*
+&amp;gt; 
+{ [5 bytes data]
+&amp;lt; HTTP/1.1 200 OK
+&amp;lt; Date: Wed, 09 Jun 2021 00:22:42 GMT
+&amp;lt; Expires: -1
+&amp;lt; Cache-Control: private, max-age=0
+&amp;lt; Content-Type: text/html; charset=ISO-8859-1
+&amp;lt; P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+&amp;lt; Server: gws
+&amp;lt; X-XSS-Protection: 0
+&amp;lt; X-Frame-Options: SAMEORIGIN
+&amp;lt; Set-Cookie: 1P_JAR=2021-06-09-00; expires=Fri, 09-Jul-2021 00:22:42 GMT; path=/; domain=.google.com; Secure
+&amp;lt; Set-Cookie: NID=216=ptf-d_HIPGOAjnEf-gbmRDmIg3JnEfjqRRnQghOkyFHrdLy5fXGOhydj5jBHonqOlP5WCzPIKX3kIkdizOXCQ13t4moqXwr-UoOWiRXgYaAkx6gyqe03hjM_hwfin5plUuG3NClONGvvFJo5Mqvar7GFYrSFYOMVCXMXvTJ0d4M; expires=Thu, 09-Dec-2021 00:22:42 GMT; path=/; domain=.google.com; HttpOnly
+&amp;lt; Alt-Svc: h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+&amp;lt; Accept-Ranges: none
+&amp;lt; Vary: Accept-Encoding
+&amp;lt; X-Cache: MISS from bd2e0fa8b95e
+&amp;lt; X-Cache-Lookup: MISS from bd2e0fa8b95e:3128
+&amp;lt; Transfer-Encoding: chunked
+&amp;lt; Via: 1.1 bd2e0fa8b95e (squid/4.6)
+&amp;lt; Connection: keep-alive
+&amp;lt; 
+{ [5 bytes data]
+* Connection #0 to host 192.168.xxx.xxx left intact
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample log of other connections&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1622798061.167    833 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
+1622798061.539    260 192.168.xxx.xxx TCP_MISS/200 16108 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_DIRECT/38.145.60.22 application/x-rpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
+1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;

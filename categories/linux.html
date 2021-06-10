@@ -57,7 +57,164 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210608.html" class="u-url">squid nobump</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20210610.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-06-10T00:00:00Z" itemprop="datePublished" title="2021-06-10 00:00">2021-06-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+This is a sample to build squid using apt source package.</p>
+<h3>build a docker container</h3>
+<p>make a dockerfile</p>
+<pre><code>FROM debian:buster-slim
+
+WORKDIR /tmp/buildwork
+RUN echo 'deb-src http://deb.debian.org/debian buster main' &gt;&gt; /etc/apt/sources.list \
+&amp;&amp; apt-get update \
+&amp;&amp; apt install --no-install-recommends -y dpkg-dev devscripts build-essential fakeroot libssl-dev libldap2-dev libpam0g-dev libdb-dev cdbs libsasl2-dev debhelper libcppunit-dev libkrb5-dev comerr-dev libcap2-dev libecap3-dev libexpat1-dev libxml2-dev pkg-config libnetfilter-conntrack-dev nettle-dev libgnutls28-dev dh-apparmor ed libdbi-perl libltdl-dev lsb-release libpopt0 logrotate squid-langpack \
+&amp;&amp; apt source squid \
+&amp;&amp; apt clean \
+&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+RUN sed -i.bak -e '/--with-gnutls$/ s/$/ --with-openssl --enable-ssl --enable-ssl-crtd/' squid-4.6/debian/rules \
+&amp;&amp; squid-4.6/configure \
+&amp;&amp; cd squid-4.6 \
+&amp;&amp; debuild -us -uc -b \
+&amp;&amp; dpkg -i ../squid_*.deb ../squid-common_*.deb \
+&amp;&amp; mkdir -p /var/spool/squid /etc/squid/ssl_cert &amp;&amp; chown proxy:proxy /var/spool/squid \
+&amp;&amp; cd /tmp &amp;&amp; rm -rf /tmp/buildwork
+
+VOLUME ["/var/spool/squid"]
+EXPOSE 3128
+
+WORKDIR /var/spool/squid
+COPY squid.conf /etc/squid/squid.conf
+COPY server.crt /etc/squid/ssl_cert/server.crt
+COPY server.key /etc/squid/ssl_cert/server.key
+
+CMD chmod 600 /etc/squid/ssl_cert/server.key \
+&amp;&amp; if [ ! -f /var/spool/squid/swap.state ]; then squid -z ; fi \
+&amp;&amp; if [ ! -d /var/spool/squid/ssl_db ]; then /usr/lib/squid/security_file_certgen -c -s /var/spool/squid/ssl_db -M 20MB ; chown -R proxy. /var/spool/squid/ssl_db ; fi \
+&amp;&amp; squid -N
+</code></pre>
+<p>sample configure file</p>
+<pre><code>acl localnet src 192.168.xxx.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl CONNECT method CONNECT
+acl intermediate_fetching transaction_initiator certificate-fetching
+http_access allow intermediate_fetching
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+http_port 3128 ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB cert=/etc/squid/ssl_cert/server.crt key=/etc/squid/ssl_cert/server.key
+ssl_bump stare all
+sslproxy_cert_error allow all
+sslcrtd_children 3 startup=1 idle=1
+cache_dir ufs /var/spool/squid 100 16 256
+coredump_dir /var/spool/squid
+refresh_pattern .               129600  33%     525600
+dns_nameservers 192.168.xxx.xxx 192.168.xxx.xxx
+</code></pre>
+<p>If you don't have a CA file and private key for it, you need create them.
+When you already have them, I think you can use intermediate CA signed by your own CA.</p>
+<pre><code>$ openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout server.key -out server.crt -subj "/CN=192.168.xxx.xxx" -days 3650
+</code></pre>
+<p>build an image</p>
+<pre><code>$ docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t squid:test .
+</code></pre>
+<p>run a container</p>
+<pre><code>$ sudo docker run --rm squid:test squid --version | awk -F: '$1~/options/{print $2}' | sed -e 's/ /\n/g' | grep ssl
+'--with-openssl'
+'--enable-ssl'
+'--enable-ssl-crtd'
+$ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
+</code></pre>
+<p>test the address and port</p>
+<pre><code>$ curl -D - -s http://192.168.xxx.xxx:3128/ -o /dev/null
+</code></pre>
+<h3>connecting to HTTPS server</h3>
+<pre><code>$ https_proxy=http://192.168.xxx.xxx:3128/ curl -v -k -s https://www.google.com/ -o /dev/null
+* Uses proxy env variable https_proxy == 'http://192.168.xxx.xxx:3128/'
+*   Trying 192.168.xxx.xxx...
+* TCP_NODELAY set
+* Connected to 192.168.xxx.xxx (192.168.xxx.xxx) port 3128 (#0)
+* allocate connect buffer!
+* Establish HTTP proxy tunnel to www.google.com:443
+&gt; CONNECT www.google.com:443 HTTP/1.1
+&gt; Host: www.google.com:443
+&gt; User-Agent: curl/7.61.1
+&gt; Proxy-Connection: Keep-Alive
+&gt; 
+&lt; HTTP/1.1 200 Connection established
+&lt; 
+* Proxy replied 200 to CONNECT request
+* CONNECT phase completed!
+:
+:
+:
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: C=US; ST=California; L=Mountain View; O=Google LLC; CN=www.google.com
+*  start date: May 10 04:04:06 2021 GMT
+*  expire date: Aug  2 04:04:05 2021 GMT
+*  issuer: CN=192.168.xxx.xxx
+*  SSL certificate verify result: self signed certificate in certificate chain (19), continuing anyway.
+} [5 bytes data]
+&gt; GET / HTTP/1.1
+&gt; Host: www.google.com
+&gt; User-Agent: curl/7.61.1
+&gt; Accept: */*
+&gt; 
+{ [5 bytes data]
+&lt; HTTP/1.1 200 OK
+&lt; Date: Wed, 09 Jun 2021 00:22:42 GMT
+&lt; Expires: -1
+&lt; Cache-Control: private, max-age=0
+&lt; Content-Type: text/html; charset=ISO-8859-1
+&lt; P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+&lt; Server: gws
+&lt; X-XSS-Protection: 0
+&lt; X-Frame-Options: SAMEORIGIN
+&lt; Set-Cookie: 1P_JAR=2021-06-09-00; expires=Fri, 09-Jul-2021 00:22:42 GMT; path=/; domain=.google.com; Secure
+&lt; Set-Cookie: NID=216=ptf-d_HIPGOAjnEf-gbmRDmIg3JnEfjqRRnQghOkyFHrdLy5fXGOhydj5jBHonqOlP5WCzPIKX3kIkdizOXCQ13t4moqXwr-UoOWiRXgYaAkx6gyqe03hjM_hwfin5plUuG3NClONGvvFJo5Mqvar7GFYrSFYOMVCXMXvTJ0d4M; expires=Thu, 09-Dec-2021 00:22:42 GMT; path=/; domain=.google.com; HttpOnly
+&lt; Alt-Svc: h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+&lt; Accept-Ranges: none
+&lt; Vary: Accept-Encoding
+&lt; X-Cache: MISS from bd2e0fa8b95e
+&lt; X-Cache-Lookup: MISS from bd2e0fa8b95e:3128
+&lt; Transfer-Encoding: chunked
+&lt; Via: 1.1 bd2e0fa8b95e (squid/4.6)
+&lt; Connection: keep-alive
+&lt; 
+{ [5 bytes data]
+* Connection #0 to host 192.168.xxx.xxx left intact
+</code></pre>
+<p>sample log of other connections</p>
+<pre><code>1622798061.167    833 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
+1622798061.539    260 192.168.xxx.xxx TCP_MISS/200 16108 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_DIRECT/38.145.60.22 application/x-rpm
+</code></pre>
+<pre><code>1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
+1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210608.html" class="u-url">squid nobump</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -742,31 +899,6 @@ systemctl unmask unit
 <p>reboot or poweroff the system</p>
 <pre><code>systemctl reboot
 systemctl poweroff
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200403.html" class="u-url">postfix</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200403.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-04-03T00:00:00Z" itemprop="datePublished" title="2020-04-03 00:00">2020-04-03 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>alias</p>
-<pre><code>$ postconf -n | grep alias
-$ ls -l /etc/aliases*
-$ postalias hash:/etc/aliases
-$ newaliases
-</code></pre>
-<p>send mail or read mail of Maildir</p>
-<pre><code>$ apt install mailutils
-$ echo "This is body message" | mail -s "My subject" pi
-$ MAILDIR=$HOME/Maildir mail
 </code></pre>
 </div>
     </div>

@@ -143,6 +143,9 @@ git stash show -p stash@{0}
 <pre><code>git stash apply stash@{0}
 git stash drop stash@{0}
 </code></pre>
+<p>reset indext to cancel add operation and leave the file as it is</p>
+<pre><code>git reset HEAD xxxx.txt
+</code></pre>
 <p>example of URIs</p>
 <pre><code>ssh://username@serverhostname/var/lib/git/myrepository.git
 file:///var/lib/git/myrepository.git
