@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 10 Jun 2021 00:12:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 22 Jun 2021 00:13:09 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -645,6 +645,36 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
 &lt;p&gt;メカニカル、ロープロファイル、リニア、87キーのキーボード。&lt;/p&gt;
 &lt;p&gt;ここのところ、デスクトップのキーボードもノートPCのものに近いパンタグラフのキーボードを使っていた。
 メンブレンのものを含めて、安かろう悪かろうなキーボードを渡り歩いてきたので、使い心地のよいまともな外付けキーボードを使うのは、PC98xxの頃以来かもしれない。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;US ASCII配列キーボードを試してもよさそうな方&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;これらにデメリットを感じない方&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;日本語入力/ローマ字入力の切り替えが[半角/全角]キー一発ではなくなる&lt;/li&gt;
+&lt;li&gt;[無変換][変換][カタカナひらがな]キーが無い&lt;/li&gt;
+&lt;li&gt;ローマ字入力しかできず、かな入力ができない&lt;/li&gt;
+&lt;li&gt;[^][@][:] の入力に Shift が必要&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;これらにメリットを感じる方&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[無変換][変換][カタカナひらがな]キーが無い代わりに、スペースバーが長い。&lt;/li&gt;
+&lt;li&gt;[半角/全角] の代わりに [`][‾] が割り当てられている&lt;/li&gt;
+&lt;li&gt;[`] [=] を Shift なしで単独で入力できる。&lt;/li&gt;
+&lt;li&gt;[']["]/[;][:][-][_] を Shift の有無で打ち分けることができる&lt;/li&gt;
+&lt;li&gt;[Backspace][Enter][Shift(R)] がホームポジションに近い&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我々が日常利用するコンピュータのソフトウェアは米国で作られてきた。
+そのため、USキーボードを使用すると、日本語キーボードだけを使用していては得ることができなかった、設計思想についての気づきを得られる。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;C のポインタ演算子 [&amp;amp;][*] は隣のキー&lt;/li&gt;
+&lt;li&gt;vi の :コマンド は誤入力防止ではないか? (要Shift)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;USキーボードの大きな欠点の一つに、かな入力ができないことがある。
+日常生活していく上で、ASCII文字の入力は必須であり、キー配列を覚えないことには不便で仕方ない。
+ASCII文字のキー配列を覚えれば、IMEのローマ字入力機能を利用して日本語を入力することができる。&lt;/p&gt;
+&lt;p&gt;ローマ字入力ができるなら、一定以上の速度が必要とならない限り、ひらがな入力は必須ではない。
+ひらがな入力のためにはキー配列を覚えなければならず、学習コストが高い。
+ひらがな入力に対するインセンティブやモチベーションが高くならないので、
+ひらがな入力は少数派という状況はしばらく変わらないと思う。&lt;/p&gt;
+&lt;p&gt;(スマホネイティブ世代の入力事情は考慮していない)&lt;/p&gt;
 &lt;h3&gt;USBオーディオインタフェース&lt;/h3&gt;
 &lt;p&gt;大層なものではない。3.5mm4極ジャックのみで、ボリュームボタン、ミュートボタンがあるだけの簡易なインタフェース。&lt;/p&gt;
 &lt;p&gt;貸与ノートPCに直接イヤフォンマイクを繋げてWeb会議に参加すると、時々音声が聞きづらいと言われたことがあった。

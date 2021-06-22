@@ -502,6 +502,10 @@ git stash drop stash@{0}
 <p>reset indext to cancel add operation and leave the file as it is</p>
 <pre><code>git reset HEAD xxxx.txt
 </code></pre>
+<p>ignore file permission change (chmod)</p>
+<pre><code>git config --local core.filemode false
+git config --local --list
+</code></pre>
 <p>example of URIs</p>
 <pre><code>ssh://username@serverhostname/var/lib/git/myrepository.git
 file:///var/lib/git/myrepository.git
