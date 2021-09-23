@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ansible)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ansible.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2020 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 18 Jul 2020 14:54:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ansible)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ansible.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Sep 2021 09:21:47 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ansible vault</title><link>https://mnod.github.io/posts/20210923.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create a vault file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ansible-vault create test
+New Vault password: 
+Confirm New Vault password: 
+:
+:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ ansible-vault view test
+Vault password: 
+test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ cat test 
+$ANSIBLE_VAULT;1.1;AES256
+34373931643530353734633238383738363430616366366463653631316362353730613165316464
+3834656662626430306662333038656263613139373036640a303131396539353663383932323133
+63316564623264323434326138623737326463633830623465373131646134616662363565656132
+3165616239303564330a646436643339303665336333363530346636666339643561336565393434
+3766
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can use vault-id option for password instead of stdin.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ansible-vault view --vault-id test@prompt test
+Vault password (test): 
+test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ cat vaultpass.test 
+password
+
+$ ansible-vault view --vault-id test@vaultpass.test test
+test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can also encrypt/decrpt any file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ansible-vault decrypt --vault-id test@vaultpass.test test
+Decryption successful
+
+$ cat test 
+test
+
+$ ansible-vault encrypt --vault-id test@vaultpass.test test
+Encryption successful
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;example for encrypt var file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat ./roles/test/vars/main.yml 
+target: ansible_os_family
+
+$ ansible-vault encrypt --vault-id test@vaultpass.test ./roles/test/vars/main.yml 
+Encryption successful
+
+$ cat ./roles/test/vars/main.yml 
+$ANSIBLE_VAULT;1.2;AES256;test
+33653839336162646466373262663965636561366464643634643431633639343437633166636137
+3236636535383832383932353865396630313266366264360a363134333532393038396561323137
+30643734663961363561666461326362373035623131663637383636346633393737636234316163
+3463663838626334660a616564343730343561656335343534353161666430313731376631623634
+65643135323666303430616331666165656131373639393936333731626131653764
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ansible-playbook example using encrypted file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat ./roles/test/tasks/main.yml 
+- name: print ansible facts
+  debug:
+    var: "{{ target }}"
+
+$ cat hosts 
+[test]
+localhost ansible_connection=local
+
+$ ansible-playbook -i hosts --vault-id test@vaultpass.test --list-tasks test.yml 
+
+playbook: test.yml
+
+  play #1 (test): ansible vault test    TAGS: []
+    tasks:
+      test : print ansible facts    TAGS: []
+
+
+$ ansible-playbook -i hosts --vault-id test@vaultpass.test test.yml 
+
+PLAY [ansible vault test] *****************************************************************************************************
+
+TASK [Gathering Facts] ********************************************************************************************************
+ok: [localhost]
+
+TASK [test : print ansible facts] *********************************************************************************************
+ok: [localhost] =&amp;gt; {
+    "ansible_os_family": "Debian"
+}
+
+PLAY RECAP ********************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><guid>https://mnod.github.io/posts/20210923.html</guid><pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;From centos:centos8
 
 ARG VERSION=0.12.25
