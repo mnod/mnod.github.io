@@ -736,10 +736,11 @@ iface wls3 inet dhcp
 <p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
 <p>Music Player Daemon. server-client architecture.</p>
 <p><em>mpd.conf</em></p>
-<p>You can specify audio output type and device in /etc/mpd.conf. Various types are available.</p>
+<p>You can specify audio output type and device in /etc/mpd.conf. Various types are available including http streaming.
+This is example for 2nd alsa device.</p>
 <pre><code>audio_output {
-        type            "alsa"
-        name            "My ALSA Device"
+    type            "alsa"
+    name            "My ALSA Device"
     device          "hw:1,0"
 }
 </code></pre>
@@ -753,6 +754,8 @@ iface wls3 inet dhcp
 pause
 next
 prev
+
+consume [on|off]
 
 ls &lt;directory&gt; # lists all files in directory
 listall &lt;file&gt; # lists all files
@@ -770,6 +773,11 @@ rm &lt;playlist&gt; # remove playlist
 save &lt;playlist&gt; # save playlist
 
 load &lt;playlist&gt; # load &lt;playlist&gt; in the queue
+</code></pre>
+<p>We can load m3u or cue files in a music directory as playlist.
+The file path in a playlist should be relative path from the playlist.
+M3U can be extended M3U.</p>
+<pre><code>mpc load &lt;subdir in music dir&gt;/&lt;any subdir&gt;/playlistfile ; mpc playlist
 </code></pre>
 <p><em><a href="https://play.google.com/store/apps/details?id=com.namelessdev.mpdroid&amp;hl=en">MPDroid</a></em></p>
 <p>client for android</p>
