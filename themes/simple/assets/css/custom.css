@@ -34,3 +34,13 @@ em {
 .metadata p::before, .postpromonav .tags li::before, .postlist .listdate::after, .translationslist p::before {
     content: " ";
 }
+@media (prefers-color-scheme: dark) {
+  body{
+    background-color: #222222;
+    color: #eeeeee;
+  }
+  pre {
+    color: #666666;
+    background-color: #eeeeee;
+  }
+}
