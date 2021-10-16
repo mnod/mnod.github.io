@@ -86,6 +86,9 @@ echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
 <p><em>handle files which name may include spaces</em></p>
 <pre><code>find dirname -print0 | xargs -0 ls
 </code></pre>
+<p><em>convert character code from sjis to UTF8</em></p>
+<pre><code>iconv -f SJIS -t UTF8 oldfile &gt; newfile
+</code></pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
