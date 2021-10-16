@@ -40,7 +40,10 @@ em {
     color: #eeeeee;
   }
   pre {
-    color: #666666;
-    background-color: #eeeeee;
+    background-color: #777777;
+    color: #eeeeee;
+  }
+  a:link {
+    color: aque;
   }
 }
