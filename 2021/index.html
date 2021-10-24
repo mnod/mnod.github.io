@@ -104,7 +104,14 @@
 <pre><code># yumdownloder &lt;package name&gt;
 # yumdownloder &lt;package name&gt;.&lt;version&gt;.&lt;architecture&gt;
 </code></pre>
-<p>remove package</p>
+<p>list files contained in a rpm file</p>
+<pre><code># rpm2cpio &lt;rpm file&gt; | cpio --list
+</code></pre>
+<p>extract a rpm file in the current directory</p>
+<pre><code># rpm2cpio &lt;rpm file&gt; | cpio -id
+# find . -type f
+</code></pre>
+<p>remove installed package</p>
 <pre><code># rpm -e &lt;pakcage name&gt;
 # yum remove &lt;pakcage name&gt;
 # microdnf remove &lt;pakcage name&gt;
