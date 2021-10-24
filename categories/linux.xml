@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Sep 2021 09:21:48 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 24 Oct 2021 01:14:58 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
+# yum list [package name]
+# dnf list [package name]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;install package / rpm file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -ivh &amp;lt;rpm file name&amp;gt;
+# microdnf install &amp;lt;package name&amp;gt;
+# dnf install &amp;lt;package name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list installed files&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -ql &amp;lt;package name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list repositories&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum repolist [repository name] [-v]
+# microdnf repolist
+# dnf repolist [repository name] [-v]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show packages contained in the repository&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum repository-packages [repository name] list
+# dnf repository-packages [repository name] list
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;disable or enable repository with &lt;code&gt;config-manager&lt;/code&gt; module contained in &lt;code&gt;yum-utils&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
+# dnf config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;update installed packages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum update
+# microdnf update
+# dnf update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;download rpm file with &lt;code&gt;yumdownloader&lt;/code&gt; which is a part of &lt;code&gt;yum-utils&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yumdownloder &amp;lt;package name&amp;gt;
+# yumdownloder &amp;lt;package name&amp;gt;.&amp;lt;version&amp;gt;.&amp;lt;architecture&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove package&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -e &amp;lt;pakcage name&amp;gt;
+# yum remove &amp;lt;pakcage name&amp;gt;
+# microdnf remove &amp;lt;pakcage name&amp;gt;
+# dnf remove &amp;lt;pakcage name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove all cached data&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum clean all
+# microdnf clean
+# dnf clean all
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show transaction history&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum history
+# dnf history
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -624,39 +673,4 @@ systemctl force-reload systemd-journald
 &lt;p&gt;You can specify directory in which journal messages saved.
 It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;journalctl -D /mnt/var/log/journal -x
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item><item><title>systemctl</title><link>https://mnod.github.io/posts/20200612.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show system status&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl status
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show running or failed units&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl list-units
-systemctl
-systemctl --failed
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show installed unit files&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl list-unit-files
-ls -l /usr/lib/systemd/system /etc/systemd/system
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;start, stop, restart or reload a unit&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl start unit
-systemctl stop unit
-systemctl restart unit
-systemctl reload unit
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show status of a unit&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl status unit
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;enable or disable a unit to be started on bootstrap&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl enable unit
-systemctl disable unit
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;check whether a unit is enabled or not&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl is-enabled unit
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;mask or unmask a unit to make it impossible to start it&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl mask unit
-systemctl unmask unit
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;reboot or poweroff the system&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl reboot
-systemctl poweroff
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200612.html</guid><pubDate>Fri, 12 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

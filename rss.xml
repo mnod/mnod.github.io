@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 16 Oct 2021 09:14:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 24 Oct 2021 01:14:58 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
+# yum list [package name]
+# dnf list [package name]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;install package / rpm file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -ivh &amp;lt;rpm file name&amp;gt;
+# microdnf install &amp;lt;package name&amp;gt;
+# dnf install &amp;lt;package name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list installed files&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -ql &amp;lt;package name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list repositories&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum repolist [repository name] [-v]
+# microdnf repolist
+# dnf repolist [repository name] [-v]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show packages contained in the repository&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum repository-packages [repository name] list
+# dnf repository-packages [repository name] list
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;disable or enable repository with &lt;code&gt;config-manager&lt;/code&gt; module contained in &lt;code&gt;yum-utils&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
+# dnf config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;update installed packages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum update
+# microdnf update
+# dnf update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;download rpm file with &lt;code&gt;yumdownloader&lt;/code&gt; which is a part of &lt;code&gt;yum-utils&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yumdownloder &amp;lt;package name&amp;gt;
+# yumdownloder &amp;lt;package name&amp;gt;.&amp;lt;version&amp;gt;.&amp;lt;architecture&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove package&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# rpm -e &amp;lt;pakcage name&amp;gt;
+# yum remove &amp;lt;pakcage name&amp;gt;
+# microdnf remove &amp;lt;pakcage name&amp;gt;
+# dnf remove &amp;lt;pakcage name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove all cached data&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum clean all
+# microdnf clean
+# dnf clean all
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show transaction history&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# yum history
+# dnf history
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
 &lt;h2&gt;「チャリは全部同じ。短い距離ですぐにつかれる」は誤り&lt;/h2&gt;
 &lt;p&gt;まず、チャリ(またはチャリンコ)という呼び方は、侮蔑を含んでいるように感じる。正当に評価していない感じがして、好きではない。&lt;/p&gt;
 &lt;p&gt;自転車は車種や乗り方次第で、いろんな可能性がある。
@@ -838,127 +887,4 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 そこで、耳をいたわるためにオーバーヘッドの昔ながらの形の安価なヘッドフォンを購入した。&lt;/p&gt;
 &lt;p&gt;有線とBluetoothに対応しているが、有線しか試していない。音質としては不満はない。カナル型イヤフォンとはちょっと違った感じ。&lt;/p&gt;
 &lt;p&gt;眼鏡とは干渉しないのだけど、長時間つけていると(頭が大きいから?)頭が締め付けられて痛くなってしまう。&lt;/p&gt;
-&lt;p&gt;ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item><item><title>WSL2 installation</title><link>https://mnod.github.io/posts/20210407.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;I followed the document &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Windows Subsystem for Linux Installation Guide for Windows 10&lt;/a&gt;
-My environment is Windows 10 Pro 20H2 OS build 19042.685&lt;/p&gt;
-&lt;p&gt;Run powershell.exe as administrator.
-Then enable the Windows Subsystem for Linux.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And enable Virtual Machine feature&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Download the Linux kernel update package and install it.
-- &lt;a href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi"&gt;WSL2 Linux kernel update package for x64 machines&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Set WSL 2 as the default version&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;wsl --set-default-version 2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Install Linux distribution from &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Microsoft Store&lt;/a&gt;
-Then launch it.&lt;/p&gt;
-&lt;p&gt;I could not launch it for a long time because of bug of COMODO Internet Security shown at &lt;a href="https://github.com/microsoft/WSL/issues/5329"&gt;WSL2 Converstion Failed with Error: 0x80041002 &lt;/a&gt;
-&lt;a href="https://forums.comodo.com/news-announcements-feedback-cis/comodo-internet-security-2020-v12228012-released-t126945.0.html"&gt;COMODO released new version for fixing it&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Installing, this may take a few minutes...
-Please create a default UNIX user account. The username does not need to match your Windows username.
-For more information visit: https://aka.ms/wslusers
-Enter new UNIX username: xxxx
-New password:
-Retype new password:
-passwd: 
-password updated successfully
-Installation successful!
-
-$ uname -a
-Linux xxxxxxxxxxxxxxx 4.19.128-microsoft-standard #1 SMP Tue Jun 23 12:58:10 UTC 2020 x86_64 GNU/Linux
-
-$ cat /etc/debian_version
-10.8
-
-$ df -k
-Filesystem     1K-blocks     Used Available Use% Mounted on
-/dev/sdb       263174212   280972 249455084   1% /
-tmpfs            3161096        0   3161096   0% /mnt/wsl
-tools          248559384 53031224 195528160  22% /init
-none             3158696        0   3158696   0% /dev
-none             3161096        4   3161092   1% /run
-none             3161096        0   3161096   0% /run/lock
-none             3161096        0   3161096   0% /run/shm
-none             3161096        0   3161096   0% /run/user
-tmpfs            3161096        0   3161096   0% /sys/fs/cgroup
-C:\            248559384 53031224 195528160  22% /mnt/c
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;From next time, we can launch it with command 'debian'.
-Also we can launch it with wsl command on command prompt or powershell.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --list --verbose
-NAME      STATE           VERSION
-* Debian    Stopped         2
-&amp;gt; wsl -d Debian
-&amp;gt; wsl -d Debian -e uname -a
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can omit distribution name for the default one.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl
-&amp;gt; wsl -e uname -a
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can just execute bash shell or bash shell script as below.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; bash
-&amp;gt; bash -c "echo uname -a &amp;gt; test.sh"
-&amp;gt; bash -c "./test.sh"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;export and import a distribution&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --export debian d:\debian.tar.gz
-&amp;gt; wsl --import mydebian d:\wsl\ d:\debian.tar.gz
-&amp;gt; wsl --list -v
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;set new distribution as a default one and set default user.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --set-default mydebian
-&amp;gt; wsl
-# If the user does not exist in this distribution, you have to create it.
-echo -e "[user]\ndefault=myUsername" &amp;gt;&amp;gt; /etc/wsl.conf
-exit
-&amp;gt; wsl --shutdown
-&amp;gt; wsl
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;delete distribution&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --unregister debian-work
-&amp;gt; wsl --list -v
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;install docker in wsl2 debian environment&lt;/h3&gt;
-&lt;p&gt;We can install newest release as https://docs.docker.com/engine/install/debian/
-But I prefered to install from debian package&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;sudo apt update
-sudo apt install --no-install-recommends docker.io
-sudo service docker start
-sudo service docker status
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;At this point, I could not start dockerd.
-I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;sudo touch /etc/fstab
-sudo update-alternatives --set iptables  /usr/sbin/iptables-legacy
-sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-sudo service docker start
-sudo service docker status
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Succeeded to start dockerd.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;sudo docker run --rm -it debian:bullseye-slim
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;resolve domain name lookup failure problem&lt;/h3&gt;
-&lt;p&gt;This workaround resolve domain name lookup failure problem on WSL2 and docker container.
-https://github.com/microsoft/WSL/issues/4285#issuecomment-522201021&lt;/p&gt;
-&lt;p&gt;Add these lines in /etc/wsl.conf on your distribution&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[network]
-generateResolvConf = false
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then shutdown wsl2 and restart your distribution&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --shutdown
-&amp;gt; wsl --list -v
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Recreate /etc/resolv.conf&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo rm /etc/resolv.conf
-$ echo "nameserver 1.1.1.1" &amp;gt; /etc/resolv.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then shutdown wsl2 and restart your distribution again&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; wsl --shutdown
-&amp;gt; wsl --list -v
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Confirm your setting and domain name lookup on your distribution and docker container.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat /etc/resolv.conf
-$ curl -I www.google.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20210407.html</guid><pubDate>Wed, 07 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>

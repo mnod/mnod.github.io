@@ -59,15 +59,15 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/lifestyle.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-10-16T08:36:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/linux.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-10-24T01:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/multimedia.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-09-25T07:45:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/openssh.xml</loc>
@@ -107,7 +107,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/shell.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-10-16T09:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/software.xml</loc>
@@ -151,10 +151,10 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-10-24T01:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2021-09-23T09:21:00Z</lastmod>
+  <lastmod>2021-10-24T01:14:00Z</lastmod>
  </sitemap>
 </sitemapindex>

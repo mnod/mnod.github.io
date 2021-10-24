@@ -57,7 +57,71 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211024.html" class="u-url">rpm package management</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20211024.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-10-24T00:00:00Z" itemprop="datePublished" title="2021-10-24 00:00">2021-10-24 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>list installed packages</p>
+<pre><code># rpm -qa [package name]
+# yum list [package name]
+# dnf list [package name]
+</code></pre>
+<p>install package / rpm file</p>
+<pre><code># rpm -ivh &lt;rpm file name&gt;
+# microdnf install &lt;package name&gt;
+# dnf install &lt;package name&gt;
+</code></pre>
+<p>list installed files</p>
+<pre><code># rpm -ql &lt;package name&gt;
+</code></pre>
+<p>list repositories</p>
+<pre><code># yum repolist [repository name] [-v]
+# microdnf repolist
+# dnf repolist [repository name] [-v]
+</code></pre>
+<p>show packages contained in the repository</p>
+<pre><code># yum repository-packages [repository name] list
+# dnf repository-packages [repository name] list
+</code></pre>
+<p>disable or enable repository with <code>config-manager</code> module contained in <code>yum-utils</code></p>
+<pre><code># yum config-manager &lt;--set-disabled|--set-enabled&gt; epel
+# dnf config-manager &lt;--set-disabled|--set-enabled&gt; epel
+</code></pre>
+<p>update installed packages</p>
+<pre><code># yum update
+# microdnf update
+# dnf update
+</code></pre>
+<p>download rpm file with <code>yumdownloader</code> which is a part of <code>yum-utils</code> package.</p>
+<pre><code># yumdownloder &lt;package name&gt;
+# yumdownloder &lt;package name&gt;.&lt;version&gt;.&lt;architecture&gt;
+</code></pre>
+<p>remove package</p>
+<pre><code># rpm -e &lt;pakcage name&gt;
+# yum remove &lt;pakcage name&gt;
+# microdnf remove &lt;pakcage name&gt;
+# dnf remove &lt;pakcage name&gt;
+</code></pre>
+<p>remove all cached data</p>
+<pre><code># yum clean all
+# microdnf clean
+# dnf clean all
+</code></pre>
+<p>show transaction history</p>
+<pre><code># yum history
+# dnf history
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -849,56 +913,6 @@ systemctl force-reload systemd-journald
 <p>You can specify directory in which journal messages saved.
 It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.</p>
 <pre><code>journalctl -D /mnt/var/log/journal -x
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200612.html" class="u-url">systemctl</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200612.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-06-12T00:00:00Z" itemprop="datePublished" title="2020-06-12 00:00">2020-06-12 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>show system status</p>
-<pre><code>systemctl status
-</code></pre>
-<p>show running or failed units</p>
-<pre><code>systemctl list-units
-systemctl
-systemctl --failed
-</code></pre>
-<p>show installed unit files</p>
-<pre><code>systemctl list-unit-files
-ls -l /usr/lib/systemd/system /etc/systemd/system
-</code></pre>
-<p>start, stop, restart or reload a unit</p>
-<pre><code>systemctl start unit
-systemctl stop unit
-systemctl restart unit
-systemctl reload unit
-</code></pre>
-<p>show status of a unit</p>
-<pre><code>systemctl status unit
-</code></pre>
-<p>enable or disable a unit to be started on bootstrap</p>
-<pre><code>systemctl enable unit
-systemctl disable unit
-</code></pre>
-<p>check whether a unit is enabled or not</p>
-<pre><code>systemctl is-enabled unit
-</code></pre>
-<p>mask or unmask a unit to make it impossible to start it</p>
-<pre><code>systemctl mask unit
-systemctl unmask unit
-</code></pre>
-<p>reboot or poweroff the system</p>
-<pre><code>systemctl reboot
-systemctl poweroff
 </code></pre>
 </div>
     </div>

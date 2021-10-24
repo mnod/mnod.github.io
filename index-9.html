@@ -47,7 +47,145 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210407.html" class="u-url">WSL2 installation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20210407.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-04-07T00:00:00Z" itemprop="datePublished" title="2021-04-07 00:00">2021-04-07 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
+My environment is Windows 10 Pro 20H2 OS build 19042.685</p>
+<p>Run powershell.exe as administrator.
+Then enable the Windows Subsystem for Linux.</p>
+<pre><code>dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+</code></pre>
+<p>And enable Virtual Machine feature</p>
+<pre><code>dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+</code></pre>
+<p>Download the Linux kernel update package and install it.
+- <a href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi">WSL2 Linux kernel update package for x64 machines</a></p>
+<p>Set WSL 2 as the default version</p>
+<pre><code>wsl --set-default-version 2
+</code></pre>
+<p>Install Linux distribution from <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Microsoft Store</a>
+Then launch it.</p>
+<p>I could not launch it for a long time because of bug of COMODO Internet Security shown at <a href="https://github.com/microsoft/WSL/issues/5329">WSL2 Converstion Failed with Error: 0x80041002 </a>
+<a href="https://forums.comodo.com/news-announcements-feedback-cis/comodo-internet-security-2020-v12228012-released-t126945.0.html">COMODO released new version for fixing it</a></p>
+<pre><code>Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username: xxxx
+New password:
+Retype new password:
+passwd: 
+password updated successfully
+Installation successful!
+
+$ uname -a
+Linux xxxxxxxxxxxxxxx 4.19.128-microsoft-standard #1 SMP Tue Jun 23 12:58:10 UTC 2020 x86_64 GNU/Linux
+
+$ cat /etc/debian_version
+10.8
+
+$ df -k
+Filesystem     1K-blocks     Used Available Use% Mounted on
+/dev/sdb       263174212   280972 249455084   1% /
+tmpfs            3161096        0   3161096   0% /mnt/wsl
+tools          248559384 53031224 195528160  22% /init
+none             3158696        0   3158696   0% /dev
+none             3161096        4   3161092   1% /run
+none             3161096        0   3161096   0% /run/lock
+none             3161096        0   3161096   0% /run/shm
+none             3161096        0   3161096   0% /run/user
+tmpfs            3161096        0   3161096   0% /sys/fs/cgroup
+C:\            248559384 53031224 195528160  22% /mnt/c
+</code></pre>
+<p>From next time, we can launch it with command 'debian'.
+Also we can launch it with wsl command on command prompt or powershell.</p>
+<pre><code>&gt; wsl --list --verbose
+NAME      STATE           VERSION
+* Debian    Stopped         2
+&gt; wsl -d Debian
+&gt; wsl -d Debian -e uname -a
+</code></pre>
+<p>We can omit distribution name for the default one.</p>
+<pre><code>&gt; wsl
+&gt; wsl -e uname -a
+</code></pre>
+<p>We can just execute bash shell or bash shell script as below.</p>
+<pre><code>&gt; bash
+&gt; bash -c "echo uname -a &gt; test.sh"
+&gt; bash -c "./test.sh"
+</code></pre>
+<h3>export and import a distribution</h3>
+<pre><code>&gt; wsl --export debian d:\debian.tar.gz
+&gt; wsl --import mydebian d:\wsl\ d:\debian.tar.gz
+&gt; wsl --list -v
+</code></pre>
+<p>set new distribution as a default one and set default user.</p>
+<pre><code>&gt; wsl --set-default mydebian
+&gt; wsl
+# If the user does not exist in this distribution, you have to create it.
+echo -e "[user]\ndefault=myUsername" &gt;&gt; /etc/wsl.conf
+exit
+&gt; wsl --shutdown
+&gt; wsl
+</code></pre>
+<p>delete distribution</p>
+<pre><code>&gt; wsl --unregister debian-work
+&gt; wsl --list -v
+</code></pre>
+<h3>install docker in wsl2 debian environment</h3>
+<p>We can install newest release as https://docs.docker.com/engine/install/debian/
+But I prefered to install from debian package</p>
+<pre><code>sudo apt update
+sudo apt install --no-install-recommends docker.io
+sudo service docker start
+sudo service docker status
+</code></pre>
+<p>At this point, I could not start dockerd.
+I followed this flow https://github.com/microsoft/WSL/discussions/4872#discussioncomment-99164</p>
+<pre><code>sudo touch /etc/fstab
+sudo update-alternatives --set iptables  /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+sudo service docker start
+sudo service docker status
+</code></pre>
+<p>Succeeded to start dockerd.</p>
+<pre><code>sudo docker run --rm -it debian:bullseye-slim
+</code></pre>
+<h3>resolve domain name lookup failure problem</h3>
+<p>This workaround resolve domain name lookup failure problem on WSL2 and docker container.
+https://github.com/microsoft/WSL/issues/4285#issuecomment-522201021</p>
+<p>Add these lines in /etc/wsl.conf on your distribution</p>
+<pre><code>[network]
+generateResolvConf = false
+</code></pre>
+<p>Then shutdown wsl2 and restart your distribution</p>
+<pre><code>&gt; wsl --shutdown
+&gt; wsl --list -v
+</code></pre>
+<p>Recreate /etc/resolv.conf</p>
+<pre><code>$ sudo rm /etc/resolv.conf
+$ echo "nameserver 1.1.1.1" &gt; /etc/resolv.conf
+</code></pre>
+<p>Then shutdown wsl2 and restart your distribution again</p>
+<pre><code>&gt; wsl --shutdown
+&gt; wsl --list -v
+</code></pre>
+<p>Confirm your setting and domain name lookup on your distribution and docker container.</p>
+<pre><code>$ cat /etc/resolv.conf
+$ curl -I www.google.com
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
