@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 24 Oct 2021 07:42:46 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 30 Oct 2021 01:29:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
+&lt;p&gt;以下、備忘録&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;説明書はペラペラ。必要な情報は&lt;a href="http://www.grandstream.com/support/resources?title=GXP1610/GXP1615&amp;amp;hsLang=en"&gt;自ら取りに行く姿勢&lt;/a&gt;が求められる&lt;/li&gt;
+&lt;li&gt;スタンドの取り付け向きに注意&lt;/li&gt;
+&lt;li&gt;スイッチからのケーブルをLANに、PCへのケーブルをPCへ接続すると、ハブ(?)として動作してくれる(10/100Mbps)&lt;/li&gt;
+&lt;li&gt;DHCPが有効なネットワークに接続してほどなくするとIPアドレスを取れる&lt;/li&gt;
+&lt;li&gt;ディスプレイにIPアドレスが表示されるので、PCからWebアクセスすると、管理画面を表示できる&lt;/li&gt;
+&lt;li&gt;管理画面の初期パスワードは同梱の説明書に記載されている。初めてログインすると変更が促される。ログイン時に5回間違えるとやばい&lt;/li&gt;
+&lt;li&gt;Web UI、端末の液晶とも、多言語対応(日本語表示可能)&lt;/li&gt;
+&lt;li&gt;試していないがIPアドレスは静的アドレスを設定可能なようだ&lt;/li&gt;
+&lt;li&gt;設定済みのAsteriskに収容するだけなら、Web UI で SIPサーバ、ID、パスワード等を設定するだけなので、簡単&lt;/li&gt;
+&lt;li&gt;SIPアカウント設定の画面で、Voice Mail Access Number を設定すると、メールアイコンのボタンを押すことで、VoiceMail に架電することができる&lt;/li&gt;
+&lt;li&gt;NTPサーバを指定できる&lt;/li&gt;
+&lt;li&gt;Syslog転送できる(facility=user)&lt;/li&gt;
+&lt;li&gt;試していないけど、SNMPサーバを指定できるようだ&lt;/li&gt;
+&lt;li&gt;試していないけど、LDAPの電話帳が使えるようだ&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -639,45 +657,4 @@ restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
 &lt;p&gt;confirm commands&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ntpq -pn &amp;lt;address&amp;gt;
 ntpq -c readlist &amp;lt;address&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item><item><title>journalctl</title><link>https://mnod.github.io/posts/20200613.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;show all messages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show all messages from boot&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -b
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show messages with explanations&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -x
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show kernel ring buffer&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -k
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show messages of limitted time span&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl --since "2020-06-11"
-journalctl --since "20 min ago"
-journalctl --since "2020-06-11 00:00:00" --untill "2020-06-11 23:59:59"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show specific messages by unit, executable or process&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -u networking
-journalctl /usr/bin/sudo
-journalctl _PID=1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show specific messages by priority or syslog facility&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -p 5
-journalctl -p 0..5
-journalctl SYSLOG_FACILITY=10
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;follow new messages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -f
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;don't pipe output to a pager&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl --no-pager
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Basically journal messages exist under /run/log/journal/ which is volatile directory.
-Below commands move journal messages directory to directory under /var/log/journal/.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;echo "Storage=persistent" | sudo tee -a /etc/systemd/journald.conf
-systemctl force-reload systemd-journald
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can specify directory in which journal messages saved.
-It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;journalctl -D /mnt/var/log/journal -x
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>systemd</category><guid>https://mnod.github.io/posts/20200613.html</guid><pubDate>Sat, 13 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

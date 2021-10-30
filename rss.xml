@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 24 Oct 2021 07:42:46 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 30 Oct 2021 01:29:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
+&lt;p&gt;以下、備忘録&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;説明書はペラペラ。必要な情報は&lt;a href="http://www.grandstream.com/support/resources?title=GXP1610/GXP1615&amp;amp;hsLang=en"&gt;自ら取りに行く姿勢&lt;/a&gt;が求められる&lt;/li&gt;
+&lt;li&gt;スタンドの取り付け向きに注意&lt;/li&gt;
+&lt;li&gt;スイッチからのケーブルをLANに、PCへのケーブルをPCへ接続すると、ハブ(?)として動作してくれる(10/100Mbps)&lt;/li&gt;
+&lt;li&gt;DHCPが有効なネットワークに接続してほどなくするとIPアドレスを取れる&lt;/li&gt;
+&lt;li&gt;ディスプレイにIPアドレスが表示されるので、PCからWebアクセスすると、管理画面を表示できる&lt;/li&gt;
+&lt;li&gt;管理画面の初期パスワードは同梱の説明書に記載されている。初めてログインすると変更が促される。ログイン時に5回間違えるとやばい&lt;/li&gt;
+&lt;li&gt;Web UI、端末の液晶とも、多言語対応(日本語表示可能)&lt;/li&gt;
+&lt;li&gt;試していないがIPアドレスは静的アドレスを設定可能なようだ&lt;/li&gt;
+&lt;li&gt;設定済みのAsteriskに収容するだけなら、Web UI で SIPサーバ、ID、パスワード等を設定するだけなので、簡単&lt;/li&gt;
+&lt;li&gt;SIPアカウント設定の画面で、Voice Mail Access Number を設定すると、メールアイコンのボタンを押すことで、VoiceMail に架電することができる&lt;/li&gt;
+&lt;li&gt;NTPサーバを指定できる&lt;/li&gt;
+&lt;li&gt;Syslog転送できる(facility=user)&lt;/li&gt;
+&lt;li&gt;試していないけど、SNMPサーバを指定できるようだ&lt;/li&gt;
+&lt;li&gt;試していないけど、LDAPの電話帳が使えるようだ&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -834,64 +852,4 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
 &lt;h3&gt;Fire TV Stick 4K&lt;/h3&gt;
 &lt;p&gt;Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
 アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。&lt;/p&gt;
-&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item><item><title>Work from home</title><link>https://mnod.github.io/posts/20210409.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。&lt;/p&gt;
-&lt;p&gt;PCは趣味の一つではあるものの、趣味のためにあれこれ購入するのもためらわれ、これまで自宅の作業環境はあまり整っていなかった。
-そのため、在宅勤務での作業効率はあまりよくなかった。これ幸いと？仕方がないので？これまで買わずに我慢していたものをいくつか買いそろえた(自腹)。&lt;/p&gt;
-&lt;h3&gt;モニター&lt;/h3&gt;
-&lt;p&gt;仕事で使っているのは、貸与されてる13.3型ノートPC。FHD対応だが、それだと私には字が小さく読みにくいため解像度を1600x900に設定して使っている。
-会社では比較的大きな外部モニターを接続して使用していたのだが、自宅にあるのは15.6インチ 1366x796という小さなモニターしかなかった。
-趣味のコンピュータの管理ではこのモニターで対応することができていたが、仕事用としては不足だった。&lt;/p&gt;
-&lt;p&gt;これまでの突発的な在宅勤務ではこのモニターで凌いできたが、長期的に継続するとなると、もっと広いものでないと困る。&lt;/p&gt;
-&lt;p&gt;そこで購入したのが15.6型 IPS液晶のFHDモバイルモニター。VESA対応。&lt;/p&gt;
-&lt;p&gt;下記モニターアームを利用して、ノートPCと並べて使用している。13.3インチの 1600x900 と、15.6インチの1920x1080 は画素密度がかなり近いので、並べて使用していてあまり違和感があまりない。
-貸与ノートPCはUSB Type-C非対応のため、HDMIとUSB(電源供給)の2本のケーブルで接続している。&lt;/p&gt;
-&lt;p&gt;聞いたことのない海外社製品で、初回購入時には不良品が届いた。いったん返品して再度購入したら、今度は問題なし。1年間使用してきて、今のところ問題は出ていない。&lt;/p&gt;
-&lt;h3&gt;モニターアーム&lt;/h3&gt;
-&lt;p&gt;ノートPC台が付属している、安いデュアルアームのモニターアーム。
-ノートPCとモニターを左右に並べることができ、目線の高さまで上げることができ、浮かすことによって机上にスペースができる、一石三鳥グッズ。&lt;/p&gt;
-&lt;p&gt;安いので、あまり自由に調整することはできないけど、向きをあちこち動かす必要がないので特に困ることはない。これまでのところ、自分の用途では事足りている。&lt;/p&gt;
-&lt;h3&gt;キーボード&lt;/h3&gt;
-&lt;p&gt;メカニカル、ロープロファイル、リニア、87キーのキーボード。&lt;/p&gt;
-&lt;p&gt;ここのところ、デスクトップのキーボードもノートPCのものに近いパンタグラフのキーボードを使っていた。
-メンブレンのものを含めて、安かろう悪かろうなキーボードを渡り歩いてきたので、使い心地のよいまともな外付けキーボードを使うのは、PC98xxの頃以来かもしれない。&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;US ASCII配列キーボードを試してもよさそうな方&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;これらにデメリットを感じない方&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;日本語入力/ローマ字入力の切り替えが[半角/全角]キー一発ではなくなる&lt;/li&gt;
-&lt;li&gt;[無変換][変換][カタカナひらがな]キーが無い&lt;/li&gt;
-&lt;li&gt;ローマ字入力しかできず、かな入力ができない&lt;/li&gt;
-&lt;li&gt;[^][@][:] の入力に Shift が必要&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;これらにメリットを感じる方&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;[無変換][変換][カタカナひらがな]キーが無い代わりに、スペースバーが長い。&lt;/li&gt;
-&lt;li&gt;[半角/全角] の代わりに [`][‾] が割り当てられている&lt;/li&gt;
-&lt;li&gt;[`] [=] を Shift なしで単独で入力できる。&lt;/li&gt;
-&lt;li&gt;[']["]/[;][:][-][_] を Shift の有無で打ち分けることができる&lt;/li&gt;
-&lt;li&gt;[Backspace][Enter][Shift(R)] がホームポジションに近い&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;我々が日常利用するコンピュータのソフトウェアは米国で作られてきた。
-そのため、USキーボードを使用すると、日本語キーボードだけを使用していては得ることができなかった、設計思想についての気づきを得られる。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;C のポインタ演算子 [&amp;amp;][*] は隣のキー&lt;/li&gt;
-&lt;li&gt;vi の :コマンド は誤入力防止ではないか? (要Shift)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;USキーボードの大きな欠点の一つに、かな入力ができないことがある。
-日常生活していく上で、ASCII文字の入力は必須であり、キー配列を覚えないことには不便で仕方ない。
-ASCII文字のキー配列を覚えれば、IMEのローマ字入力機能を利用して日本語を入力することができる。&lt;/p&gt;
-&lt;p&gt;ローマ字入力ができるなら、一定以上の速度が必要とならない限り、ひらがな入力は必須ではない。
-ひらがな入力のためにはキー配列を覚えなければならず、学習コストが高い。
-ひらがな入力に対するインセンティブやモチベーションが高くならないので、
-ひらがな入力は少数派という状況はしばらく変わらないと思う。&lt;/p&gt;
-&lt;p&gt;(スマホネイティブ世代の入力事情は考慮していない)&lt;/p&gt;
-&lt;h3&gt;USBオーディオインタフェース&lt;/h3&gt;
-&lt;p&gt;大層なものではない。3.5mm4極ジャックのみで、ボリュームボタン、ミュートボタンがあるだけの簡易なインタフェース。&lt;/p&gt;
-&lt;p&gt;貸与ノートPCに直接イヤフォンマイクを繋げてWeb会議に参加すると、時々音声が聞きづらいと言われたことがあった。
-Bluetoothのものも試したが、別の意味で音質の評判がよくなかった。&lt;/p&gt;
-&lt;p&gt;いつものイヤフォンマイクをこのオーディオインタフェースに接続して使用するようにしてからは、特に音質が悪いと言われることがなくなった。&lt;/p&gt;
-&lt;h3&gt;ヘッドフォン&lt;/h3&gt;
-&lt;p&gt;Web会議ではカナル型イヤフォンマイクを使用しているのだが、耳栓用途でずっとつけていると耳が痛くなるようになった。
-そこで、耳をいたわるためにオーバーヘッドの昔ながらの形の安価なヘッドフォンを購入した。&lt;/p&gt;
-&lt;p&gt;有線とBluetoothに対応しているが、有線しか試していない。音質としては不満はない。カナル型イヤフォンとはちょっと違った感じ。&lt;/p&gt;
-&lt;p&gt;眼鏡とは干渉しないのだけど、長時間つけていると(頭が大きいから?)頭が締め付けられて痛くなってしまう。&lt;/p&gt;
-&lt;p&gt;ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>

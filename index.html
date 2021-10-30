@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
 <link rel="canonical" href="https://mnod.github.io/">
 <link rel="next" href="index-9.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20211024.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20211030.html" type="text/html">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -46,7 +46,40 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211024.html" class="u-url">rpm package management</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20211030.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-10-30T00:00:00Z" itemprop="datePublished" title="2021-10-30 00:00">2021-10-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
+液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。</p>
+<p>以下、備忘録</p>
+<ul>
+<li>説明書はペラペラ。必要な情報は<a href="http://www.grandstream.com/support/resources?title=GXP1610/GXP1615&amp;hsLang=en">自ら取りに行く姿勢</a>が求められる</li>
+<li>スタンドの取り付け向きに注意</li>
+<li>スイッチからのケーブルをLANに、PCへのケーブルをPCへ接続すると、ハブ(?)として動作してくれる(10/100Mbps)</li>
+<li>DHCPが有効なネットワークに接続してほどなくするとIPアドレスを取れる</li>
+<li>ディスプレイにIPアドレスが表示されるので、PCからWebアクセスすると、管理画面を表示できる</li>
+<li>管理画面の初期パスワードは同梱の説明書に記載されている。初めてログインすると変更が促される。ログイン時に5回間違えるとやばい</li>
+<li>Web UI、端末の液晶とも、多言語対応(日本語表示可能)</li>
+<li>試していないがIPアドレスは静的アドレスを設定可能なようだ</li>
+<li>設定済みのAsteriskに収容するだけなら、Web UI で SIPサーバ、ID、パスワード等を設定するだけなので、簡単</li>
+<li>SIPアカウント設定の画面で、Voice Mail Access Number を設定すると、メールアイコンのボタンを押すことで、VoiceMail に架電することができる</li>
+<li>NTPサーバを指定できる</li>
+<li>Syslog転送できる(facility=user)</li>
+<li>試していないけど、SNMPサーバを指定できるようだ</li>
+<li>試していないけど、LDAPの電話帳が使えるようだ</li>
+</ul>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211024.html" class="u-url">rpm package management</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -1014,81 +1047,6 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
 <p>Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
 アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。</p>
 <p>ぶっちゃけ Youtube 見るのに最強。</p>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210409.html" class="u-url">Work from home</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="posts/20210409.html" rel="bookmark">
-            <time class="published dt-published" datetime="2021-04-09T00:00:00Z" itemprop="datePublished" title="2021-04-09 00:00">2021-04-09 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。</p>
-<p>PCは趣味の一つではあるものの、趣味のためにあれこれ購入するのもためらわれ、これまで自宅の作業環境はあまり整っていなかった。
-そのため、在宅勤務での作業効率はあまりよくなかった。これ幸いと？仕方がないので？これまで買わずに我慢していたものをいくつか買いそろえた(自腹)。</p>
-<h3>モニター</h3>
-<p>仕事で使っているのは、貸与されてる13.3型ノートPC。FHD対応だが、それだと私には字が小さく読みにくいため解像度を1600x900に設定して使っている。
-会社では比較的大きな外部モニターを接続して使用していたのだが、自宅にあるのは15.6インチ 1366x796という小さなモニターしかなかった。
-趣味のコンピュータの管理ではこのモニターで対応することができていたが、仕事用としては不足だった。</p>
-<p>これまでの突発的な在宅勤務ではこのモニターで凌いできたが、長期的に継続するとなると、もっと広いものでないと困る。</p>
-<p>そこで購入したのが15.6型 IPS液晶のFHDモバイルモニター。VESA対応。</p>
-<p>下記モニターアームを利用して、ノートPCと並べて使用している。13.3インチの 1600x900 と、15.6インチの1920x1080 は画素密度がかなり近いので、並べて使用していてあまり違和感があまりない。
-貸与ノートPCはUSB Type-C非対応のため、HDMIとUSB(電源供給)の2本のケーブルで接続している。</p>
-<p>聞いたことのない海外社製品で、初回購入時には不良品が届いた。いったん返品して再度購入したら、今度は問題なし。1年間使用してきて、今のところ問題は出ていない。</p>
-<h3>モニターアーム</h3>
-<p>ノートPC台が付属している、安いデュアルアームのモニターアーム。
-ノートPCとモニターを左右に並べることができ、目線の高さまで上げることができ、浮かすことによって机上にスペースができる、一石三鳥グッズ。</p>
-<p>安いので、あまり自由に調整することはできないけど、向きをあちこち動かす必要がないので特に困ることはない。これまでのところ、自分の用途では事足りている。</p>
-<h3>キーボード</h3>
-<p>メカニカル、ロープロファイル、リニア、87キーのキーボード。</p>
-<p>ここのところ、デスクトップのキーボードもノートPCのものに近いパンタグラフのキーボードを使っていた。
-メンブレンのものを含めて、安かろう悪かろうなキーボードを渡り歩いてきたので、使い心地のよいまともな外付けキーボードを使うのは、PC98xxの頃以来かもしれない。</p>
-<p><em>US ASCII配列キーボードを試してもよさそうな方</em></p>
-<p>これらにデメリットを感じない方</p>
-<ul>
-<li>日本語入力/ローマ字入力の切り替えが[半角/全角]キー一発ではなくなる</li>
-<li>[無変換][変換][カタカナひらがな]キーが無い</li>
-<li>ローマ字入力しかできず、かな入力ができない</li>
-<li>[^][@][:] の入力に Shift が必要</li>
-</ul>
-<p>これらにメリットを感じる方</p>
-<ul>
-<li>[無変換][変換][カタカナひらがな]キーが無い代わりに、スペースバーが長い。</li>
-<li>[半角/全角] の代わりに [`][‾] が割り当てられている</li>
-<li>[`] [=] を Shift なしで単独で入力できる。</li>
-<li>[']["]/[;][:][-][_] を Shift の有無で打ち分けることができる</li>
-<li>[Backspace][Enter][Shift(R)] がホームポジションに近い</li>
-</ul>
-<p>我々が日常利用するコンピュータのソフトウェアは米国で作られてきた。
-そのため、USキーボードを使用すると、日本語キーボードだけを使用していては得ることができなかった、設計思想についての気づきを得られる。</p>
-<ul>
-<li>C のポインタ演算子 [&amp;][*] は隣のキー</li>
-<li>vi の :コマンド は誤入力防止ではないか? (要Shift)</li>
-</ul>
-<p>USキーボードの大きな欠点の一つに、かな入力ができないことがある。
-日常生活していく上で、ASCII文字の入力は必須であり、キー配列を覚えないことには不便で仕方ない。
-ASCII文字のキー配列を覚えれば、IMEのローマ字入力機能を利用して日本語を入力することができる。</p>
-<p>ローマ字入力ができるなら、一定以上の速度が必要とならない限り、ひらがな入力は必須ではない。
-ひらがな入力のためにはキー配列を覚えなければならず、学習コストが高い。
-ひらがな入力に対するインセンティブやモチベーションが高くならないので、
-ひらがな入力は少数派という状況はしばらく変わらないと思う。</p>
-<p>(スマホネイティブ世代の入力事情は考慮していない)</p>
-<h3>USBオーディオインタフェース</h3>
-<p>大層なものではない。3.5mm4極ジャックのみで、ボリュームボタン、ミュートボタンがあるだけの簡易なインタフェース。</p>
-<p>貸与ノートPCに直接イヤフォンマイクを繋げてWeb会議に参加すると、時々音声が聞きづらいと言われたことがあった。
-Bluetoothのものも試したが、別の意味で音質の評判がよくなかった。</p>
-<p>いつものイヤフォンマイクをこのオーディオインタフェースに接続して使用するようにしてからは、特に音質が悪いと言われることがなくなった。</p>
-<h3>ヘッドフォン</h3>
-<p>Web会議ではカナル型イヤフォンマイクを使用しているのだが、耳栓用途でずっとつけていると耳が痛くなるようになった。
-そこで、耳をいたわるためにオーバーヘッドの昔ながらの形の安価なヘッドフォンを購入した。</p>
-<p>有線とBluetoothに対応しているが、有線しか試していない。音質としては不満はない。カナル型イヤフォンとはちょっと違った感じ。</p>
-<p>眼鏡とは干渉しないのだけど、長時間つけていると(頭が大きいから?)頭が締め付けられて痛くなってしまう。</p>
-<p>ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。</p>
 </div>
     </div>
     </article>

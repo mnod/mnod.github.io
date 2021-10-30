@@ -63,7 +63,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/linux.xml</loc>
-  <lastmod>2021-10-24T01:14:00Z</lastmod>
+  <lastmod>2021-10-30T01:29:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/multimedia.xml</loc>
@@ -142,6 +142,10 @@
   <lastmod>2021-09-23T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://mnod.github.io/categories/voip.xml</loc>
+  <lastmod>2021-10-30T01:29:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://mnod.github.io/categories/windows.xml</loc>
   <lastmod>2021-09-23T09:21:00Z</lastmod>
  </sitemap>
@@ -151,10 +155,10 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2021-10-24T01:14:00Z</lastmod>
+  <lastmod>2021-10-30T01:29:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2021-10-24T01:14:00Z</lastmod>
+  <lastmod>2021-10-30T01:29:00Z</lastmod>
  </sitemap>
 </sitemapindex>
