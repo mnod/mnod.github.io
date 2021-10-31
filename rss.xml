@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 30 Oct 2021 01:29:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 31 Oct 2021 02:03:45 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Pairing&lt;/li&gt;
+&lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
+You can create a shortcut to it where you like.&lt;/li&gt;
+&lt;li&gt;Right click the icon of your router device and select &lt;code&gt;Connect using&lt;/code&gt; then click &lt;code&gt;Access Point&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you use an iphone as your router device, you don't have to tap 'internet sharing' when you start bluetooth tethering.&lt;/p&gt;
+&lt;h2&gt;disconnect&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Right click the icon of your router device and click &lt;code&gt;disconnect&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;data usage limit&lt;/h2&gt;
+&lt;p&gt;When we use wifi on windows, we have configuration for metered connection but we don't generally when blootooth pan.&lt;/p&gt;
+&lt;p&gt;I heard that it would be possible to limit data usage by editing registry.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;run &lt;code&gt;regedit&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;open &lt;code&gt;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\DefaultMediaCost&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;get full control of it for administrators&lt;/li&gt;
+&lt;li&gt;change value of &lt;code&gt;Ethernet&lt;/code&gt; to &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;restart windows&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
 &lt;p&gt;以下、備忘録&lt;/p&gt;
 &lt;ul&gt;
@@ -826,30 +849,4 @@ Resources:
       "ParameterValue": "example.net"
   }
 ]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
-&lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
-同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
-&lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
-内臓脂肪を減らし、血圧を下げ、血中コレステロール濃度を下げ、腹囲と体重を減らしていく努力が、今の自分には切実に求められている。
-そのためには食後血糖値上昇の山を低くし、カロリー収支をマイナスにし、脂肪を減らし筋肉量を増やしていかなくてはならない。
-具体的な取り組みは以下。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;運動: 朝食後、始業時間までの間のウォーキング。&lt;/li&gt;
-&lt;li&gt;食事: 夕食では野菜を多くとり、炭水化物を減らす。脂質を減らす。朝昼晩の三食。&lt;/li&gt;
-&lt;li&gt;できていないこと: 日次の体重測定&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;保健指導員におだてられながら、取り組みを続けていきたい。&lt;/p&gt;
-&lt;p&gt;そうは言っても、自宅でくつろぐ時間は何物にも代えがたい。そんなこんなで自宅のメディア視聴・聴取環境の充実をはかっている。&lt;/p&gt;
-&lt;h3&gt;spotify&lt;/h3&gt;
-&lt;p&gt;Linuxデスクトップで常時Spotifyアプリを立ち上げておいて、AndroidタブレットにインストールしたSpotifyアプリからコントロールするという使い方をしている。
-音声はアンプを接続したRaspberry pi に Pulseaudio で飛ばしている。(スマホのスピーカーでずっと聞いていると耳が痛くなる。大きなスピーカーだと大丈夫。)&lt;/p&gt;
-&lt;p&gt;サブスク購入していないが、&lt;a href="https://japanese.engadget.com/spotify-060049978.html"&gt;タブレット・デスクトップからの聴取の制限解除&lt;/a&gt; があったおかげで、垂れ流しBGM としてとても使いやすくなった。
-Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらいから使ってきた。このアップデートはまじで嬉しい。CM有り、シャッフル必須であっても、無料で利用できるのは、すごく助かる。&lt;/p&gt;
-&lt;h3&gt;minidlna&lt;/h3&gt;
-&lt;p&gt;蓄積しているデータを何らかの upnp/dlna クライアントで再生できるように。&lt;/p&gt;
-&lt;h3&gt;shairport-sync&lt;/h3&gt;
-&lt;p&gt;オープンソースの AirPlay サーバ。iPhone のアプリの音声を大きなスピーカーで聞きたいときに。&lt;/p&gt;
-&lt;h3&gt;Fire TV Stick 4K&lt;/h3&gt;
-&lt;p&gt;Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
-アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。&lt;/p&gt;
-&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
