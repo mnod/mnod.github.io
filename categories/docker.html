@@ -442,7 +442,16 @@ ARG PIP_INDEX_URL
         </div>
     </header><div class="e-content entry-content">
     <div>
-<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a></p>
+<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
+We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/</p>
+<p>Also we can use torrent to download them</p>
+<p>make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)</p>
+<pre><code>sleep 10
+kill $(ps -ef | grep transmission | grep -v grep | awk '{print $2}')
+</code></pre>
+<p>then start download</p>
+<pre><code>transmissIon-cli --download-dir (fullpath) --uplimit (kbps) --downlimit (kbps) --encryption-required --finish (fullpath)/stop_torrent.sh https://(fqdn)/(path)/(filename).torrent
+</code></pre>
 <p><a href="https://docs.docker.com/engine/install/debian/">How to install</a></p>
 <pre><code>$ curl -fsSL https://get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh --dry-run

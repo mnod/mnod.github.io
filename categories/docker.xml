@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Sep 2021 09:21:47 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 10 Nov 2021 13:50:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -328,7 +328,16 @@ ARG PIP_INDEX_URL
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
+We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/&lt;/p&gt;
+&lt;p&gt;Also we can use torrent to download them&lt;/p&gt;
+&lt;p&gt;make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sleep 10
+kill $(ps -ef | grep transmission | grep -v grep | awk '{print $2}')
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then start download&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;transmissIon-cli --download-dir (fullpath) --uplimit (kbps) --downlimit (kbps) --encryption-required --finish (fullpath)/stop_torrent.sh https://(fqdn)/(path)/(filename).torrent
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;a href="https://docs.docker.com/engine/install/debian/"&gt;How to install&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ curl -fsSL https://get.docker.com -o get-docker.sh
 $ sudo sh get-docker.sh --dry-run
