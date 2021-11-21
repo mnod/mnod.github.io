@@ -267,6 +267,9 @@ $ chmod +x myscript.sh
 $ ./myscript.sh
 -bash: ./myscript.sh: /bin/bash^M: bad interpreter: そのようなファイルやディレクトリはありません
 </code></pre>
+<p>When shebang is omitted though it has executable permission (+x), when it called without shell command it may show below error message</p>
+<pre><code>exec user process caused "exec format error"
+</code></pre>
 <p>rename the file using a part of original file name.</p>
 <pre><code>$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
 </code></pre>
