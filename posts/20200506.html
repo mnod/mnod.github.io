@@ -89,6 +89,72 @@ echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
 <p><em>convert character code from sjis to UTF8</em></p>
 <pre><code>iconv -f SJIS -t UTF8 oldfile &gt; newfile
 </code></pre>
+<p><em>color text</em></p>
+<pre><code>esc=$(printf '\033')
+
+color="${esc}[36m" # cyan
+bold="${esc}[1m"
+underline="${esc}[4m"
+colorbold="${esc}[1;36m"
+colorunderline="${esc}[4;36m"
+reset="${esc}[0m"
+
+echo "${color}color text${reset}"
+echo "${bold}bold text${reset}"
+echo "${underline}underline text${reset}"
+echo "${colorbold}color bold text${reset}"
+echo "${colorunderline}color underline text${reset}"
+echo normal text
+</code></pre>
+<table>
+<thead><tr>
+<th>color</th>
+<th>foreground</th>
+<th>background</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Black  </td>
+<td>30m </td>
+<td>40m</td>
+</tr>
+<tr>
+<td>Red    </td>
+<td>31m </td>
+<td>41m</td>
+</tr>
+<tr>
+<td>Green  </td>
+<td>32m </td>
+<td>42m</td>
+</tr>
+<tr>
+<td>Yellow </td>
+<td>33m </td>
+<td>43m</td>
+</tr>
+<tr>
+<td>Blue   </td>
+<td>34m </td>
+<td>44m</td>
+</tr>
+<tr>
+<td>Purple </td>
+<td>35m </td>
+<td>45m</td>
+</tr>
+<tr>
+<td>Cyan   </td>
+<td>36m </td>
+<td>46m</td>
+</tr>
+<tr>
+<td>White  </td>
+<td>37m </td>
+<td>47m</td>
+</tr>
+</tbody>
+</table>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
