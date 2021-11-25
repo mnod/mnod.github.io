@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 21 Nov 2021 10:24:48 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 25 Nov 2021 13:15:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Pairing&lt;/li&gt;
 &lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
@@ -136,6 +136,12 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 気づいてもらいたい目的なら優しく声かけをすればいい。
 「歩行者にとって、邪魔で危ない存在なのは自転車である」という視点は忘れてはいけないl。&lt;/p&gt;
 &lt;p&gt;自動車にクラクションをならされることがよくあるだろうが、それは自動車による違法行為。自動車が違法行為をしているからといって、違法行為の真似をしてはダメ。&lt;/p&gt;
+&lt;h2&gt;「スピードを出して車道を走ると迷惑だから、歩道を走る」は誤り&lt;/h2&gt;
+&lt;p&gt;急に進路を変えたり、車道右側を走るようなことをせず、法令を守って通行している限り、車道を走って迷惑ということは絶対にない。
+自転車に対してすぐ横を追い抜いて行ったり煽ったりクラクションを鳴らしたりするような自動車のほうが、法令を守らない迷惑な存在。
+堂々と車道を走るのが正解。&lt;/p&gt;
+&lt;p&gt;逆に歩道は、自転車通行可の歩道であっても、基本的に歩行者が優先。
+自動車の真似をして、すぐ横を追い抜いていったり煽ったりベルを鳴らすようなことは絶対にしてはダメ。&lt;/p&gt;
 &lt;h2&gt;「クッション性を高めるためにタイヤの気圧を下げる」は誤り&lt;/h2&gt;
 &lt;p&gt;空気圧が低いと接地面積が増えて抵抗が増し、進むのに余計な力が必要となる、またパンクの原因となる。
 タイヤの空気圧は適正な気圧にする。(指でタイヤを力強く押しても簡単にはへこまないくらい)&lt;/p&gt;
