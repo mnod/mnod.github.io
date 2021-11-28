@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 23 Sep 2021 09:21:48 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 01:02:13 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
 &lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
 &lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -35,11 +35,16 @@ The user can use any existing theme or can create your own theme inherits from e
 &lt;/ul&gt;
 &lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;
 &lt;p&gt;This is a sample Dockerfile. The docker image will become about 427MB.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;FROM alpine:3.12
+&lt;pre&gt;&lt;code&gt;FROM alpine:latest
 
-RUN apk --update --no-cache add py-pip git bash \
+ARG version=8.1.3
+ARG PIP_INDEX_URL
+ARG PIP_TRUSTED_HOST
+
+RUN apk --update --no-cache add py3-pip git bash openssh \
 gcc musl-dev python3-dev libxml2-dev libxslt-dev libjpeg-turbo-dev \
-&amp;amp;&amp;amp; pip install nikola jinja2 ghp-import2 \
+&amp;amp;&amp;amp; rm -rf /var/cache/apk/* \
+&amp;amp;&amp;amp; pip3 install nikola==${version} jinja2 ghp-import2 \
 &amp;amp;&amp;amp; mkdir /tmp/nikola \
 &amp;amp;&amp;amp; adduser -H -D docker
 

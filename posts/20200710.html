@@ -83,11 +83,16 @@ The user can use any existing theme or can create your own theme inherits from e
 </ul>
 <p>As described in the footer of this page, I use it now.</p>
 <p>This is a sample Dockerfile. The docker image will become about 427MB.</p>
-<pre><code>FROM alpine:3.12
+<pre><code>FROM alpine:latest
 
-RUN apk --update --no-cache add py-pip git bash \
+ARG version=8.1.3
+ARG PIP_INDEX_URL
+ARG PIP_TRUSTED_HOST
+
+RUN apk --update --no-cache add py3-pip git bash openssh \
 gcc musl-dev python3-dev libxml2-dev libxslt-dev libjpeg-turbo-dev \
-&amp;&amp; pip install nikola jinja2 ghp-import2 \
+&amp;&amp; rm -rf /var/cache/apk/* \
+&amp;&amp; pip3 install nikola==${version} jinja2 ghp-import2 \
 &amp;&amp; mkdir /tmp/nikola \
 &amp;&amp; adduser -H -D docker
 
