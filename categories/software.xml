@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 01:02:13 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 01:11:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
 &lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
 &lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -34,7 +34,7 @@ The user can use any existing theme or can create your own theme inherits from e
 &lt;li&gt;Especially for Github pages, you can build the site, commit the changes, and push the output to github with one command.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;As described in the footer of this page, I use it now.&lt;/p&gt;
-&lt;p&gt;This is a sample Dockerfile. The docker image will become about 427MB.&lt;/p&gt;
+&lt;p&gt;This is a sample Dockerfile. The docker image will become about 353MB.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM alpine:latest
 
 ARG version=8.1.3
@@ -54,10 +54,9 @@ USER "docker"
 WORKDIR "/tmp/nikola"
 CMD ["/bin/bash"]
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;nikola github_deploy&lt;/code&gt; does not work with this image. I get this message when I run it.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;git: 'fast-import' is not a git command. See 'git --help'.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So I use ubuntu:20.04 for a base image.&lt;/p&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+&lt;p&gt;The build command will be like shown below:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker build --build-arg version=8.1.3 --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t nikola:alpine -f Dockerfile.alpine .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>software</category><guid>https://mnod.github.io/posts/20200710.html</guid><pubDate>Fri, 10 Jul 2020 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
 &lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
 &lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
 (物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
