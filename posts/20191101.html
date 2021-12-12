@@ -129,7 +129,7 @@ $ aws cloudformation validate-template --template-body file://sns.yml
 <p>confirm CloudFormation</p>
 <pre><code>$ aws cloudformation list-stacks
 $ aws cloudformation describe-stacks --stack-name &lt;Stack Name&gt;
-$ aws cloudformation get-template --stack-name &lt;Stack Name&gt; --query 'TemplateBody' | xargs printf
+$ aws cloudformation get-template --stack-name &lt;Stack Name&gt; --query 'TemplateBody' | xargs -0 printf
 </code></pre>
 <p>confirm SNS</p>
 <pre><code>$ aws sns list-topics
