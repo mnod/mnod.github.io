@@ -740,6 +740,9 @@ tar cf - file or dir ... | gzip -c | openssl enc -a | openssl enc -a -d | gzip -
 <p>tarでアーカイブしてzip圧縮。展開の確認</p>
 <pre><code>tar cf - file or dir ... | zip - - | funzip | tar tvf -
 </code></pre>
+<p>無圧縮zipアーカイブ</p>
+<pre><code>zip -0r archive.zip dirname
+</code></pre>
 <p>暗号化</p>
 <pre><code>zip -e archive.zip filename
 </code></pre>
