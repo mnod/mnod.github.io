@@ -1,5 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Dec 2021 23:49:04 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 29 Dec 2021 11:53:11 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ --&gt;
+
+&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
+&lt;p&gt;at first intall docker&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list &amp;gt; /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo docker run hello-world
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then install k3&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -sfL https://get.k3s.io | sh -s - --docker
+systemctl status k3s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;uninstall&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/usr/local/bin/k3s-uninstall.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;!--
+sudo kubectl get pods --all-namespaces
+sudo kubectl get pods --all-namespaces -o wide
+
+sudo kubectl get rs
+sudo kubectl scale rs/&lt;rs name&gt; --replicas=0
+
+sudo kubectl exec &lt;pod name&gt; -- &lt;command ...&gt;
+sudo kubectl exec -it &lt;pod name&gt; -- /bin/sh
+sudo kubectl delete pod &lt;pod name&gt;
+
+sudo kubectl get nodes
+sudo kubectl get nodes -o wide
+--&gt;
+
+&lt;p&gt;&lt;em&gt;create deployment&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;create yaml file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt;EOF &amp;gt; nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-test
+        image: nginx-test:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and confirm the deployment&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl create -f nginx-deployment.yaml
+sudo kubectl get deploy
+sudo kubectl get pod
+sudo kubectl exec -it &amp;lt;pod name&amp;gt; -- curl localhost
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create service&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;create yaml file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt;EOF &amp;gt; nginx-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    targetPort: 80
+    port: 80
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and confirm the service &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl create -f nginx-service.yaml
+sudo kubectl get svc
+curl x.x.x.x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;modify service&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl apply -f nginx-deployment.yaml
+sudo kubectl get svc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete srvice&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl delete svc &amp;lt;service name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Pairing&lt;/li&gt;
 &lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
@@ -710,149 +810,4 @@ for template in templates['TemplatesMetadata']:
     )
     print(response['Template'])
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;aws route53 list-hosted-zones
-aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
-
-aws route53 list-resource-record-sets   --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --query "ResourceRecordSets[?Name == 'example.example.net.']"
-aws route53 test-dns-answer --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --record-name "example.example.net" --record-type "A"
-
-aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://create.json
-aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
-aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://delete.json
-aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-  "Changes": [
-    {
-      "Action": "CREATE",
-      "ResourceRecordSet": {
-        "Name": "example.example.net",
-        "Type": "A",
-        "TTL": 3600,
-        "ResourceRecords": [
-          {
-            "Value": "xxx.xxx.xxx.xxx"
-          }
-        ]
-      }
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;delete.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-  "Changes": [
-    {
-      "Action": "DELETE",
-      "ResourceRecordSet": {
-        "Name": "example.example.net",
-        "Type": "A",
-        "TTL": 3600,
-        "ResourceRecords": [
-          {
-            "Value": "xxx.xxx.xxx.xxx"
-          }
-        ]
-      }
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;python sample script&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;#! /usr/bin/python2
-import boto3
-import time
-
-client = boto3.client('route53')
-zones = client.list_hosted_zones()
-
-for zone in zones['HostedZones']:
-    id =zone['Id']
-    name = zone['Name']
-    #print(client.get_hosted_zone(Id=id).get('HostedZone'))
-    for set in client.list_resource_record_sets(HostedZoneId=id).get('ResourceRecordSets'):
-        print(set)
-    #action = 'CREATE'
-    action = 'DELETE'
-    address = 'xxx.xxx.xxx.xxx'
-
-    batch = {
-        'Changes': [
-            {
-                'Action': action,
-                'ResourceRecordSet': {
-                    'Name': 'example.%s' % name,
-                    'Type': 'A',
-                    'TTL': 3600,
-                    'ResourceRecords': [
-                        {
-                            "Value": address
-                        },
-                    ],
-                }
-            },
-        ]
-    }
-    response = client.change_resource_record_sets(
-        HostedZoneId=id,
-        ChangeBatch=batch
-    )
-    print(response)
-    responseid = response['ChangeInfo']['Id']
-    status = response['ChangeInfo']['Status']
-    while ( status != 'INSYNC'):
-        response = client.get_change(Id=responseid)
-        status = response['ChangeInfo']['Status']
-        time.sleep(30)
-    else:
-        print(response)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;cloud formation sample stack&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://route53.yml
-aws cloudformation create-stack --template-body file://route53.yml --parameters file://parameters.json --stack-name route53test
-aws cloudformation describe-stack-events --stack-name route53test
-aws cloudformation list-stack-resources --stack-name route53test
-aws cloudformation delete-stack --stack-name route53test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;route53.yml&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Parameters:
-  HostedZoneId:
-    Type: String
-  Domain:
-    Type: String
-  Address:
-    Type: String
-Resources:
-  myDNSRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId : 
-         Ref: HostedZoneId
-      Name:  
-        Fn::Join: 
-            - '.'
-            - - 'example'
-              - !Ref Domain
-      ResourceRecords:
-      - Ref: Address
-      TTL: '3600'
-      Type: A
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;parameters.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[
-  {
-      "ParameterKey": "Address",
-      "ParameterValue": "xxx.xxx.xxx.xxx"
-  },
-  {
-      "ParameterKey": "HostedZoneId",
-      "ParameterValue": "xxxxxxxxxxxxxxxxxxxxx"
-  },
-  {
-      "ParameterKey": "Domain",
-      "ParameterValue": "example.net"
-  }
-]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>

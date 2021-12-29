@@ -57,7 +57,122 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210629.html" class="u-url">k3s using docker runtime</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20210629.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-12-29T00:00:00Z" itemprop="datePublished" title="2021-12-29 00:00">2021-12-29 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
+
+<p><em>install single-node k3s cluster instead of containerd</em></p>
+<p>I can install with these commands on debian buster arm64 though can not on bullseye.</p>
+<p>at first intall docker</p>
+<pre><code>sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo docker run hello-world
+</code></pre>
+<p>then install k3</p>
+<pre><code>curl -sfL https://get.k3s.io | sh -s - --docker
+systemctl status k3s
+</code></pre>
+<p><em>uninstall</em></p>
+<pre><code>/usr/local/bin/k3s-uninstall.sh
+</code></pre>
+<!--
+sudo kubectl get pods --all-namespaces
+sudo kubectl get pods --all-namespaces -o wide
+
+sudo kubectl get rs
+sudo kubectl scale rs/<rs name> --replicas=0
+
+sudo kubectl exec <pod name> -- <command ...>
+sudo kubectl exec -it <pod name> -- /bin/sh
+sudo kubectl delete pod <pod name>
+
+sudo kubectl get nodes
+sudo kubectl get nodes -o wide
+-->
+
+<p><em>create deployment</em></p>
+<p>create yaml file</p>
+<pre><code>cat &lt;&lt;EOF &gt; nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-test
+        image: nginx-test:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+EOF
+</code></pre>
+<p>create and confirm the deployment</p>
+<pre><code>sudo kubectl create -f nginx-deployment.yaml
+sudo kubectl get deploy
+sudo kubectl get pod
+sudo kubectl exec -it &lt;pod name&gt; -- curl localhost
+</code></pre>
+<p><em>create service</em></p>
+<p>create yaml file</p>
+<pre><code>cat &lt;&lt;EOF &gt; nginx-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    targetPort: 80
+    port: 80
+</code></pre>
+<p>create and confirm the service </p>
+<pre><code>sudo kubectl create -f nginx-service.yaml
+sudo kubectl get svc
+curl x.x.x.x
+</code></pre>
+<p>modify service</p>
+<pre><code>sudo kubectl apply -f nginx-deployment.yaml
+sudo kubectl get svc
+</code></pre>
+<p><em>delete srvice</em></p>
+<pre><code>sudo kubectl delete svc &lt;service name&gt;
+</code></pre>
+<p><em>delete deployment</em></p>
+<pre><code>sudo kubectl delete -f ./nginx-deployment.yaml
+</code></pre>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -844,68 +959,6 @@ bindcmdaddress 192.168.xxx.xxx
 <p>specify a remote host to which chronyd is to be connected (using udp/323)
 default is localhost</p>
 <pre><code>cronyc -h 192.168.xxx.xxx
-</code></pre>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200614.html" class="u-url">ntpd</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200614.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-06-14T00:00:00Z" itemprop="datePublished" title="2020-06-14 00:00">2020-06-14 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
-<p>install</p>
-<pre><code>apt install ntp
-</code></pre>
-<p>sample config
-specify ntp server at <code>server</code></p>
-<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-</code></pre>
-<p>reload configuration</p>
-<pre><code>systemctl status ntp
-journalctl -u ntp -f
-systemctl force-reload ntp
-</code></pre>
-<p>confirm commands</p>
-<pre><code>ntpq -pn
-ntpq -c readlist
-</code></pre>
-<p><em>server</em></p>
-<p>For server settings, at lease a <code>restrict &lt;client address&gt;</code> line to allow ntp clients access.
-If you don't add <code>noquery</code>, you allow the client to query your ntpd status.</p>
-<pre><code>$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
-</code></pre>
-<p>confirm commands</p>
-<pre><code>ntpq -pn &lt;address&gt;
-ntpq -c readlist &lt;address&gt;
 </code></pre>
 </div>
     </div>

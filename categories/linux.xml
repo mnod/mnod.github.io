@@ -1,5 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Dec 2021 23:49:05 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 29 Dec 2021 11:53:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ --&gt;
+
+&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
+&lt;p&gt;at first intall docker&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list &amp;gt; /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo docker run hello-world
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then install k3&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -sfL https://get.k3s.io | sh -s - --docker
+systemctl status k3s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;uninstall&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/usr/local/bin/k3s-uninstall.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;!--
+sudo kubectl get pods --all-namespaces
+sudo kubectl get pods --all-namespaces -o wide
+
+sudo kubectl get rs
+sudo kubectl scale rs/&lt;rs name&gt; --replicas=0
+
+sudo kubectl exec &lt;pod name&gt; -- &lt;command ...&gt;
+sudo kubectl exec -it &lt;pod name&gt; -- /bin/sh
+sudo kubectl delete pod &lt;pod name&gt;
+
+sudo kubectl get nodes
+sudo kubectl get nodes -o wide
+--&gt;
+
+&lt;p&gt;&lt;em&gt;create deployment&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;create yaml file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt;EOF &amp;gt; nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-test
+        image: nginx-test:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and confirm the deployment&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl create -f nginx-deployment.yaml
+sudo kubectl get deploy
+sudo kubectl get pod
+sudo kubectl exec -it &amp;lt;pod name&amp;gt; -- curl localhost
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;create service&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;create yaml file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt;EOF &amp;gt; nginx-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    targetPort: 80
+    port: 80
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create and confirm the service &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl create -f nginx-service.yaml
+sudo kubectl get svc
+curl x.x.x.x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;modify service&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl apply -f nginx-deployment.yaml
+sudo kubectl get svc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete srvice&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl delete svc &amp;lt;service name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
 &lt;p&gt;以下、備忘録&lt;/p&gt;
 &lt;ul&gt;
@@ -619,51 +719,4 @@ bindcmdaddress 192.168.xxx.xxx
 &lt;p&gt;specify a remote host to which chronyd is to be connected (using udp/323)
 default is localhost&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cronyc -h 192.168.xxx.xxx
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item><item><title>ntpd</title><link>https://mnod.github.io/posts/20200614.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;install&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;apt install ntp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;sample config
-specify ntp server at &lt;code&gt;server&lt;/code&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;reload configuration&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl status ntp
-journalctl -u ntp -f
-systemctl force-reload ntp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm commands&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ntpq -pn
-ntpq -c readlist
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;server&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;For server settings, at lease a &lt;code&gt;restrict &amp;lt;client address&amp;gt;&lt;/code&gt; line to allow ntp clients access.
-If you don't add &lt;code&gt;noquery&lt;/code&gt;, you allow the client to query your ntpd status.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/ntp.conf
-driftfile /var/lib/ntp/ntp.drift
-leapfile /usr/share/zoneinfo/leap-seconds.list
-statistics loopstats peerstats clockstats
-filegen loopstats file loopstats type day enable
-filegen peerstats file peerstats type day enable
-filegen clockstats file clockstats type day enable
-server 192.168.xxx.xxx iburst
-restrict -4 default ignore
-restrict -6 default ignore
-restrict 127.0.0.1
-restrict ::1
-restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm commands&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ntpq -pn &amp;lt;address&amp;gt;
-ntpq -c readlist &amp;lt;address&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200614.html</guid><pubDate>Sun, 14 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
