@@ -355,6 +355,28 @@ except:
     print ("error")
     sys.exit()
 </code></pre>
+<p>bucket operation</p>
+<pre><code>import boto3
+import sys
+bucket = "mybucketname"
+
+try:
+    s3_client = boto3.client('s3')
+    # list buckets
+    response = s3_client.list_buckets()
+    for i in response.get('Buckets'):
+        print(i.get('Name'))
+
+    # delete a bucket
+    response = s3_client.delete_bucket(
+        Bucket=bucket
+    )
+    print(response)
+
+except Exception as e:
+    print (e)
+    sys.exit()
+</code></pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191005.html" class="u-url">Lambda</a></h1>
@@ -615,7 +637,7 @@ $ ansible-playbook playbook.yml
 <li class="previous">
                 <a href="aws.html" rel="prev">Newer posts</a>
             </li>
-        </ul></nav></main><footer id="footer"><p>Contents © 2021         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+        </ul></nav></main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
             
         </footer>
 </div>
