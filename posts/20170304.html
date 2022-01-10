@@ -120,6 +120,12 @@ rm /var/swap
 <p><em>Use tmpfs</em></p>
 <pre><code>mount -t tmpfs tmpfs &lt;mount point&gt;
 </code></pre>
+<p>or</p>
+<pre><code>cat &lt;&lt; END &gt;&gt; /etc/fstab
+tmpfs           /tmp            tmpfs   defaults,size=256m,noatime,mode=1777  0       0
+END
+mount /tmp
+</code></pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
