@@ -68,8 +68,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
+    <!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
 
 <p><em>install single-node k3s cluster instead of containerd</em></p>
 <p>I can install with these commands on debian buster arm64 though can not on bullseye.</p>
@@ -170,7 +169,6 @@ sudo kubectl get svc
 <p><em>delete deployment</em></p>
 <pre><code>sudo kubectl delete -f ./nginx-deployment.yaml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211031.html" class="u-url">Bluetooth tethering on Windows10</a></h1>
         <div class="metadata">
@@ -183,8 +181,7 @@ sudo kubectl get svc
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<h2>connect</h2>
+    <h2>connect</h2>
 <ol>
 <li>Pairing</li>
 <li>To open <code>Bluetooth Personal Area Network Device</code>, right click the blootooth icon in the system tray and click <code>Join a Personal Area Network</code>.
@@ -214,7 +211,6 @@ You can create a shortcut to it where you like.</li>
 <li>restart windows</li>
 </ol>
 <p>This configures also ethernet to metered connection.</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
         <div class="metadata">
@@ -227,8 +223,7 @@ You can create a shortcut to it where you like.</li>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
+    <p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。</p>
 <p>以下、備忘録</p>
 <ul>
@@ -248,7 +243,6 @@ You can create a shortcut to it where you like.</li>
 <li>試していないけど、LDAPの電話帳が使えるようだ</li>
 </ul>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211024.html" class="u-url">rpm package management</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -260,8 +254,7 @@ You can create a shortcut to it where you like.</li>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>list installed packages</p>
+    <p>list installed packages</p>
 <pre><code># rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -318,7 +311,6 @@ You can create a shortcut to it where you like.</li>
 <pre><code># yum history
 # dnf history
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211014.html" class="u-url">riding bicycle</a></h1>
         <div class="metadata">
@@ -331,8 +323,7 @@ You can create a shortcut to it where you like.</li>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>間違いだらけの自転車の乗り方</p>
+    <p>間違いだらけの自転車の乗り方</p>
 <h2>「チャリは全部同じ。短い距離ですぐにつかれる」は誤り</h2>
 <p>まず、チャリ(またはチャリンコ)という呼び方は、侮蔑を含んでいるように感じる。正当に評価していない感じがして、好きではない。</p>
 <p>自転車は車種や乗り方次第で、いろんな可能性がある。
@@ -402,7 +393,6 @@ You can create a shortcut to it where you like.</li>
 <p>欧州の先進国に止まらず、米国の大都市においても自動車よりも自転車を優先する取り組みが始まっている。
 本邦においても、車道を減らす取り組みが報道されている。
 自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210923.html" class="u-url">ansible vault</a></h1>
         <div class="metadata">
@@ -415,8 +405,7 @@ You can create a shortcut to it where you like.</li>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>create a vault file</p>
+    <p>create a vault file</p>
 <pre><code>$ ansible-vault create test
 New Vault password: 
 Confirm New Vault password: 
@@ -507,7 +496,6 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
         <div class="metadata">
@@ -520,8 +508,7 @@ localhost                  : ok=2    changed=0    unreachable=0    failed=0    s
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+    <p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -664,7 +651,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 <pre><code>1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210608.html" class="u-url">squid nobump</a></h1>
         <div class="metadata">
@@ -677,8 +663,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
+    <p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -824,7 +809,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210605.html" class="u-url">devpi-server</a></h1>
         <div class="metadata">
@@ -837,8 +821,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
+    <p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
 <pre><code>FROM debian:buster-slim
@@ -881,7 +864,6 @@ ARG PIP_INDEX_URL
 <p>then specify devpi-server at build-arg parameter in docker run command line.</p>
 <pre><code>$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210428.html" class="u-url">ses</a></h1>
         <div class="metadata">
@@ -894,8 +876,7 @@ ARG PIP_INDEX_URL
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<h3>aws command</h3>
+    <h3>aws command</h3>
 <pre><code>aws ses list-identities
 </code></pre>
 <p>destination.json </p>
@@ -1022,7 +1003,6 @@ for template in templates['TemplatesMetadata']:
     print(response['Template'])
 
 </code></pre>
-</div>
     </div>
     </article>
 </div>

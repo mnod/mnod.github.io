@@ -58,8 +58,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>自己認証局の作成・運用を手作業で実施する手順を記載する。</p>
+    <p>自己認証局の作成・運用を手作業で実施する手順を記載する。</p>
 <p><em>自己認証局の作成</em></p>
 <p>(事前にindex.txtファイル、serialファイル等もろもろ準備した、作業ディレクトリで作業。)</p>
 <p>擬似乱数ファイルの作成(ほどよく更新されるファイルのダイジェストを得る。パーミッション、更新日時に留意。)</p>
@@ -162,7 +161,6 @@ openssl ec -in secp384r1.key -text -noout
 個人で作成する自己認証局では、暗号化はできるが身元確認ができないと言われる。
 実社会で互いに信頼できる相手なら、CA証明書を配布して事前にインストールしてもらうようにすれば、身元確認の問題はおきないのではないか。
 限定された範囲での利用なら、この運用で問題ないのではないか。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20180426.html" class="u-url">openldap tools</a></h1>
         <div class="metadata">
@@ -175,8 +173,7 @@ openssl ec -in secp384r1.key -text -noout
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ldapエントリの検索</p>
+    <p>ldapエントリの検索</p>
 <pre><code>ldapsearch -x [-H ldap:///] -D "&lt;basedn&gt;" -W -b &lt;searchbase&gt; [filter]
 </code></pre>
 <p>ldapmodifyによるエントリの更新</p>
@@ -196,7 +193,6 @@ changetype: modify
 add: gecos
 gecos: user2@example
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20180421.html" class="u-url">serversman vps</a></h1>
         <div class="metadata">
@@ -209,8 +205,7 @@ gecos: user2@example
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="http://dream.jp/vps/">ServersMan@VPS</a>は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。</p>
+    <p><a href="http://dream.jp/vps/">ServersMan@VPS</a>は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。</p>
 <p>Debianで使っていたのだが、間もなくWheezyのLTSサポート期限を迎えるのに、新しいバージョンの対応が公表されないので、名残惜しいけど退会することにした。</p>
 <p>よかったこと</p>
 <ul>
@@ -226,7 +221,6 @@ gecos: user2@example
 <p>各種アプリケーションがプリインストールされたコースもあるが、自分は試したことは無い。
 ネットワーク/セキュリティについての理解がある人が、自分で構築できるサーバを個人用途で東京に安く借りたい、性能を求める場合にはそれだけの対価を支払うつもりがある、という場合にはおすすめできる。</p>
 <p>(最近は新しいニュースリリースもなく、勝手な見解だが、現在は維持・運用するだけにとどまり、積極的な増設・投資はだいぶ前からやめているのではないかと感じている)</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170930.html" class="u-url">windows script host by jscript</a></h1>
         <div class="metadata">
@@ -239,8 +233,7 @@ gecos: user2@example
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>スクリプトの呼び出し。
+    <p>スクリプトの呼び出し。
 アイコンのダブルクリックや、アイコンへのドラッグ&amp;ドロップでも起動できる。</p>
 <pre><code>cscript script.js //Nologo
 wscript script.js //Nologo
@@ -372,7 +365,6 @@ finally {
   ExcelApp.Quit();
 }
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170918.html" class="u-url">backup and restore openldap</a></h1>
         <div class="metadata">
@@ -385,8 +377,7 @@ finally {
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>backup</em></p>
+    <p><em>backup</em></p>
 <pre><code># systemctl stop slapd
 slapcat &gt; ldap.ldif
 slapcat -b cn=config &gt; ldap-config.ldif
@@ -403,7 +394,6 @@ chown openldap:openldap -R /etc/ldap/slapd.d
 chown openldap:openldap -R /var/lib/ldap
 systemctl start slapd
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170913.html" class="u-url">sample of simple bash scripts</a></h1>
         <div class="metadata">
@@ -416,14 +406,12 @@ systemctl start slapd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>ファイルバックアップスクリプト</em></p>
+    <p><em>ファイルバックアップスクリプト</em></p>
 <p>引数に与えられたファイルを3ケタの連番をつけてコピーする。
 まだいま一ついけてない。</p>
 <p>gistの引用のテストをかねて。</p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"></script>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170902.html" class="u-url">git</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -435,8 +423,7 @@ systemctl start slapd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>オープンソースの分散型VCS。同種のアプリケーションと比較してgitが優れているところは、ユーザが多く情報が多いという点。</p>
+    <p>オープンソースの分散型VCS。同種のアプリケーションと比較してgitが優れているところは、ユーザが多く情報が多いという点。</p>
 <p>gitリポジトリの作成</p>
 <pre><code>cd myproject
 git init
@@ -510,7 +497,6 @@ git config --local --list
 <pre><code>ssh://username@serverhostname/var/lib/git/myrepository.git
 file:///var/lib/git/myrepository.git
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170827.html" class="u-url">ansible</a></h1>
         <div class="metadata">
@@ -523,8 +509,7 @@ file:///var/lib/git/myrepository.git
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>エージェントレスの構成管理ツール。</p>
+    <p>エージェントレスの構成管理ツール。</p>
 <p>対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。</p>
 <ul>
 <li>Pythonが動くこと</li>
@@ -573,7 +558,6 @@ $ ansible-playbook -i hosts myserver.yml --ask-pass
 <p><em>Sample ansible playbook in a single yaml file</em></p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=playbooksingle.yml"></script>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170826.html" class="u-url">resource monitoring</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -585,8 +569,7 @@ $ ansible-playbook -i hosts myserver.yml --ask-pass
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>top</em></p>
+    <p><em>top</em></p>
 <p>topコマンドを一回だけ実行して終了する(バッチモード)。</p>
 <pre><code>top -b -n 1
 </code></pre>
@@ -609,7 +592,6 @@ $ ansible-playbook -i hosts myserver.yml --ask-pass
 -e hh:mm # 以前のデータを表示
 (-fではなく、[interval] [count]の指定で、リアルタイム表示できるらしい)
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170823.html" class="u-url">network commands on linux</a></h1>
         <div class="metadata">
@@ -622,8 +604,7 @@ $ ansible-playbook -i hosts myserver.yml --ask-pass
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Recently, the iproute2 package's commands are recommended instead of net-tools to show or control network settings.</p>
+    <p>Recently, the iproute2 package's commands are recommended instead of net-tools to show or control network settings.</p>
 <p><em>確認コマンド</em></p>
 <p>show mac address table</p>
 <pre><code>ip [-6] neigh
@@ -765,7 +746,6 @@ ip link set br0 up
 ovs-vsctl del-port br0 tap0
 ovs-vsctl del-port br0 eth0
 </code></pre>
-</div>
     </div>
     </article>
 </div>

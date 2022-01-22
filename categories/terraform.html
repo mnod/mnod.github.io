@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create S3 bucket and DynamoDB table</em></p>
+    <p><em>create S3 bucket and DynamoDB table</em></p>
 <p>At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control</p>
 <pre><code>resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
@@ -260,7 +259,6 @@ Resources:
         - Key: "Name"
           Value: "test"
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
         <div class="metadata">
@@ -273,8 +271,7 @@ Resources:
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -346,7 +343,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
         <div class="metadata">
@@ -359,8 +355,7 @@ $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>install</em></p>
+    <p><em>install</em></p>
 <pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
 $ unzip terraform_x.xx.xx_linux_amd64.zip
 $ cp terraform /usr/local/bin
@@ -621,12 +616,13 @@ $ ansible-playbook -e @extravars.json apply.playbook
 $ ansible-playbook --check -e @extravars.json destroy.playbook
 $ ansible-playbook -e @extravars.json destroy.playbook
 </code></pre>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

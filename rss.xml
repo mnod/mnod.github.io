@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 10 Jan 2022 06:53:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ --&gt;
-
-&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
 &lt;p&gt;at first intall docker&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo apt-get update
@@ -99,7 +97,7 @@ sudo kubectl get svc
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;h2&gt;connect&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Pairing&lt;/li&gt;
 &lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
@@ -122,7 +120,7 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;li&gt;change value of &lt;code&gt;Ethernet&lt;/code&gt; to &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;restart windows&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
 &lt;p&gt;以下、備忘録&lt;/p&gt;
 &lt;ul&gt;
@@ -140,7 +138,7 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;li&gt;Syslog転送できる(facility=user)&lt;/li&gt;
 &lt;li&gt;試していないけど、SNMPサーバを指定できるようだ&lt;/li&gt;
 &lt;li&gt;試していないけど、LDAPの電話帳が使えるようだ&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+&lt;/ul&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;list installed packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -196,7 +194,7 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;p&gt;show transaction history&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# yum history
 # dnf history
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
 &lt;h2&gt;「チャリは全部同じ。短い距離ですぐにつかれる」は誤り&lt;/h2&gt;
 &lt;p&gt;まず、チャリ(またはチャリンコ)という呼び方は、侮蔑を含んでいるように感じる。正当に評価していない感じがして、好きではない。&lt;/p&gt;
 &lt;p&gt;自転車は車種や乗り方次第で、いろんな可能性がある。
@@ -265,7 +263,7 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;h2&gt;「自動車社会において、車道を走る自転車は邪魔者である」は誤り&lt;/h2&gt;
 &lt;p&gt;欧州の先進国に止まらず、米国の大都市においても自動車よりも自転車を優先する取り組みが始まっている。
 本邦においても、車道を減らす取り組みが報道されている。
-自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item><item><title>ansible vault</title><link>https://mnod.github.io/posts/20210923.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;create a vault file&lt;/p&gt;
+自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item><item><title>ansible vault</title><link>https://mnod.github.io/posts/20210923.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create a vault file&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ ansible-vault create test
 New Vault password: 
 Confirm New Vault password: 
@@ -355,7 +353,7 @@ ok: [localhost] =&amp;gt; {
 PLAY RECAP ********************************************************************************************************************
 localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><guid>https://mnod.github.io/posts/20210923.html</guid><pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+&lt;/code&gt;&lt;/pre&gt;</description><category>ansible</category><guid>https://mnod.github.io/posts/20210923.html</guid><pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -497,7 +495,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -642,7 +640,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
@@ -684,7 +682,7 @@ ARG PIP_INDEX_URL
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h3&gt;aws command&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ses list-identities
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;destination.json &lt;/p&gt;
@@ -810,4 +808,4 @@ for template in templates['TemplatesMetadata']:
     )
     print(response['Template'])
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>

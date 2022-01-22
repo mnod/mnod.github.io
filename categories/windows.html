@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<h2>connect</h2>
+    <h2>connect</h2>
 <ol>
 <li>Pairing</li>
 <li>To open <code>Bluetooth Personal Area Network Device</code>, right click the blootooth icon in the system tray and click <code>Join a Personal Area Network</code>.
@@ -98,7 +97,6 @@ You can create a shortcut to it where you like.</li>
 <li>restart windows</li>
 </ol>
 <p>This configures also ethernet to metered connection.</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210407.html" class="u-url">WSL2 installation</a></h1>
         <div class="metadata">
@@ -111,8 +109,7 @@ You can create a shortcut to it where you like.</li>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
+    <p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
 My environment is Windows 10 Pro 20H2 OS build 19042.685</p>
 <p>Run powershell.exe as administrator.
 Then enable the Windows Subsystem for Linux.</p>
@@ -236,7 +233,6 @@ $ echo "nameserver 1.1.1.1" &gt; /etc/resolv.conf
 <pre><code>$ cat /etc/resolv.conf
 $ curl -I www.google.com
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
         <div class="metadata">
@@ -249,8 +245,7 @@ $ curl -I www.google.com
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Windows can mount vhd file as a virtual drive.
+    <p>Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.</p>
 <p>When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.</p>
 <pre><code>parted /dev/sdb print
@@ -315,7 +310,6 @@ list vdisk
 attach vdisk
 list vdisk
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170930.html" class="u-url">windows script host by jscript</a></h1>
         <div class="metadata">
@@ -328,8 +322,7 @@ list vdisk
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>スクリプトの呼び出し。
+    <p>スクリプトの呼び出し。
 アイコンのダブルクリックや、アイコンへのドラッグ&amp;ドロップでも起動できる。</p>
 <pre><code>cscript script.js //Nologo
 wscript script.js //Nologo
@@ -461,7 +454,6 @@ finally {
   ExcelApp.Quit();
 }
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170318.html" class="u-url">ms windows commands</a></h1>
         <div class="metadata">
@@ -474,8 +466,7 @@ finally {
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
+    <p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
 <pre><code>for /r . %i in (*txt) do type "%i" | sort
     バッチの中では%%のようにする。
     doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
@@ -534,7 +525,6 @@ if not exist z:\. net use z: \\backupserver\backupvol
 set logfile=c:\log\copyall.log
 xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160910.html" class="u-url">my favorite desktop tools for windows</a></h1>
         <div class="metadata">
@@ -547,8 +537,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。</p>
+    <p>Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。</p>
 <p><em><a href="http://www2s.biglobe.ne.jp/~geoph/">Clock Launcher</a></em></p>
 <p>Clock Launcherは、たくさんの機能が付属したフリーのランチャーアプリです。</p>
 <p>ランチャー機能以外に、自分は以下のような機能を使用しています。</p>
@@ -572,7 +561,6 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 <li>ウィンドウのスナップ。</li>
 </ul>
 <p>広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160904.html" class="u-url">WinMerge</a></h1>
         <div class="metadata">
@@ -585,8 +573,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>お気に入りの差分表示ツール、WinMergeのご紹介です。</p>
+    <p>お気に入りの差分表示ツール、WinMergeのご紹介です。</p>
 <p>WinMergeは、Windowsで動作する、フリーの差分表示、マージツールです。が、自分は差分表示機能しか使いこなしておりません。</p>
 <ul>
 <li><a href="http://winmerge.org/">http://winmerge.org/</a></li>
@@ -607,7 +594,6 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 <p>以前は別のツールを使用していたのですが、諸事情あって、乗り換えることになりました。空白や改行コードの違い等を無視するか、比較するか、必要に応じて細かく指定することができるので、とても便利です。</p>
 <p>差分表示をGitHub同様のカラースキーマに設定することができます。GitHubに慣れている方には良いのではないでしょうか。(自分はGitHubを使いこなしてはいませんが、自分には見やすいです。)</p>
 <p>エクセルファイルの比較は思った以上に便利です。お勧めです。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160903.html" class="u-url">PuTTY</a></h1>
         <div class="metadata">
@@ -620,8 +606,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。</p>
+    <p>もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。</p>
 <p>PuTTYは、Windowsまたは、Un<em>xで動作するフリーのターミナルエミュレータです。(ここではWindows版についての情報を掲載します。Un</em>x版については触れません。)</p>
 <ul>
 <li><a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/">http://www.chiark.greenend.org.uk/%7Esgtatham/putty/</a></li>
@@ -644,7 +629,6 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 <p>特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。</p>
 <p>TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
 (WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160902.html" class="u-url">TeraTerm</a></h1>
         <div class="metadata">
@@ -657,8 +641,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。</p>
+    <p>お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。</p>
 <ul>
 <li><a href="https://ttssh2.osdn.jp/">https://ttssh2.osdn.jp/</a></li>
 <li><a href="https://osdn.jp/projects/ttssh2/">https://osdn.jp/projects/ttssh2/</a></li>
@@ -683,7 +666,6 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 <p>Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。</p>
 <p>また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。</p>
 <p>是非試してみてください。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160628.html" class="u-url">sakura editor</a></h1>
         <div class="metadata">
@@ -696,8 +678,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。</p>
+    <p>お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。</p>
 <ul>
 <li><a href="http://sakura-editor.sourceforge.net">http://sakura-editor.sourceforge.net</a></li>
 <li><a href="https://sourceforge.net/projects/sakura-editor/">https://sourceforge.net/projects/sakura-editor/</a></li>
@@ -722,12 +703,13 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 <p>サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。</p>
 <p>いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。</p>
 <p>是非テキストエディタの活用をおすすめします。</p>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

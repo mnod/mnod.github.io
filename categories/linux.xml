@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 10 Jan 2022 06:53:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ --&gt;
-
-&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
 &lt;p&gt;at first intall docker&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo apt-get update
@@ -99,7 +97,7 @@ sudo kubectl get svc
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
 &lt;p&gt;以下、備忘録&lt;/p&gt;
 &lt;ul&gt;
@@ -117,7 +115,7 @@ sudo kubectl get svc
 &lt;li&gt;Syslog転送できる(facility=user)&lt;/li&gt;
 &lt;li&gt;試していないけど、SNMPサーバを指定できるようだ&lt;/li&gt;
 &lt;li&gt;試していないけど、LDAPの電話帳が使えるようだ&lt;/li&gt;
-&lt;/ul&gt;&lt;/div&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;list installed packages&lt;/p&gt;
+&lt;/ul&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;list installed packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -173,7 +171,7 @@ sudo kubectl get svc
 &lt;p&gt;show transaction history&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# yum history
 # dnf history
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -315,7 +313,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -460,7 +458,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
 &lt;p&gt;related packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 &lt;/code&gt;&lt;/pre&gt;
@@ -517,7 +515,7 @@ $ sudo rmmod nbd
 &amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
 &amp;gt; -monitor telnet:localhost:10025,server,nowait \
 &amp;gt; -nographic
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
 We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/&lt;/p&gt;
 &lt;p&gt;Also we can use torrent to download them&lt;/p&gt;
 &lt;p&gt;make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)&lt;/p&gt;
@@ -583,7 +581,7 @@ help # Show help messages
 &lt;p&gt;When update Dockerfile or edit any source codes, need to rebuild the image.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker-compose build
 docker-compose up -d
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.&lt;/p&gt;
 &lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;parted /dev/sdb print
@@ -647,7 +645,7 @@ list vdisk
 &lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
 attach vdisk
 list vdisk
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;table&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>screen and tmux</title><link>https://mnod.github.io/posts/20200616.html</link><dc:creator>mnod</dc:creator><description>&lt;table&gt;
 &lt;tr&gt;&lt;th&gt;command&lt;/th&gt;&lt;th&gt;screen&lt;/th&gt;&lt;th&gt;tmux&lt;/th&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th&gt;list&lt;/th&gt;&lt;td&gt;-ls&lt;/td&gt;&lt;td&gt;ls&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th&gt;with name&lt;/th&gt;&lt;td&gt;-S name&lt;/td&gt;&lt;td&gt;new -s name&lt;/td&gt;&lt;/tr&gt;
@@ -665,7 +663,7 @@ list vdisk
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;it can create a new window which executes a specific program&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;screen watch -n 5 ntpq -pn
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200616.html</guid><pubDate>Tue, 16 Jun 2020 00:00:00 GMT</pubDate></item><item><title>chrony</title><link>https://mnod.github.io/posts/20200615.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;chrony is an implementation of Network Time Protocol&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200616.html</guid><pubDate>Tue, 16 Jun 2020 00:00:00 GMT</pubDate></item><item><title>chrony</title><link>https://mnod.github.io/posts/20200615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;chrony is an implementation of Network Time Protocol&lt;/p&gt;
 &lt;p&gt;install&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;apt install chrony
 &lt;/code&gt;&lt;/pre&gt;
@@ -719,4 +717,4 @@ bindcmdaddress 192.168.xxx.xxx
 &lt;p&gt;specify a remote host to which chronyd is to be connected (using udp/323)
 default is localhost&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cronyc -h 192.168.xxx.xxx
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

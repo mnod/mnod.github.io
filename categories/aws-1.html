@@ -68,8 +68,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create topic</em></p>
+    <p><em>create topic</em></p>
 <pre><code>$ aws sns create-topic --name &lt;Topic Name&gt;
 $ aws sns list-topics
 $ aws sns get-topic-attributes --topic-arn &lt;Topic ARN&gt;
@@ -134,7 +133,6 @@ $ aws sns list-subscriptions
 $ aws cloudformation list-stacks --query 'StackSummaries[?StackName==`&lt;Stack Name&gt;`]'
 $ aws cloudformation describe-stacks --stack-name &lt;Stack Name&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191027.html" class="u-url">glacier</a></h1>
         <div class="metadata">
@@ -147,8 +145,7 @@ $ aws cloudformation describe-stacks --stack-name &lt;Stack Name&gt;
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create vault</em></p>
+    <p><em>create vault</em></p>
 <pre><code>$ aws glacier create-vault --account-id - --vault-name &lt;Vault Name&gt;
 $ aws glacier list-vaults --account-id -
 </code></pre>
@@ -214,7 +211,6 @@ $ aws glacier get-vault-notifications --account-id - --vault-name &lt;Vault Name
 <pre><code>$ aws glacier describe-vault --account-id - --vault-name &lt;Vault Name&gt;
 $ aws glacier delete-vault --account-id - --vault-name &lt;Vault Name&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191019.html" class="u-url">s3</a></h1>
         <div class="metadata">
@@ -227,8 +223,7 @@ $ aws glacier delete-vault --account-id - --vault-name &lt;Vault Name&gt;
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>objects</em></p>
+    <p><em>objects</em></p>
 <pre><code>$ aws s3 ls s3://mybucketname/
 $ aws s3 cp testfile.txt s3://mybucketname/
 $ aws s3 cp s3://mybucketname/testfile.txt testfile2.txt
@@ -377,7 +372,6 @@ except Exception as e:
     print (e)
     sys.exit()
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191005.html" class="u-url">Lambda</a></h1>
         <div class="metadata">
@@ -390,8 +384,7 @@ except Exception as e:
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>list functions</em></p>
+    <p><em>list functions</em></p>
 <pre><code>aws lambda list-functions
 aws lambda get-function --function-name hello-world-python
 </code></pre>
@@ -439,7 +432,6 @@ aws lambda delete-function --function-name hello-world-python
           - "Key": "Name"
             "Value": "test"
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20190916.html" class="u-url">CloudFormation</a></h1>
         <div class="metadata">
@@ -452,8 +444,7 @@ aws lambda delete-function --function-name hello-world-python
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>sample template of CloudFormation in yaml format</em></p>
+    <p><em>sample template of CloudFormation in yaml format</em></p>
 <pre><code>$ cat mystack.yml
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
@@ -628,7 +619,6 @@ $ ansible-playbook -e "CidrBlock=10.30.0.0/16" playbook.yml
 
 $ ansible-playbook playbook.yml
 </code></pre>
-</div>
     </div>
     </article>
 </div>

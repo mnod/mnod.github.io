@@ -74,8 +74,7 @@ openssl dgst -sha1 /var/log/{lastlog,wtmp*} &gt; rand.dat
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>自己認証局の作成・運用を手作業で実施する手順を記載する。</p>
+    <p>自己認証局の作成・運用を手作業で実施する手順を記載する。</p>
 <p><em>自己認証局の作成</em></p>
 <p>(事前にindex.txtファイル、serialファイル等もろもろ準備した、作業ディレクトリで作業。)</p>
 <p>擬似乱数ファイルの作成(ほどよく更新されるファイルのダイジェストを得る。パーミッション、更新日時に留意。)</p>
@@ -178,7 +177,6 @@ openssl ec -in secp384r1.key -text -noout
 個人で作成する自己認証局では、暗号化はできるが身元確認ができないと言われる。
 実社会で互いに信頼できる相手なら、CA証明書を配布して事前にインストールしてもらうようにすれば、身元確認の問題はおきないのではないか。
 限定された範囲での利用なら、この運用で問題ないのではないか。</p>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/openssl.html" rel="tag">openssl</a></li>

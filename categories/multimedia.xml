@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about multimedia)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/multimedia.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>mpd</title><link>https://mnod.github.io/posts/20200420.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;&lt;a href="https://www.musicpd.org/"&gt;mpd&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about multimedia)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/multimedia.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:59 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>mpd</title><link>https://mnod.github.io/posts/20200420.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;&lt;a href="https://www.musicpd.org/"&gt;mpd&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Music Player Daemon. server-client architecture.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;mpd.conf&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;You can specify audio output type and device in /etc/mpd.conf. Various types are available including http streaming.
@@ -51,7 +51,7 @@ M3U can be extended M3U.&lt;/p&gt;
 &lt;p&gt;client for iOS&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;a href="https://kodi.wiki/view/Add-on:MPD_Client"&gt;KODI Add-on:MPD Client&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Add-on of KODI formerly known as XBMC.
-If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.&lt;/p&gt;&lt;/div&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200420.html</guid><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate></item><item><title>vlc</title><link>https://mnod.github.io/posts/20200409.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.&lt;/p&gt;
+If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.&lt;/p&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200420.html</guid><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate></item><item><title>vlc</title><link>https://mnod.github.io/posts/20200409.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;http interface&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;VLC(or cvlc) could be controlled with http request. See &lt;a href="https://wiki.videolan.org/VLC_HTTP_requests/"&gt;VLC HTTP requests&lt;/a&gt; for detail&lt;/p&gt;
 &lt;p&gt;start cvlc with http interface&lt;/p&gt;
@@ -70,4 +70,4 @@ http://127.0.0.1:8080/requests/status.xml
 ?command=pl_pause
 ?command=volume&amp;amp;val=+&amp;lt;int&amp;gt;
 ?command=volume&amp;amp;val=-&amp;lt;int&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200409.html</guid><pubDate>Thu, 09 Apr 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>multimedia</category><guid>https://mnod.github.io/posts/20200409.html</guid><pubDate>Thu, 09 Apr 2020 00:00:00 GMT</pubDate></item></channel></rss>

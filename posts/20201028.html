@@ -72,8 +72,7 @@ $ aws events di'>
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>create and delete rule</p>
+    <p>create and delete rule</p>
 <pre><code>$ aws events list-rules
 $ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
 $ aws events enable-rule --name testrule
@@ -99,7 +98,6 @@ $ aws events list-targets-by-rule --rule testrule
         Id: "1"
         Input: !Ref INPUTJSON
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/aws.html" rel="tag">aws</a></li>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;h2&gt;connect&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about windows)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/windows.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;h2&gt;connect&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Pairing&lt;/li&gt;
 &lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
@@ -22,7 +22,7 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;li&gt;change value of &lt;code&gt;Ethernet&lt;/code&gt; to &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;restart windows&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>WSL2 installation</title><link>https://mnod.github.io/posts/20210407.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;I followed the document &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Windows Subsystem for Linux Installation Guide for Windows 10&lt;/a&gt;
+&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>WSL2 installation</title><link>https://mnod.github.io/posts/20210407.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;I followed the document &lt;a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10"&gt;Windows Subsystem for Linux Installation Guide for Windows 10&lt;/a&gt;
 My environment is Windows 10 Pro 20H2 OS build 19042.685&lt;/p&gt;
 &lt;p&gt;Run powershell.exe as administrator.
 Then enable the Windows Subsystem for Linux.&lt;/p&gt;
@@ -145,7 +145,7 @@ $ echo "nameserver 1.1.1.1" &amp;gt; /etc/resolv.conf
 &lt;p&gt;Confirm your setting and domain name lookup on your distribution and docker container.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ cat /etc/resolv.conf
 $ curl -I www.google.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20210407.html</guid><pubDate>Wed, 07 Apr 2021 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windows can mount vhd file as a virtual drive.
+&lt;/code&gt;&lt;/pre&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20210407.html</guid><pubDate>Wed, 07 Apr 2021 00:00:00 GMT</pubDate></item><item><title>vhd</title><link>https://mnod.github.io/posts/20200924.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.&lt;/p&gt;
 &lt;p&gt;When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;parted /dev/sdb print
@@ -209,7 +209,7 @@ list vdisk
 &lt;pre&gt;&lt;code&gt;select vdisk file="d:\image.vhd"
 attach vdisk
 list vdisk
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;スクリプトの呼び出し。
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><category>windows</category><guid>https://mnod.github.io/posts/20200924.html</guid><pubDate>Thu, 24 Sep 2020 00:00:00 GMT</pubDate></item><item><title>windows script host by jscript</title><link>https://mnod.github.io/posts/20170930.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;スクリプトの呼び出し。
 アイコンのダブルクリックや、アイコンへのドラッグ&amp;amp;ドロップでも起動できる。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cscript script.js //Nologo
 wscript script.js //Nologo
@@ -340,7 +340,7 @@ catch(e) {
 finally {
   ExcelApp.Quit();
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>jscript</category><category>windows</category><guid>https://mnod.github.io/posts/20170930.html</guid><pubDate>Sat, 30 Sep 2017 00:00:00 GMT</pubDate></item><item><title>ms windows commands</title><link>https://mnod.github.io/posts/20170318.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;カレントディレクトリの*txtに対して処理を繰り返して実行する&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>jscript</category><category>windows</category><guid>https://mnod.github.io/posts/20170930.html</guid><pubDate>Sat, 30 Sep 2017 00:00:00 GMT</pubDate></item><item><title>ms windows commands</title><link>https://mnod.github.io/posts/20170318.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;カレントディレクトリの*txtに対して処理を繰り返して実行する&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;for /r . %i in (*txt) do type "%i" | sort
     バッチの中では%%のようにする。
     doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
@@ -398,7 +398,7 @@ net use y: /delete
 if not exist z:\. net use z: \\backupserver\backupvol
 set logfile=c:\log\copyall.log
 xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20170318.html</guid><pubDate>Sat, 18 Mar 2017 00:00:00 GMT</pubDate></item><item><title>my favorite desktop tools for windows</title><link>https://mnod.github.io/posts/20160910.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20170318.html</guid><pubDate>Sat, 18 Mar 2017 00:00:00 GMT</pubDate></item><item><title>my favorite desktop tools for windows</title><link>https://mnod.github.io/posts/20160910.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Windowsで動くお気に入りのデスクトップツールを二つ、紹介します。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;a href="http://www2s.biglobe.ne.jp/~geoph/"&gt;Clock Launcher&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Clock Launcherは、たくさんの機能が付属したフリーのランチャーアプリです。&lt;/p&gt;
 &lt;p&gt;ランチャー機能以外に、自分は以下のような機能を使用しています。&lt;/p&gt;
@@ -421,7 +421,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
 &lt;li&gt;ウィンドウの位置やサイズを数値で表示。&lt;/li&gt;
 &lt;li&gt;ウィンドウのスナップ。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160910.html</guid><pubDate>Sat, 10 Sep 2016 00:00:00 GMT</pubDate></item><item><title>WinMerge</title><link>https://mnod.github.io/posts/20160904.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの差分表示ツール、WinMergeのご紹介です。&lt;/p&gt;
+&lt;p&gt;広大なデスクトップを必要としている方や、ウィンドウの見た目が整理されていると作業効率改善に繋がると考えている方にはおすすめです。&lt;/p&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160910.html</guid><pubDate>Sat, 10 Sep 2016 00:00:00 GMT</pubDate></item><item><title>WinMerge</title><link>https://mnod.github.io/posts/20160904.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;お気に入りの差分表示ツール、WinMergeのご紹介です。&lt;/p&gt;
 &lt;p&gt;WinMergeは、Windowsで動作する、フリーの差分表示、マージツールです。が、自分は差分表示機能しか使いこなしておりません。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://winmerge.org/"&gt;http://winmerge.org/&lt;/a&gt;&lt;/li&gt;
@@ -441,7 +441,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
 &lt;/ul&gt;
 &lt;p&gt;以前は別のツールを使用していたのですが、諸事情あって、乗り換えることになりました。空白や改行コードの違い等を無視するか、比較するか、必要に応じて細かく指定することができるので、とても便利です。&lt;/p&gt;
 &lt;p&gt;差分表示をGitHub同様のカラースキーマに設定することができます。GitHubに慣れている方には良いのではないでしょうか。(自分はGitHubを使いこなしてはいませんが、自分には見やすいです。)&lt;/p&gt;
-&lt;p&gt;エクセルファイルの比較は思った以上に便利です。お勧めです。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160904.html</guid><pubDate>Sun, 04 Sep 2016 00:00:00 GMT</pubDate></item><item><title>PuTTY</title><link>https://mnod.github.io/posts/20160903.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。&lt;/p&gt;
+&lt;p&gt;エクセルファイルの比較は思った以上に便利です。お勧めです。&lt;/p&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160904.html</guid><pubDate>Sun, 04 Sep 2016 00:00:00 GMT</pubDate></item><item><title>PuTTY</title><link>https://mnod.github.io/posts/20160903.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;もう一つのお気に入りのターミナルソフト、PuTTYのご紹介です。&lt;/p&gt;
 &lt;p&gt;PuTTYは、Windowsまたは、Un&lt;em&gt;xで動作するフリーのターミナルエミュレータです。(ここではWindows版についての情報を掲載します。Un&lt;/em&gt;x版については触れません。)&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/"&gt;http://www.chiark.greenend.org.uk/%7Esgtatham/putty/&lt;/a&gt;&lt;/li&gt;
@@ -463,7 +463,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
 &lt;/ul&gt;
 &lt;p&gt;特にコマンドラインツールが付属しているのがありがたいです。オプション指定が、un*xのコマンドのものに似ていますので、直感的に使うことができます。ポート転送やscpファイル転送のバッチの作成に大いに役立っています。&lt;/p&gt;
 &lt;p&gt;TeraTermでもscpファイル転送できますが、やはりPuTTYの同梱ツールを使ったほうがよろしいのではないかと個人的には思います。
-(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item><item><title>TeraTerm</title><link>https://mnod.github.io/posts/20160902.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。&lt;/p&gt;
+(WinSCPという、ファイル転送に特化したGUIツールもあります。自分はあまり使ったことがありません。)&lt;/p&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160903.html</guid><pubDate>Sat, 03 Sep 2016 00:00:00 GMT</pubDate></item><item><title>TeraTerm</title><link>https://mnod.github.io/posts/20160902.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;お気に入りの、というか、定番のターミナルソフト、TeraTermのご紹介です。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://ttssh2.osdn.jp/"&gt;https://ttssh2.osdn.jp/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://osdn.jp/projects/ttssh2/"&gt;https://osdn.jp/projects/ttssh2/&lt;/a&gt;&lt;/li&gt;
@@ -487,7 +487,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
 &lt;p&gt;Ctrl+Vが使えなくて不便だと感じてる方もいるかもしれませんが、実はShift+Insでもペーストできるのを知ってますか？&lt;/p&gt;
 &lt;p&gt;Shift+Insは、Windows標準であり、TeraTerm以外の他のソフトでも使うことができます。&lt;/p&gt;
 &lt;p&gt;また、WindowsだけでなくLinuxのコンソールやターミナルソフトでも利用することができます。身に着けておくと非常に便利ではないかと思います。&lt;/p&gt;
-&lt;p&gt;是非試してみてください。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item><item><title>sakura editor</title><link>https://mnod.github.io/posts/20160628.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。&lt;/p&gt;
+&lt;p&gt;是非試してみてください。&lt;/p&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160902.html</guid><pubDate>Fri, 02 Sep 2016 00:00:00 GMT</pubDate></item><item><title>sakura editor</title><link>https://mnod.github.io/posts/20160628.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;お気に入りのフリーの高機能テキストエディタ、サクラエディタのご紹介です。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://sakura-editor.sourceforge.net"&gt;http://sakura-editor.sourceforge.net&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://sourceforge.net/projects/sakura-editor/"&gt;https://sourceforge.net/projects/sakura-editor/&lt;/a&gt;&lt;/li&gt;
@@ -511,4 +511,4 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &amp;gt;&amp;gt; %logfile%
 &lt;/ul&gt;
 &lt;p&gt;サクラエディタは非常に便利な機能が豊富で、割りと複雑な処理も実行できるため、日々、ありがたく使わせてもらっています。&lt;/p&gt;
 &lt;p&gt;いろんなことをエクセルで処理させる方もいらっしゃいますが、やはり使いなれたテキストエディタで処理した方が、手順が少なくなり、ミスの危険も少なくなるのではないかと思います。&lt;/p&gt;
-&lt;p&gt;是非テキストエディタの活用をおすすめします。&lt;/p&gt;&lt;/div&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160628.html</guid><pubDate>Sun, 28 Aug 2016 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;是非テキストエディタの活用をおすすめします。&lt;/p&gt;</description><category>software</category><category>windows</category><guid>https://mnod.github.io/posts/20160628.html</guid><pubDate>Sun, 28 Aug 2016 00:00:00 GMT</pubDate></item></channel></rss>

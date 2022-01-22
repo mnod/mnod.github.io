@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about hosting)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/hosting.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>serversman vps</title><link>https://mnod.github.io/posts/20180421.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="http://dream.jp/vps/"&gt;ServersMan@VPS&lt;/a&gt;は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about hosting)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/hosting.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>serversman vps</title><link>https://mnod.github.io/posts/20180421.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://dream.jp/vps/"&gt;ServersMan@VPS&lt;/a&gt;は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。&lt;/p&gt;
 &lt;p&gt;Debianで使っていたのだが、間もなくWheezyのLTSサポート期限を迎えるのに、新しいバージョンの対応が公表されないので、名残惜しいけど退会することにした。&lt;/p&gt;
 &lt;p&gt;よかったこと&lt;/p&gt;
 &lt;ul&gt;
@@ -14,7 +14,7 @@
 &lt;/ul&gt;
 &lt;p&gt;各種アプリケーションがプリインストールされたコースもあるが、自分は試したことは無い。
 ネットワーク/セキュリティについての理解がある人が、自分で構築できるサーバを個人用途で東京に安く借りたい、性能を求める場合にはそれだけの対価を支払うつもりがある、という場合にはおすすめできる。&lt;/p&gt;
-&lt;p&gt;(最近は新しいニュースリリースもなく、勝手な見解だが、現在は維持・運用するだけにとどまり、積極的な増設・投資はだいぶ前からやめているのではないかと感じている)&lt;/p&gt;&lt;/div&gt;</description><category>container</category><category>hosting</category><guid>https://mnod.github.io/posts/20180421.html</guid><pubDate>Sat, 21 Apr 2018 00:00:00 GMT</pubDate></item><item><title>arukas</title><link>https://mnod.github.io/posts/20160925.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;2019/10追記&lt;/p&gt;
+&lt;p&gt;(最近は新しいニュースリリースもなく、勝手な見解だが、現在は維持・運用するだけにとどまり、積極的な増設・投資はだいぶ前からやめているのではないかと感じている)&lt;/p&gt;</description><category>container</category><category>hosting</category><guid>https://mnod.github.io/posts/20180421.html</guid><pubDate>Sat, 21 Apr 2018 00:00:00 GMT</pubDate></item><item><title>arukas</title><link>https://mnod.github.io/posts/20160925.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;2019/10追記&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://arukas.io/updates/20190930-terminate-of-service/"&gt;2020/1/31でのサービス終了&lt;/a&gt;が発表されました。すでに新規アカウントの申し込みは終了しています。
 無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
 大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。&lt;/p&gt;
@@ -53,4 +53,4 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 正式リリース後には変更される可能性もあるかもしれません。&lt;/p&gt;
 &lt;p&gt;URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。&lt;/p&gt;
 &lt;p&gt;同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
-この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。&lt;/p&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>hosting</category><guid>https://mnod.github.io/posts/20160925.html</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
+この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。&lt;/p&gt;</description><category>container</category><category>docker</category><category>hosting</category><guid>https://mnod.github.io/posts/20160925.html</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

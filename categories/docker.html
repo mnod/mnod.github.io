@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
+    <!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
 
 <p><em>install single-node k3s cluster instead of containerd</em></p>
 <p>I can install with these commands on debian buster arm64 though can not on bullseye.</p>
@@ -169,7 +168,6 @@ sudo kubectl get svc
 <p><em>delete deployment</em></p>
 <pre><code>sudo kubectl delete -f ./nginx-deployment.yaml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
         <div class="metadata">
@@ -182,8 +180,7 @@ sudo kubectl get svc
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+    <p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -326,7 +323,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 <pre><code>1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210608.html" class="u-url">squid nobump</a></h1>
         <div class="metadata">
@@ -339,8 +335,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
+    <p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -486,7 +481,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210605.html" class="u-url">devpi-server</a></h1>
         <div class="metadata">
@@ -499,8 +493,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
+    <p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
 <pre><code>FROM debian:buster-slim
@@ -543,7 +536,6 @@ ARG PIP_INDEX_URL
 <p>then specify devpi-server at build-arg parameter in docker run command line.</p>
 <pre><code>$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
         <div class="metadata">
@@ -556,8 +548,7 @@ ARG PIP_INDEX_URL
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
+    <p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
 We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/</p>
 <p>Also we can use torrent to download them</p>
 <p>make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)</p>
@@ -624,7 +615,6 @@ help # Show help messages
 <pre><code>docker-compose build
 docker-compose up -d
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
         <div class="metadata">
@@ -637,8 +627,7 @@ docker-compose up -d
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -710,7 +699,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200315.html" class="u-url">apt-cacher-ng</a></h1>
         <div class="metadata">
@@ -723,8 +711,7 @@ $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>make a dockerfile</p>
+    <p>make a dockerfile</p>
 <pre><code>$ cat Dockerfile
 FROM debian:buster
 
@@ -766,7 +753,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161001.html" class="u-url">docker life cycle</a></h1>
         <div class="metadata">
@@ -779,8 +765,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ライフサイクルをざっと。</p>
+    <p>ライフサイクルをざっと。</p>
 <p>dockerデーモンの起動と動作確認。ubuntuの場合。</p>
 <pre><code>$ sudo service docker status
 $ sudo service docker start
@@ -907,7 +892,6 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 &amp;&amp; apt-get clean \
 &amp;&amp; rm -rf /var/lib/apt/lists/*
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160925.html" class="u-url">arukas</a></h1>
         <div class="metadata">
@@ -920,8 +904,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>2019/10追記</p>
+    <p>2019/10追記</p>
 <p><a href="https://arukas.io/updates/20190930-terminate-of-service/">2020/1/31でのサービス終了</a>が発表されました。すでに新規アカウントの申し込みは終了しています。
 無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
 大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。</p>
@@ -961,12 +944,13 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 <p>URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。</p>
 <p>同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
 この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。</p>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

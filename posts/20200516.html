@@ -76,8 +76,7 @@ RUN yum install -y unzip python2-pip openssh-clients &amp;&amp; \
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -149,7 +148,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/ansible.html" rel="tag">ansible</a></li>

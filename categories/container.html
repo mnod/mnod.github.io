@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="http://dream.jp/vps/">ServersMan@VPS</a>は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。</p>
+    <p><a href="http://dream.jp/vps/">ServersMan@VPS</a>は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。</p>
 <p>Debianで使っていたのだが、間もなくWheezyのLTSサポート期限を迎えるのに、新しいバージョンの対応が公表されないので、名残惜しいけど退会することにした。</p>
 <p>よかったこと</p>
 <ul>
@@ -84,7 +83,6 @@
 <p>各種アプリケーションがプリインストールされたコースもあるが、自分は試したことは無い。
 ネットワーク/セキュリティについての理解がある人が、自分で構築できるサーバを個人用途で東京に安く借りたい、性能を求める場合にはそれだけの対価を支払うつもりがある、という場合にはおすすめできる。</p>
 <p>(最近は新しいニュースリリースもなく、勝手な見解だが、現在は維持・運用するだけにとどまり、積極的な増設・投資はだいぶ前からやめているのではないかと感じている)</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161001.html" class="u-url">docker life cycle</a></h1>
         <div class="metadata">
@@ -97,8 +95,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ライフサイクルをざっと。</p>
+    <p>ライフサイクルをざっと。</p>
 <p>dockerデーモンの起動と動作確認。ubuntuの場合。</p>
 <pre><code>$ sudo service docker status
 $ sudo service docker start
@@ -225,7 +222,6 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 &amp;&amp; apt-get clean \
 &amp;&amp; rm -rf /var/lib/apt/lists/*
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160925.html" class="u-url">arukas</a></h1>
         <div class="metadata">
@@ -238,8 +234,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>2019/10追記</p>
+    <p>2019/10追記</p>
 <p><a href="https://arukas.io/updates/20190930-terminate-of-service/">2020/1/31でのサービス終了</a>が発表されました。すでに新規アカウントの申し込みは終了しています。
 無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
 大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。</p>
@@ -279,12 +274,13 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 <p>URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。</p>
 <p>同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
 この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。</p>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

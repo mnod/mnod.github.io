@@ -58,8 +58,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>自動ログインマクロというとTeratermマクロを思い浮かべがちだが、un*x の expect コマンドを使うこともできる。</p>
+    <p>自動ログインマクロというとTeratermマクロを思い浮かべがちだが、un*x の expect コマンドを使うこともできる。</p>
 <p>マクロはホームディレクトリ等に保存してchmod 700 しておく。</p>
 <p>expect を使ったssh自動ログインbashスクリプトの簡単な例(一部抜粋)</p>
 <p>sshで自動ログインだけ考えたら、パスフレーズなしの秘密鍵を使えば済むが、マクロならその後の処理も自動化できる。</p>
@@ -92,7 +91,6 @@ expect {
 }
 interact
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170821.html" class="u-url">archive and compress</a></h1>
         <div class="metadata">
@@ -105,8 +103,7 @@ interact
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>compress</em></p>
+    <p><em>compress</em></p>
 <p>gzip</p>
 <pre><code>gzip filename
 gunzip -lv filename.gz
@@ -225,7 +222,6 @@ p7zip-fullパッケージの7zを使うことで、暗号化することがで�
 <pre><code>zip -0 ....
 7z a -mx=0 ....
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170820.html" class="u-url">sed and awk</a></h1>
         <div class="metadata">
@@ -238,8 +234,7 @@ p7zip-fullパッケージの7zを使うことで、暗号化することがで�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>簡単な使い方の例を記載する。</p>
+    <p>簡単な使い方の例を記載する。</p>
 <p><em>sed</em></p>
 <p>2行目以降で、fooをbarに全て置換</p>
 <pre><code>sed -e '2,$ s/foo/bar/g' filename
@@ -317,7 +312,6 @@ END {
   print "script end"
 }
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170819.html" class="u-url">sqlite</a></h1>
         <div class="metadata">
@@ -330,8 +324,7 @@ END {
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>SQLiteはRDBMSのデータベースエンジン。サーバではなくライブラリで、とても小さく軽量。</p>
+    <p>SQLiteはRDBMSのデータベースエンジン。サーバではなくライブラリで、とても小さく軽量。</p>
 <ul>
 <li><a href="https://www.sqlite.org/docs.html">ドキュメント</a></li>
 </ul>
@@ -397,7 +390,6 @@ SELECT count(*) FROM test;
 SELECT count(*) FROM test;
 END
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170423.html" class="u-url">PostgreSQL on CentOS7</a></h1>
         <div class="metadata">
@@ -410,8 +402,7 @@ END
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>install</p>
+    <p>install</p>
 <pre><code>yum install postgresql-server
 systemctl list-unit-files  -t service
 systemctl is-enabled postgresql.service
@@ -468,7 +459,6 @@ unique (c2, c3)
 );
 DROP TABLE IF EXISTS  t1;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170401.html" class="u-url">nfs</a></h1>
         <div class="metadata">
@@ -481,8 +471,7 @@ DROP TABLE IF EXISTS  t1;
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<pre><code>$ service nfs-kernel-server status
+    <pre><code>$ service nfs-kernel-server status
 nfsd running
 
 $ service rpcbind status
@@ -505,7 +494,6 @@ All mount points on yyyyyy:
 <pre><code>$ vi /etc/hosts.allow
 portmap : 192.168.1.0/255.255.255.0
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170325.html" class="u-url">kvm virtualization</a></h1>
         <div class="metadata">
@@ -518,8 +506,7 @@ portmap : 192.168.1.0/255.255.255.0
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>qcow2 イメージ</em></p>
+    <p><em>qcow2 イメージ</em></p>
 <p>作成。</p>
 <pre><code>qemu-img create -f qcow2 image.qcow2 xxG
 </code></pre>
@@ -563,7 +550,6 @@ qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
 <p>boot ultra lite linux distribution microcore linux for network configure test</p>
 <pre><code>kvm -drive if=virtio,file=linux-microcore-6.4.img -netdev tap,id=tap0 -device e1000,netdev=tap0,mac=52:54:00:12:34:56
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170319.html" class="u-url">openssh</a></h1>
         <div class="metadata">
@@ -576,8 +562,7 @@ qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>openssh関連ツールについて。</p>
+    <p>openssh関連ツールについて。</p>
 <p><em>ssh 鍵ペアの作成</em></p>
 <p>ED25519を使うには比較的新しい環境が必要となる(TeraTerm、PuTTyでは既に対応済み)
 鍵作成時に鍵長は指定できない(256ビット)。
@@ -667,7 +652,6 @@ ssh -l username -p 2222 -i ~/.ssh/I'd_RSA.foo my.example.com
 Host *.example.net
     IdentityFile ~/.ssh/id_rsa.bar
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170318.html" class="u-url">ms windows commands</a></h1>
         <div class="metadata">
@@ -680,8 +664,7 @@ Host *.example.net
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
+    <p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
 <pre><code>for /r . %i in (*txt) do type "%i" | sort
     バッチの中では%%のようにする。
     doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
@@ -740,7 +723,6 @@ if not exist z:\. net use z: \\backupserver\backupvol
 set logfile=c:\log\copyall.log
 xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20170311.html" class="u-url">CentOS7 basic operation</a></h1>
         <div class="metadata">
@@ -753,8 +735,7 @@ xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>パッケージ更新</p>
+    <p>パッケージ更新</p>
 <pre><code>uname -a
 yum check-update
 yum update
@@ -794,7 +775,6 @@ yum list ntp
 <pre><code>systemctl status ntpd.service
 systemctl start ntpd.service
 </code></pre>
-</div>
     </div>
     </article>
 </div>

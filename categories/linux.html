@@ -68,8 +68,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
+    <!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ -->
 
 <p><em>install single-node k3s cluster instead of containerd</em></p>
 <p>I can install with these commands on debian buster arm64 though can not on bullseye.</p>
@@ -170,7 +169,6 @@ sudo kubectl get svc
 <p><em>delete deployment</em></p>
 <pre><code>sudo kubectl delete -f ./nginx-deployment.yaml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
         <div class="metadata">
@@ -183,8 +181,7 @@ sudo kubectl get svc
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
+    <p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
 液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。</p>
 <p>以下、備忘録</p>
 <ul>
@@ -204,7 +201,6 @@ sudo kubectl get svc
 <li>試していないけど、LDAPの電話帳が使えるようだ</li>
 </ul>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20211024.html" class="u-url">rpm package management</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -216,8 +212,7 @@ sudo kubectl get svc
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>list installed packages</p>
+    <p>list installed packages</p>
 <pre><code># rpm -qa [package name]
 # yum list [package name]
 # dnf list [package name]
@@ -274,7 +269,6 @@ sudo kubectl get svc
 <pre><code># yum history
 # dnf history
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210610.html" class="u-url">squid bump</a></h1>
         <div class="metadata">
@@ -287,8 +281,7 @@ sudo kubectl get svc
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+    <p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -431,7 +424,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 <pre><code>1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210608.html" class="u-url">squid nobump</a></h1>
         <div class="metadata">
@@ -444,8 +436,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
+    <p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -591,7 +582,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200927.html" class="u-url">kvm on raspberrypi</a></h1>
         <div class="metadata">
@@ -604,8 +594,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>kvm On Raspberry Pi OS (64bit) beta test version</p>
+    <p>kvm On Raspberry Pi OS (64bit) beta test version</p>
 <p>related packages</p>
 <pre><code>$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 </code></pre>
@@ -663,7 +652,6 @@ $ sudo rmmod nbd
 &gt; -monitor telnet:localhost:10025,server,nowait \
 &gt; -nographic
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
         <div class="metadata">
@@ -676,8 +664,7 @@ $ sudo rmmod nbd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
+    <p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
 We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/</p>
 <p>Also we can use torrent to download them</p>
 <p>make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)</p>
@@ -744,7 +731,6 @@ help # Show help messages
 <pre><code>docker-compose build
 docker-compose up -d
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
         <div class="metadata">
@@ -757,8 +743,7 @@ docker-compose up -d
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Windows can mount vhd file as a virtual drive.
+    <p>Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.</p>
 <p>When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.</p>
 <pre><code>parted /dev/sdb print
@@ -823,7 +808,6 @@ list vdisk
 attach vdisk
 list vdisk
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200616.html" class="u-url">screen and tmux</a></h1>
         <div class="metadata">
@@ -836,8 +820,7 @@ list vdisk
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<table>
+    <table>
 <tr>
 <th>command</th>
 <th>screen</th>
@@ -891,7 +874,6 @@ list vdisk
 <p>it can create a new window which executes a specific program</p>
 <pre><code>screen watch -n 5 ntpq -pn
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200615.html" class="u-url">chrony</a></h1>
         <div class="metadata">
@@ -904,8 +886,7 @@ list vdisk
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>chrony is an implementation of Network Time Protocol</p>
+    <p>chrony is an implementation of Network Time Protocol</p>
 <p>install</p>
 <pre><code>apt install chrony
 </code></pre>
@@ -960,7 +941,6 @@ bindcmdaddress 192.168.xxx.xxx
 default is localhost</p>
 <pre><code>cronyc -h 192.168.xxx.xxx
 </code></pre>
-</div>
     </div>
     </article>
 </div>

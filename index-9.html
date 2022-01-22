@@ -58,8 +58,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<h3>aws command</h3>
+    <h3>aws command</h3>
 <pre><code>aws route53 list-hosted-zones
 aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
 
@@ -205,7 +204,6 @@ Resources:
   }
 ]
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210411.html" class="u-url">Stay at home</a></h1>
         <div class="metadata">
@@ -218,8 +216,7 @@ Resources:
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。</p>
+    <p>不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。</p>
 <p>おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。</p>
 <p>そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -246,7 +243,6 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
 <p>Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
 アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。</p>
 <p>ぶっちゃけ Youtube 見るのに最強。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210409.html" class="u-url">Work from home</a></h1>
         <div class="metadata">
@@ -259,8 +255,7 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。</p>
+    <p>不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。</p>
 <p>PCは趣味の一つではあるものの、趣味のためにあれこれ購入するのもためらわれ、これまで自宅の作業環境はあまり整っていなかった。
 そのため、在宅勤務での作業効率はあまりよくなかった。これ幸いと？仕方がないので？これまで買わずに我慢していたものをいくつか買いそろえた(自腹)。</p>
 <h3>モニター</h3>
@@ -321,7 +316,6 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 <p>有線とBluetoothに対応しているが、有線しか試していない。音質としては不満はない。カナル型イヤフォンとはちょっと違った感じ。</p>
 <p>眼鏡とは干渉しないのだけど、長時間つけていると(頭が大きいから?)頭が締め付けられて痛くなってしまう。</p>
 <p>ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210407.html" class="u-url">WSL2 installation</a></h1>
         <div class="metadata">
@@ -334,8 +328,7 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
+    <p>I followed the document <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux Installation Guide for Windows 10</a>
 My environment is Windows 10 Pro 20H2 OS build 19042.685</p>
 <p>Run powershell.exe as administrator.
 Then enable the Windows Subsystem for Linux.</p>
@@ -459,7 +452,6 @@ $ echo "nameserver 1.1.1.1" &gt; /etc/resolv.conf
 <pre><code>$ cat /etc/resolv.conf
 $ curl -I www.google.com
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
         <div class="metadata">
@@ -472,8 +464,7 @@ $ curl -I www.google.com
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>create and delete rule</p>
+    <p>create and delete rule</p>
 <pre><code>$ aws events list-rules
 $ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
 $ aws events enable-rule --name testrule
@@ -499,7 +490,6 @@ $ aws events list-targets-by-rule --rule testrule
         Id: "1"
         Input: !Ref INPUTJSON
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200927.html" class="u-url">kvm on raspberrypi</a></h1>
         <div class="metadata">
@@ -512,8 +502,7 @@ $ aws events list-targets-by-rule --rule testrule
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>kvm On Raspberry Pi OS (64bit) beta test version</p>
+    <p>kvm On Raspberry Pi OS (64bit) beta test version</p>
 <p>related packages</p>
 <pre><code>$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 </code></pre>
@@ -571,7 +560,6 @@ $ sudo rmmod nbd
 &gt; -monitor telnet:localhost:10025,server,nowait \
 &gt; -nographic
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200926.html" class="u-url">docker on raspberrypi</a></h1>
         <div class="metadata">
@@ -584,8 +572,7 @@ $ sudo rmmod nbd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
+    <p>Install docker on <a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;t=275370">Raspberry Pi OS (64bit) beta test version</a>
 We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/</p>
 <p>Also we can use torrent to download them</p>
 <p>make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)</p>
@@ -652,7 +639,6 @@ help # Show help messages
 <pre><code>docker-compose build
 docker-compose up -d
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200924.html" class="u-url">vhd</a></h1>
         <div class="metadata">
@@ -665,8 +651,7 @@ docker-compose up -d
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Windows can mount vhd file as a virtual drive.
+    <p>Windows can mount vhd file as a virtual drive.
 We can use it for application install space or document storage area.</p>
 <p>When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.</p>
 <pre><code>parted /dev/sdb print
@@ -731,7 +716,6 @@ list vdisk
 attach vdisk
 list vdisk
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200710.html" class="u-url">nikola</a></h1>
         <div class="metadata">
@@ -744,8 +728,7 @@ list vdisk
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://getnikola.com/">Nikola</a> is one of <a href="https://www.staticgen.com/">static site generator</a> written in python3.</p>
+    <p><a href="https://getnikola.com/">Nikola</a> is one of <a href="https://www.staticgen.com/">static site generator</a> written in python3.</p>
 <ul>
 <li>It supports some input formats include Markdown.</li>
 <li>Theme is written in Mako or Jinja2.
@@ -777,7 +760,6 @@ CMD ["/bin/bash"]
 <p>The build command will be like shown below:</p>
 <pre><code>docker build --build-arg version=8.1.3 --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t nikola:alpine -f Dockerfile.alpine .
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200622.html" class="u-url">backend and lock</a></h1>
         <div class="metadata">
@@ -790,8 +772,7 @@ CMD ["/bin/bash"]
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create S3 bucket and DynamoDB table</em></p>
+    <p><em>create S3 bucket and DynamoDB table</em></p>
 <p>At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control</p>
 <pre><code>resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
@@ -983,7 +964,6 @@ Resources:
         - Key: "Name"
           Value: "test"
 </code></pre>
-</div>
     </div>
     </article>
 </div>

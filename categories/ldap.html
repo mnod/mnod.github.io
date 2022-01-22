@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ldapエントリの検索</p>
+    <p>ldapエントリの検索</p>
 <pre><code>ldapsearch -x [-H ldap:///] -D "&lt;basedn&gt;" -W -b &lt;searchbase&gt; [filter]
 </code></pre>
 <p>ldapmodifyによるエントリの更新</p>
@@ -88,7 +87,6 @@ changetype: modify
 add: gecos
 gecos: user2@example
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170918.html" class="u-url">backup and restore openldap</a></h1>
         <div class="metadata">
@@ -101,8 +99,7 @@ gecos: user2@example
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>backup</em></p>
+    <p><em>backup</em></p>
 <pre><code># systemctl stop slapd
 slapcat &gt; ldap.ldif
 slapcat -b cn=config &gt; ldap-config.ldif
@@ -119,12 +116,13 @@ chown openldap:openldap -R /etc/ldap/slapd.d
 chown openldap:openldap -R /var/lib/ldap
 systemctl start slapd
 </code></pre>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

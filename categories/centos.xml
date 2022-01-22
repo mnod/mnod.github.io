@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about centos)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/centos.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>PostgreSQL on CentOS7</title><link>https://mnod.github.io/posts/20170423.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;install&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about centos)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/centos.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>PostgreSQL on CentOS7</title><link>https://mnod.github.io/posts/20170423.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;install&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;yum install postgresql-server
 systemctl list-unit-files  -t service
 systemctl is-enabled postgresql.service
@@ -55,7 +55,7 @@ primary key (c1),
 unique (c2, c3)
 );
 DROP TABLE IF EXISTS  t1;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>centos</category><category>postgres</category><guid>https://mnod.github.io/posts/20170423.html</guid><pubDate>Sun, 23 Apr 2017 00:00:00 GMT</pubDate></item><item><title>CentOS7 basic operation</title><link>https://mnod.github.io/posts/20170311.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;パッケージ更新&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>centos</category><category>postgres</category><guid>https://mnod.github.io/posts/20170423.html</guid><pubDate>Sun, 23 Apr 2017 00:00:00 GMT</pubDate></item><item><title>CentOS7 basic operation</title><link>https://mnod.github.io/posts/20170311.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;パッケージ更新&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;uname -a
 yum check-update
 yum update
@@ -94,4 +94,4 @@ yum list ntp
 &lt;p&gt;サービス起動&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;systemctl status ntpd.service
 systemctl start ntpd.service
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>centos</category><category>linux</category><guid>https://mnod.github.io/posts/20170311.html</guid><pubDate>Sat, 11 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>centos</category><category>linux</category><guid>https://mnod.github.io/posts/20170311.html</guid><pubDate>Sat, 11 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>

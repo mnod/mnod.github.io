@@ -69,8 +69,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show all messages</p>
+    <p>show all messages</p>
 <pre><code>journalctl
 </code></pre>
 <p>show all messages from boot</p>
@@ -112,7 +111,6 @@ systemctl force-reload systemd-journald
 It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.</p>
 <pre><code>journalctl -D /mnt/var/log/journal -x
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200612.html" class="u-url">systemctl</a></h1>
         <div class="metadata">
@@ -125,8 +123,7 @@ It would be convinient, for example, when you read other system's journal messag
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show system status</p>
+    <p>show system status</p>
 <pre><code>systemctl status
 </code></pre>
 <p>show running or failed units</p>
@@ -162,7 +159,6 @@ systemctl unmask unit
 <pre><code>systemctl reboot
 systemctl poweroff
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
         <div class="metadata">
@@ -175,8 +171,7 @@ systemctl poweroff
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -248,7 +243,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
         <div class="metadata">
@@ -261,8 +255,7 @@ $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>install</em></p>
+    <p><em>install</em></p>
 <pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
 $ unzip terraform_x.xx.xx_linux_amd64.zip
 $ cp terraform /usr/local/bin
@@ -523,7 +516,6 @@ $ ansible-playbook -e @extravars.json apply.playbook
 $ ansible-playbook --check -e @extravars.json destroy.playbook
 $ ansible-playbook -e @extravars.json destroy.playbook
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200506.html" class="u-url">other tips for scripting</a></h1>
         <div class="metadata">
@@ -536,8 +528,7 @@ $ ansible-playbook -e @extravars.json destroy.playbook
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>remove all carriage returns</em></p>
+    <p><em>remove all carriage returns</em></p>
 <pre><code>cat file | tr -d '\n'
 </code></pre>
 <p><em>url encoding and decoding</em></p>
@@ -618,7 +609,6 @@ echo normal text
 </tbody>
 </table>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200422.html" class="u-url">json in python</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -630,8 +620,7 @@ echo normal text
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>dictionary</em></p>
+    <p><em>dictionary</em></p>
 <p>add key:value pair to a dictionary</p>
 <pre><code>&gt;&gt;&gt; newdict = {}
 &gt;&gt;&gt; newdict['foo'] = "bar"
@@ -735,7 +724,6 @@ with open('new.json', 'w') as f:
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=urllib_sample.py"></script><p>similar as above but using reauests library</p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"></script>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200424.html" class="u-url">WiFi</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -747,8 +735,7 @@ with open('new.json', 'w') as f:
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>find wifi device</p>
+    <p>find wifi device</p>
 <pre><code>$ /sbin/iw dev
 phy#0
     Interface wls3
@@ -788,7 +775,6 @@ iface wls3 inet dhcp
 <p>change permission /etc/network/interface</p>
 <pre><code>$ chmod 600 /etc/network/interface
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200420.html" class="u-url">mpd</a></h1>
         <div class="metadata">
@@ -801,8 +787,7 @@ iface wls3 inet dhcp
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
+    <p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
 <p>Music Player Daemon. server-client architecture.</p>
 <p><em>mpd.conf</em></p>
 <p>You can specify audio output type and device in /etc/mpd.conf. Various types are available including http streaming.
@@ -855,7 +840,6 @@ M3U can be extended M3U.</p>
 <p><em><a href="https://kodi.wiki/view/Add-on:MPD_Client">KODI Add-on:MPD Client</a></em></p>
 <p>Add-on of KODI formerly known as XBMC.
 If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200409.html" class="u-url">vlc</a></h1>
         <div class="metadata">
@@ -868,8 +852,7 @@ If HDMI-CEC is enabled on your monitor device, you can controll MPD with your re
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
+    <p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
 <p><em>http interface</em></p>
 <p>VLC(or cvlc) could be controlled with http request. See <a href="https://wiki.videolan.org/VLC_HTTP_requests/">VLC HTTP requests</a> for detail</p>
 <p>start cvlc with http interface</p>
@@ -889,7 +872,6 @@ http://127.0.0.1:8080/requests/status.xml
 ?command=volume&amp;val=+&lt;int&gt;
 ?command=volume&amp;val=-&lt;int&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200403.html" class="u-url">postfix</a></h1>
         <div class="metadata">
@@ -902,8 +884,7 @@ http://127.0.0.1:8080/requests/status.xml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>alias</p>
+    <p>alias</p>
 <pre><code>$ postconf -n | grep alias
 $ ls -l /etc/aliases*
 $ postalias hash:/etc/aliases
@@ -914,7 +895,6 @@ $ newaliases
 $ echo "This is body message" | mail -s "My subject" pi
 $ MAILDIR=$HOME/Maildir mail
 </code></pre>
-</div>
     </div>
     </article>
 </div>

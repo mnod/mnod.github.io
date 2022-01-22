@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about perl)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/perl.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>perl</title><link>https://mnod.github.io/posts/20180604.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;リストの内容だけ繰り返す&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about perl)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/perl.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:59 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>perl</title><link>https://mnod.github.io/posts/20180604.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;リストの内容だけ繰り返す&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;#! /usr/bin/perl
 
 @list = (' item1 ', ' item2 ');
@@ -188,7 +188,7 @@ my $string =  localtime($time);
 
 print $string;
 exit;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>perl</category><category>script</category><guid>https://mnod.github.io/posts/20180604.html</guid><pubDate>Mon, 04 Jun 2018 00:00:00 GMT</pubDate></item><item><title>chronicle</title><link>https://mnod.github.io/posts/20160923.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;&lt;a href="https://steve.fi/Software/chronicle/"&gt;chronicle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>perl</category><category>script</category><guid>https://mnod.github.io/posts/20180604.html</guid><pubDate>Mon, 04 Jun 2018 00:00:00 GMT</pubDate></item><item><title>chronicle</title><link>https://mnod.github.io/posts/20160923.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;&lt;a href="https://steve.fi/Software/chronicle/"&gt;chronicle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Markdown等のテキストファイルを、ブログ形式でhtmlファイルに変換するソフトです。
 できたファイルを全てWebサーバに配置するだけで、(全世界に向けて)公開することができるようになります。&lt;/p&gt;
 &lt;p&gt;このサイトがまさにこれを利用しています。
@@ -209,4 +209,4 @@ exit;
 &lt;/ul&gt;
 &lt;p&gt;chronicleでも、他のソフトでできるのと同様に、使用するテンプレートを変えるだけで見た目を切り替えることができます。インストール時に数種類同梱されていますが、このサイトでは&lt;a href="https://github.com/mnod/chronicle-theme"&gt;自分で作成したもの&lt;/a&gt;を利用しています。
 テンプレートは簡単なテキストファイルですので、htmlやcssの知識があれば容易に変更することができます。&lt;/p&gt;
-&lt;p&gt;サイトの見た目はテンプレートで決まるため、使うテンプレートを決めてしまえば、サイトを運用していく際にはコンテンツの内容のみを考えればいいという利点もあります。&lt;/p&gt;&lt;/div&gt;</description><category>perl</category><category>software</category><guid>https://mnod.github.io/posts/20160923.html</guid><pubDate>Fri, 23 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;サイトの見た目はテンプレートで決まるため、使うテンプレートを決めてしまえば、サイトを運用していく際にはコンテンツの内容のみを考えればいいという利点もあります。&lt;/p&gt;</description><category>perl</category><category>software</category><guid>https://mnod.github.io/posts/20160923.html</guid><pubDate>Fri, 23 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

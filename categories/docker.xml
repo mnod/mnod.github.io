@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 29 Dec 2021 11:53:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;!-- https://computingforgeeks.com/install-kubernetes-on-ubuntu-using-k3s/ --&gt;
-
-&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about docker)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/docker.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
 &lt;p&gt;at first intall docker&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo apt-get update
@@ -99,7 +97,7 @@ sudo kubectl get svc
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>squid bump</title><link>https://mnod.github.io/posts/20210610.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -241,7 +239,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210610.html</guid><pubDate>Thu, 10 Jun 2021 00:00:00 GMT</pubDate></item><item><title>squid nobump</title><link>https://mnod.github.io/posts/20210608.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;The squid packages of debian doesn not support &lt;a href="https://wiki.squid-cache.org/Features/SslBump"&gt;sslbump&lt;/a&gt;.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
@@ -386,7 +384,7 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
@@ -428,7 +426,7 @@ ARG PIP_INDEX_URL
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
 We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/&lt;/p&gt;
 &lt;p&gt;Also we can use torrent to download them&lt;/p&gt;
 &lt;p&gt;make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)&lt;/p&gt;
@@ -494,7 +492,7 @@ help # Show help messages
 &lt;p&gt;When update Dockerfile or edit any source codes, need to rebuild the image.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker-compose build
 docker-compose up -d
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;Dockerfile&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item><item><title>terraform docker container</title><link>https://mnod.github.io/posts/20200516.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;From centos:centos8
 
 ARG VERSION=0.12.25
@@ -565,7 +563,7 @@ It seems ansible should be installed with pip if you want to use ec2.py&lt;/p&gt
 
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item><item><title>apt-cacher-ng</title><link>https://mnod.github.io/posts/20200315.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;make a dockerfile&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>ansible</category><category>docker</category><category>terraform</category><guid>https://mnod.github.io/posts/20200516.html</guid><pubDate>Sat, 16 May 2020 00:00:00 GMT</pubDate></item><item><title>apt-cacher-ng</title><link>https://mnod.github.io/posts/20200315.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;make a dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ cat Dockerfile
 FROM debian:buster
 
@@ -606,7 +604,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;for docker build&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20200315.html</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20200315.html</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;
 &lt;p&gt;dockerデーモンの起動と動作確認。ubuntuの場合。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo service docker status
 $ sudo service docker start
@@ -732,7 +730,7 @@ RUN apt-get update &amp;amp;&amp;amp; apt-get install -y \
    make \
 &amp;amp;&amp;amp; apt-get clean \
 &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20161001.html</guid><pubDate>Sat, 01 Oct 2016 00:00:00 GMT</pubDate></item><item><title>arukas</title><link>https://mnod.github.io/posts/20160925.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;2019/10追記&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>container</category><category>docker</category><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20161001.html</guid><pubDate>Sat, 01 Oct 2016 00:00:00 GMT</pubDate></item><item><title>arukas</title><link>https://mnod.github.io/posts/20160925.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;2019/10追記&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://arukas.io/updates/20190930-terminate-of-service/"&gt;2020/1/31でのサービス終了&lt;/a&gt;が発表されました。すでに新規アカウントの申し込みは終了しています。
 無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
 大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。&lt;/p&gt;
@@ -771,4 +769,4 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 正式リリース後には変更される可能性もあるかもしれません。&lt;/p&gt;
 &lt;p&gt;URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。&lt;/p&gt;
 &lt;p&gt;同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
-この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。&lt;/p&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>hosting</category><guid>https://mnod.github.io/posts/20160925.html</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
+この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。&lt;/p&gt;</description><category>container</category><category>docker</category><category>hosting</category><guid>https://mnod.github.io/posts/20160925.html</guid><pubDate>Sun, 25 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

@@ -73,8 +73,7 @@ $ aws iam tag-user --user-name &lt;username&gt; --t">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><em>user</em></p>
+    <p><em>user</em></p>
 <pre><code>$ aws iam list-users --query 'Users[?UserName==`&lt;username&gt;`]'
 $ aws iam get-user --user-name &lt;username&gt;
 
@@ -237,7 +236,6 @@ $ aws iam delete-access-key --user-name &lt;user-name&gt; --access-key-id &lt;ac
         Roles:
           - !Ref TestLambdaRole
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/aws.html" rel="tag">aws</a></li>

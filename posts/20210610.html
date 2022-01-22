@@ -71,8 +71,7 @@ build a docker container">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
+    <p>On debian if you want to analyze or cache the content of the ssl traffic with squid, you have to buid your own squid.
 This is a sample to build squid using apt source package.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -215,7 +214,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 <pre><code>1622798109.029    496 192.168.xxx.xxx NONE/200 0 CONNECT dl.fedoraproject.org:443 - HIER_DIRECT/38.145.60.22 -
 1622798109.130      1 192.168.xxx.xxx TCP_MEM_HIT/200 16115 GET https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm - HIER_NONE/- application/x-rpm
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/docker.html" rel="tag">docker</a></li>

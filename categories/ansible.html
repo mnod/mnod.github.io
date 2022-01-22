@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>create a vault file</p>
+    <p>create a vault file</p>
 <pre><code>$ ansible-vault create test
 New Vault password: 
 Confirm New Vault password: 
@@ -159,7 +158,6 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200516.html" class="u-url">terraform docker container</a></h1>
         <div class="metadata">
@@ -172,8 +170,7 @@ localhost                  : ok=2    changed=0    unreachable=0    failed=0    s
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -245,7 +242,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200510.html" class="u-url">first step of terraform</a></h1>
         <div class="metadata">
@@ -258,8 +254,7 @@ $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>install</em></p>
+    <p><em>install</em></p>
 <pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
 $ unzip terraform_x.xx.xx_linux_amd64.zip
 $ cp terraform /usr/local/bin
@@ -520,7 +515,6 @@ $ ansible-playbook -e @extravars.json apply.playbook
 $ ansible-playbook --check -e @extravars.json destroy.playbook
 $ ansible-playbook -e @extravars.json destroy.playbook
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20190916.html" class="u-url">CloudFormation</a></h1>
         <div class="metadata">
@@ -533,8 +527,7 @@ $ ansible-playbook -e @extravars.json destroy.playbook
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>sample template of CloudFormation in yaml format</em></p>
+    <p><em>sample template of CloudFormation in yaml format</em></p>
 <pre><code>$ cat mystack.yml
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
@@ -709,7 +702,6 @@ $ ansible-playbook -e "CidrBlock=10.30.0.0/16" playbook.yml
 
 $ ansible-playbook playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170827.html" class="u-url">ansible</a></h1>
         <div class="metadata">
@@ -722,8 +714,7 @@ $ ansible-playbook playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>エージェントレスの構成管理ツール。</p>
+    <p>エージェントレスの構成管理ツール。</p>
 <p>対象ホストでは、エージェント等をインストールする必要がなく、基本的に下記を満たせばよい。</p>
 <ul>
 <li>Pythonが動くこと</li>
@@ -772,11 +763,12 @@ $ ansible-playbook -i hosts myserver.yml --ask-pass
 <p><em>Sample ansible playbook in a single yaml file</em></p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=playbooksingle.yml"></script>
 </div>
-    </div>
     </article>
 </div>
 
 
+
+    
 
 
 

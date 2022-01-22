@@ -67,8 +67,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>dictionary</em></p>
+    <p><em>dictionary</em></p>
 <p>add key:value pair to a dictionary</p>
 <pre><code>&gt;&gt;&gt; newdict = {}
 &gt;&gt;&gt; newdict['foo'] = "bar"
@@ -172,7 +171,6 @@ with open('new.json', 'w') as f:
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=urllib_sample.py"></script><p>similar as above but using reauests library</p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"></script>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200125.html" class="u-url">aws</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -184,8 +182,7 @@ with open('new.json', 'w') as f:
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>query with JMESPath</em></p>
+    <p><em>query with JMESPath</em></p>
 <p>projection</p>
 <pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
 $ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
@@ -240,7 +237,6 @@ $ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-V
 $ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
 $ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20181111.html" class="u-url">json</a></h1>
         <div class="metadata">
@@ -253,8 +249,7 @@ $ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Value
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://www.json.org/json-en.html">json</a>(JavaScript Object Notation)</p>
+    <p><a href="https://www.json.org/json-en.html">json</a>(JavaScript Object Notation)</p>
 <ul>
 <li>object is unordered set of name/value pair.</li>
 <li>array is ordered set of values</li>
@@ -339,12 +334,13 @@ $ chmod +x ami.jq
 
 $ ./ami.jq ami.json
 </code></pre>
-</div>
     </div>
     </article>
 </div>
 
 
+
+    
 
 
 

@@ -68,8 +68,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>make a dockerfile</p>
+    <p>make a dockerfile</p>
 <pre><code>$ cat Dockerfile
 FROM debian:buster
 
@@ -111,7 +110,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200308.html" class="u-url">tcpdump</a></h1>
         <div class="metadata">
@@ -124,8 +122,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>tcpdump</em></p>
+    <p><em>tcpdump</em></p>
 <pre><code>    tcpdump 
      -w &lt;output filename&gt;
      -r &lt;input filename&gt;
@@ -150,7 +147,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
      -R "read filter"
 </code></pre>
 <p>To know detail of read filter, see man page of wireshark-filter</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200209.html" class="u-url">ecs</a></h1>
         <div class="metadata">
@@ -163,8 +159,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>cluster</em></p>
+    <p><em>cluster</em></p>
 <pre><code>$ aws ecs list-clusters 
 $ aws ecs describe-clusters --clusters &lt;clusterArn&gt;
 
@@ -238,7 +233,6 @@ $ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
 $ aws ecs update-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt; --desired-count 0
 $ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200128.html" class="u-url">dynamodb</a></h1>
         <div class="metadata">
@@ -251,8 +245,7 @@ $ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&g
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create and delete table</em></p>
+    <p><em>create and delete table</em></p>
 <pre><code>$ aws dynamodb list-tables
 $ aws dynamodb describe-table --table-name testtable
 $ aws dynamodb create-table --table-name testtable  \
@@ -288,6 +281,22 @@ $ aws dynamodb put-item --table-name testtable --item file://put-item.json
 <p><em>get and delete item</em></p>
 <pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
 $ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>backup and restore database</em></p>
+<p>create backup</p>
+<pre><code>$ aws dynamodb list-backups --table-name testtable
+$ aws dynamodb create-backup --table-name testtable --backup-name testtablebackup
+</code></pre>
+<p>describe backup</p>
+<pre><code>$ aws dynamodb describe-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+</code></pre>
+<p>restore from newest backup</p>
+<pre><code>$ aws dynamodb delete-table --table-name testtable
+$ aws dynamodb restore-table-from-backup --target-table-name testtable --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+$ aws dynamodb describe-table --table-name testtable --query 'Table.TableStatus'
+</code></pre>
+<p>remove oldest backup</p>
+<pre><code>$ aws dynamodb delete-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
 </code></pre>
 <p><em>sample python script</em></p>
 <p>put-item.py</p>
@@ -373,7 +382,6 @@ print (json.dumps(res))
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200127.html" class="u-url">cryptsetup</a></h1>
         <div class="metadata">
@@ -386,8 +394,7 @@ print (json.dumps(res))
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>luks</p>
+    <p>luks</p>
 <p><em>install a package</em></p>
 <pre><code>$ sudo apt install cryptsetup
 </code></pre>
@@ -411,7 +418,6 @@ $ df -h /mnt
 <pre><code>$ sudo umount /mnt 
 $ sudo cryptsetup close cryptfs
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200126.html" class="u-url">mdadm</a></h1>
         <div class="metadata">
@@ -424,8 +430,7 @@ $ sudo cryptsetup close cryptfs
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>software raid</p>
+    <p>software raid</p>
 <p><em>install mdadm package</em></p>
 <pre><code>$ sudo apt-get install mdadm
 </code></pre>
@@ -510,7 +515,6 @@ $ sudo mdadm --remove /dev/md0 /dev/loop2
 <p>/dev/loop4 is extra disk for spare</p>
 <pre><code>$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200125.html" class="u-url">aws</a></h1>
         <div class="metadata">
@@ -523,8 +527,7 @@ $ sudo mdadm --remove /dev/md0 /dev/loop2
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>query with JMESPath</em></p>
+    <p><em>query with JMESPath</em></p>
 <p>projection</p>
 <pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
 $ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
@@ -579,7 +582,6 @@ $ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-V
 $ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
 $ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200119.html" class="u-url">vpc</a></h1>
         <div class="metadata">
@@ -592,8 +594,7 @@ $ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Value
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>describe region and abailability zone</em></p>
+    <p><em>describe region and abailability zone</em></p>
 <pre><code>$ aws ec2 describe-regions --filters 'Name=region-name,Values=ap-northeast-1'
 {
     "Regions": [
@@ -817,7 +818,6 @@ $ aws ec2 terminate-instances --instance-ids &lt;instance&gt;
 <pre><code>curl http://169.254.169.254/latest/meta-data/instance-id
 curl http://169.254.169.254/latest/user-data
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200112.html" class="u-url">iam</a></h1>
         <div class="metadata">
@@ -830,8 +830,7 @@ curl http://169.254.169.254/latest/user-data
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>user</em></p>
+    <p><em>user</em></p>
 <pre><code>$ aws iam list-users --query 'Users[?UserName==`&lt;username&gt;`]'
 $ aws iam get-user --user-name &lt;username&gt;
 
@@ -994,7 +993,6 @@ $ aws iam delete-access-key --user-name &lt;user-name&gt; --access-key-id &lt;ac
         Roles:
           - !Ref TestLambdaRole
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200109.html" class="u-url">sqs</a></h1>
         <div class="metadata">
@@ -1007,8 +1005,7 @@ $ aws iam delete-access-key --user-name &lt;user-name&gt; --access-key-id &lt;ac
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create queue</em></p>
+    <p><em>create queue</em></p>
 <pre><code>aws sqs list-queues
 aws sqs create-queue --queue-name testqueue
 </code></pre>
@@ -1040,7 +1037,6 @@ aws sqs purge-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;i
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"></script></p>
 <p>receive message
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"></script></p>
-</div>
     </div>
     </article>
 </div>

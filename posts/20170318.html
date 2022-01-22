@@ -74,8 +74,7 @@ for /r . %i in (*txt) do type "%i" | sort
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
+    <p>カレントディレクトリの*txtに対して処理を繰り返して実行する</p>
 <pre><code>for /r . %i in (*txt) do type "%i" | sort
     バッチの中では%%のようにする。
     doの中の%iは、半角スペースを含むファイル名に展開される場合、ダブルクォーテーションで挟む。
@@ -134,7 +133,6 @@ if not exist z:\. net use z: \\backupserver\backupvol
 set logfile=c:\log\copyall.log
 xcopy \usr z:\usr\ /D /E /H /C /Y /R &gt;&gt; %logfile%
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/windows.html" rel="tag">windows</a></li>

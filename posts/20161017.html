@@ -76,8 +76,7 @@ echo $(bas'>
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>bashスクリプト等でよく使う機能の利用パターンを記載。</p>
+    <p>bashスクリプト等でよく使う機能の利用パターンを記載。</p>
 <p><em>trap</em></p>
 <p>When the script exits, remove tmpfile</p>
 <pre><code>tmpfile=/tmp/tmpfile.$$
@@ -235,7 +234,6 @@ $ ./myscript.sh
 <p>rename the file using a part of original file name.</p>
 <pre><code>$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/shell.html" rel="tag">shell</a></li>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about lifestyle)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/lifestyle.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:55 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about lifestyle)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/lifestyle.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:02 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>riding bicycle</title><link>https://mnod.github.io/posts/20211014.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;間違いだらけの自転車の乗り方&lt;/p&gt;
 &lt;h2&gt;「チャリは全部同じ。短い距離ですぐにつかれる」は誤り&lt;/h2&gt;
 &lt;p&gt;まず、チャリ(またはチャリンコ)という呼び方は、侮蔑を含んでいるように感じる。正当に評価していない感じがして、好きではない。&lt;/p&gt;
 &lt;p&gt;自転車は車種や乗り方次第で、いろんな可能性がある。
@@ -68,7 +68,7 @@
 &lt;h2&gt;「自動車社会において、車道を走る自転車は邪魔者である」は誤り&lt;/h2&gt;
 &lt;p&gt;欧州の先進国に止まらず、米国の大都市においても自動車よりも自転車を優先する取り組みが始まっている。
 本邦においても、車道を減らす取り組みが報道されている。
-自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
 &lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
 &lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -94,7 +94,7 @@ Spotifyは日本上陸前から待ちわびていて、上陸後すぐくらい�
 &lt;h3&gt;Fire TV Stick 4K&lt;/h3&gt;
 &lt;p&gt;Amazon Prime Video に加入していないし、4K ディスプレイは持っていない。けど、便利に使っている。
 アプリストアからいろんなアプリを入れられる。Android系なので、アプリもそこそこそろっており、いろいろ使える。&lt;/p&gt;
-&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item><item><title>Work from home</title><link>https://mnod.github.io/posts/20210409.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。&lt;/p&gt;
+&lt;p&gt;ぶっちゃけ Youtube 見るのに最強。&lt;/p&gt;</description><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20210411.html</guid><pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate></item><item><title>Work from home</title><link>https://mnod.github.io/posts/20210409.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で勤務する日々が続いている。&lt;/p&gt;
 &lt;p&gt;PCは趣味の一つではあるものの、趣味のためにあれこれ購入するのもためらわれ、これまで自宅の作業環境はあまり整っていなかった。
 そのため、在宅勤務での作業効率はあまりよくなかった。これ幸いと？仕方がないので？これまで買わずに我慢していたものをいくつか買いそろえた(自腹)。&lt;/p&gt;
 &lt;h3&gt;モニター&lt;/h3&gt;
@@ -154,7 +154,7 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 そこで、耳をいたわるためにオーバーヘッドの昔ながらの形の安価なヘッドフォンを購入した。&lt;/p&gt;
 &lt;p&gt;有線とBluetoothに対応しているが、有線しか試していない。音質としては不満はない。カナル型イヤフォンとはちょっと違った感じ。&lt;/p&gt;
 &lt;p&gt;眼鏡とは干渉しないのだけど、長時間つけていると(頭が大きいから?)頭が締め付けられて痛くなってしまう。&lt;/p&gt;
-&lt;p&gt;ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;漫画は読まない。&lt;/p&gt;
+&lt;p&gt;ノイズ対策としては、あれこれ買って試すのではなく、ノイズを気にしない精神力を身に着けたほうが良いような気がしてきた。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20210409.html</guid><pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate></item><item><title>eBook reader</title><link>https://mnod.github.io/posts/20180826.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;漫画は読まない。&lt;/p&gt;
 &lt;p&gt;電子書籍の利点は、物理的な重さや容積を考慮する必要がないこと。何百ページの本でも好きなだけいつでもどこにでも持ち運ぶことができる。家に保管するスペースも必要ない。&lt;/p&gt;
 &lt;p&gt;よく言われる電子書籍の欠点として、万が一サービスが終了したら、買った本が読めなくなる、というのがある。
 (物理的に紙の本を買ったとしても、汚したり紛失したり、最悪の場合焼失したりする可能性はあり、未来永劫手元に残ることが保証されるわけではない。)
@@ -184,7 +184,7 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 &lt;p&gt;かつて紙の文庫本を買って読んだ古典が(全てではないが)無償で読めるのは、感慨深い。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;a href="https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer"&gt;Perfect Viewer&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;様々な形式に対応したドキュメントリーダー。
-電子書籍だけでなく、画像ファイルの閲覧にも対応している。&lt;/p&gt;&lt;/div&gt;</description><category>android</category><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20180826.html</guid><pubDate>Sun, 26 Aug 2018 00:00:00 GMT</pubDate></item><item><title>weightloss</title><link>https://mnod.github.io/posts/20180701.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;減量＝摂取カロリーと消費カロリーの収支をマイナスにする努力。&lt;/p&gt;
+電子書籍だけでなく、画像ファイルの閲覧にも対応している。&lt;/p&gt;</description><category>android</category><category>lifestyle</category><category>software</category><guid>https://mnod.github.io/posts/20180826.html</guid><pubDate>Sun, 26 Aug 2018 00:00:00 GMT</pubDate></item><item><title>weightloss</title><link>https://mnod.github.io/posts/20180701.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;減量＝摂取カロリーと消費カロリーの収支をマイナスにする努力。&lt;/p&gt;
 &lt;p&gt;メタボには該当しないがBMI的に標準体重の上限近いので、減量に取り組んでいる。&lt;/p&gt;
 &lt;p&gt;無理をせず1週間で 300g くらいずつ減らしていき、数十週かけて標準体重の中ほどを目指している。(１日あたりカロリー収支を、300kcal 消費超過とする。)&lt;/p&gt;
 &lt;p&gt;急に減量すると防御が働くそうなので、あせらず少しずつ。
@@ -240,7 +240,7 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 &lt;p&gt;体重が5%くらい減ると防御が働いて、数週間体重が減らなくなる。この間も辛抱してがんばる。&lt;/p&gt;
 &lt;p&gt;心が折れそうなときは
 「怠惰な豚でいたくない。でぶは自己管理できないことの表れ。みっともない。」と言い聞かせてがんばる。&lt;/p&gt;
-&lt;p&gt;何事も始めるのに遅すぎるということはない。変化を恐れず、常に自分を変えて成長する。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180701.html</guid><pubDate>Sun, 01 Jul 2018 00:00:00 GMT</pubDate></item><item><title>stop smoking</title><link>https://mnod.github.io/posts/20180630.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;数年前に禁煙成功し、それ以来完全にやめることができた。
+&lt;p&gt;何事も始めるのに遅すぎるということはない。変化を恐れず、常に自分を変えて成長する。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180701.html</guid><pubDate>Sun, 01 Jul 2018 00:00:00 GMT</pubDate></item><item><title>stop smoking</title><link>https://mnod.github.io/posts/20180630.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;数年前に禁煙成功し、それ以来完全にやめることができた。
 その時に考えたこと、やったことなど。&lt;/p&gt;
 &lt;p&gt;禁煙 = 一度決めたことを継続する心の強さこそが力
 禁煙できれば何でもできる。禁煙すらできなければ何もできない。&lt;/p&gt;
@@ -309,4 +309,4 @@ Bluetoothのものも試したが、別の意味で音質の評判がよくな�
 &lt;p&gt;吸いたくなる数分間を我慢できなくなりそうな時
 何か飲み物を飲む。タブレット菓子を食べる。席を立つ。気分転換をする。ストレッチ。瞑想。深呼吸。&lt;/p&gt;
 &lt;p&gt;何度も禁煙に失敗してもあきらめない。
-甘えを捨てて、自分には厳しく。周囲の人には感謝。&lt;/p&gt;&lt;/div&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180630.html</guid><pubDate>Sat, 30 Jun 2018 00:00:00 GMT</pubDate></item></channel></rss>
+甘えを捨てて、自分には厳しく。周囲の人には感謝。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20180630.html</guid><pubDate>Sat, 30 Jun 2018 00:00:00 GMT</pubDate></item></channel></rss>

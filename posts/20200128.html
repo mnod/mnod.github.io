@@ -72,8 +72,7 @@ $ aws dynamodb create-table --table-name testtable  \
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><em>create and delete table</em></p>
+    <p><em>create and delete table</em></p>
 <pre><code>$ aws dynamodb list-tables
 $ aws dynamodb describe-table --table-name testtable
 $ aws dynamodb create-table --table-name testtable  \
@@ -109,6 +108,22 @@ $ aws dynamodb put-item --table-name testtable --item file://put-item.json
 <p><em>get and delete item</em></p>
 <pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
 $ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>backup and restore database</em></p>
+<p>create backup</p>
+<pre><code>$ aws dynamodb list-backups --table-name testtable
+$ aws dynamodb create-backup --table-name testtable --backup-name testtablebackup
+</code></pre>
+<p>describe backup</p>
+<pre><code>$ aws dynamodb describe-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+</code></pre>
+<p>restore from newest backup</p>
+<pre><code>$ aws dynamodb delete-table --table-name testtable
+$ aws dynamodb restore-table-from-backup --target-table-name testtable --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+$ aws dynamodb describe-table --table-name testtable --query 'Table.TableStatus'
+</code></pre>
+<p>remove oldest backup</p>
+<pre><code>$ aws dynamodb delete-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
 </code></pre>
 <p><em>sample python script</em></p>
 <p>put-item.py</p>
@@ -194,7 +209,6 @@ print (json.dumps(res))
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/aws.html" rel="tag">aws</a></li>

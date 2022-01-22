@@ -76,8 +76,7 @@ RUN apt update &amp;&amp; \
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
+    <p><a href="https://pypi.org/project/devpi-server/">devpi-server</a> is a server for private package indexes and PyPI caching.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
 <pre><code>FROM debian:buster-slim
@@ -120,7 +119,6 @@ ARG PIP_INDEX_URL
 <p>then specify devpi-server at build-arg parameter in docker run command line.</p>
 <pre><code>$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/docker.html" rel="tag">docker</a></li>

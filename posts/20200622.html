@@ -71,8 +71,7 @@ resource "aws_s3_bucket" "terraform_state" {
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><em>create S3 bucket and DynamoDB table</em></p>
+    <p><em>create S3 bucket and DynamoDB table</em></p>
 <p>At first make tf file to build S3 bucket for backend to store state file and DynamoDB table for lock control</p>
 <pre><code>resource "aws_s3_bucket" "terraform_state" {
   bucket = "mybucketname"
@@ -264,7 +263,6 @@ Resources:
         - Key: "Name"
           Value: "test"
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/terraform.html" rel="tag">terraform</a></li>

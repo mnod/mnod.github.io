@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about shell)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/shell.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about shell)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/shell.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:58 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>other tips for scripting</title><link>https://mnod.github.io/posts/20200506.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;remove all carriage returns&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cat file | tr -d '\n'
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;url encoding and decoding&lt;/em&gt;&lt;/p&gt;
@@ -44,11 +44,11 @@ echo normal text
 &lt;tr&gt;&lt;td&gt;Cyan   &lt;/td&gt;&lt;td&gt;36m &lt;/td&gt;&lt;td&gt;46m&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;White  &lt;/td&gt;&lt;td&gt;37m &lt;/td&gt;&lt;td&gt;47m&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20200506.html</guid><pubDate>Wed, 06 May 2020 00:00:00 GMT</pubDate></item><item><title>sample of simple bash scripts</title><link>https://mnod.github.io/posts/20170913.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;ファイルバックアップスクリプト&lt;/em&gt;&lt;/p&gt;
+&lt;/table&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20200506.html</guid><pubDate>Wed, 06 May 2020 00:00:00 GMT</pubDate></item><item><title>sample of simple bash scripts</title><link>https://mnod.github.io/posts/20170913.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;ファイルバックアップスクリプト&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;引数に与えられたファイルを3ケタの連番をつけてコピーする。
 まだいま一ついけてない。&lt;/p&gt;
 &lt;p&gt;gistの引用のテストをかねて。&lt;/p&gt;
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>script</category><category>shell</category><guid>https://mnod.github.io/posts/20170913.html</guid><pubDate>Wed, 13 Sep 2017 00:00:00 GMT</pubDate></item><item><title>bash</title><link>https://mnod.github.io/posts/20161017.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;bashスクリプト等でよく使う機能の利用パターンを記載。&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=backup.sh"&gt;&lt;/script&gt;</description><category>script</category><category>shell</category><guid>https://mnod.github.io/posts/20170913.html</guid><pubDate>Wed, 13 Sep 2017 00:00:00 GMT</pubDate></item><item><title>bash</title><link>https://mnod.github.io/posts/20161017.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;bashスクリプト等でよく使う機能の利用パターンを記載。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;trap&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;When the script exits, remove tmpfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;tmpfile=/tmp/tmpfile.$$
@@ -196,4 +196,4 @@ $ ./myscript.sh
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;rename the file using a part of original file name.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20161017.html</guid><pubDate>Mon, 17 Oct 2016 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>shell</category><guid>https://mnod.github.io/posts/20161017.html</guid><pubDate>Mon, 17 Oct 2016 00:00:00 GMT</pubDate></item></channel></rss>

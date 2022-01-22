@@ -74,8 +74,7 @@ c">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>for test, create some image files</p>
+    <p>for test, create some image files</p>
 <pre><code>dd if=/dev/zero of=file1.img bs=1M count=0 seek=5120
 dd if=/dev/zero of=file2.img bs=1M count=0 seek=5120
 losetup /dev/loop1 file1.img
@@ -156,7 +155,6 @@ parted /dev/sdx resizepart [num] 100%
 e2fsck -f /dev/sdx[num]
 resize2fs /dev/sdx[num]
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/linux.html" rel="tag">linux</a></li>

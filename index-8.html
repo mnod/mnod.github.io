@@ -58,8 +58,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>adding ssh public key</em></p>
+    <p><em>adding ssh public key</em></p>
 <p>You can use github without ssh key. 
 But when you add ssh key and you use ssh private key without passphrase, it is convinient for scripting.</p>
 <p>Login and follow menu like below:
@@ -108,7 +107,6 @@ git commit -a -m "&lt;commit message&gt;"
 git remote add origin &lt;url&gt;
 git push -u origin master -f
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200616.html" class="u-url">screen and tmux</a></h1>
         <div class="metadata">
@@ -121,8 +119,7 @@ git push -u origin master -f
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<table>
+    <table>
 <tr>
 <th>command</th>
 <th>screen</th>
@@ -176,7 +173,6 @@ git push -u origin master -f
 <p>it can create a new window which executes a specific program</p>
 <pre><code>screen watch -n 5 ntpq -pn
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200615.html" class="u-url">chrony</a></h1>
         <div class="metadata">
@@ -189,8 +185,7 @@ git push -u origin master -f
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>chrony is an implementation of Network Time Protocol</p>
+    <p>chrony is an implementation of Network Time Protocol</p>
 <p>install</p>
 <pre><code>apt install chrony
 </code></pre>
@@ -245,7 +240,6 @@ bindcmdaddress 192.168.xxx.xxx
 default is localhost</p>
 <pre><code>cronyc -h 192.168.xxx.xxx
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200614.html" class="u-url">ntpd</a></h1>
         <div class="metadata">
@@ -258,8 +252,7 @@ default is localhost</p>
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>install</p>
+    <p>install</p>
 <pre><code>apt install ntp
 </code></pre>
 <p>sample config
@@ -307,7 +300,6 @@ restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
 <pre><code>ntpq -pn &lt;address&gt;
 ntpq -c readlist &lt;address&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200613.html" class="u-url">journalctl</a></h1>
         <div class="metadata">
@@ -320,8 +312,7 @@ ntpq -c readlist &lt;address&gt;
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show all messages</p>
+    <p>show all messages</p>
 <pre><code>journalctl
 </code></pre>
 <p>show all messages from boot</p>
@@ -363,7 +354,6 @@ systemctl force-reload systemd-journald
 It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.</p>
 <pre><code>journalctl -D /mnt/var/log/journal -x
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200612.html" class="u-url">systemctl</a></h1>
         <div class="metadata">
@@ -376,8 +366,7 @@ It would be convinient, for example, when you read other system's journal messag
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show system status</p>
+    <p>show system status</p>
 <pre><code>systemctl status
 </code></pre>
 <p>show running or failed units</p>
@@ -413,7 +402,6 @@ systemctl unmask unit
 <pre><code>systemctl reboot
 systemctl poweroff
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200516.html" class="u-url">terraform docker container</a></h1>
         <div class="metadata">
@@ -426,8 +414,7 @@ systemctl poweroff
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Dockerfile</p>
+    <p>Dockerfile</p>
 <pre><code>From centos:centos8
 
 ARG VERSION=0.12.25
@@ -499,7 +486,6 @@ It seems ansible should be installed with pip if you want to use ec2.py</p>
 $ sudo sh infradeploy.sh ansible-playbook --check --diff -i ec2.py playbook.yml
 $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200510.html" class="u-url">first step of terraform</a></h1>
         <div class="metadata">
@@ -512,8 +498,7 @@ $ sudo sh infradeploy.sh ansible-playbook --diff -i ec2.py playbook.yml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>install</em></p>
+    <p><em>install</em></p>
 <pre><code>$ wget url https://releases.hashicorp.com/terraform/x.xx.xx/terraform_x.xx.xx_linux_amd64.zip
 $ unzip terraform_x.xx.xx_linux_amd64.zip
 $ cp terraform /usr/local/bin
@@ -774,7 +759,6 @@ $ ansible-playbook -e @extravars.json apply.playbook
 $ ansible-playbook --check -e @extravars.json destroy.playbook
 $ ansible-playbook -e @extravars.json destroy.playbook
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200506.html" class="u-url">other tips for scripting</a></h1>
         <div class="metadata">
@@ -787,8 +771,7 @@ $ ansible-playbook -e @extravars.json destroy.playbook
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>remove all carriage returns</em></p>
+    <p><em>remove all carriage returns</em></p>
 <pre><code>cat file | tr -d '\n'
 </code></pre>
 <p><em>url encoding and decoding</em></p>
@@ -869,7 +852,6 @@ echo normal text
 </tbody>
 </table>
 </div>
-    </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200422.html" class="u-url">json in python</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
@@ -881,8 +863,7 @@ echo normal text
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>dictionary</em></p>
+    <p><em>dictionary</em></p>
 <p>add key:value pair to a dictionary</p>
 <pre><code>&gt;&gt;&gt; newdict = {}
 &gt;&gt;&gt; newdict['foo'] = "bar"
@@ -986,7 +967,6 @@ with open('new.json', 'w') as f:
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=urllib_sample.py"></script><p>similar as above but using reauests library</p>
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"></script>
 </div>
-    </div>
     </article>
 </div>
 

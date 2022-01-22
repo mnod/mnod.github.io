@@ -58,8 +58,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>find wifi device</p>
+    <p>find wifi device</p>
 <pre><code>$ /sbin/iw dev
 phy#0
     Interface wls3
@@ -99,7 +98,6 @@ iface wls3 inet dhcp
 <p>change permission /etc/network/interface</p>
 <pre><code>$ chmod 600 /etc/network/interface
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200420.html" class="u-url">mpd</a></h1>
         <div class="metadata">
@@ -112,8 +110,7 @@ iface wls3 inet dhcp
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
+    <p><em><a href="https://www.musicpd.org/">mpd</a></em></p>
 <p>Music Player Daemon. server-client architecture.</p>
 <p><em>mpd.conf</em></p>
 <p>You can specify audio output type and device in /etc/mpd.conf. Various types are available including http streaming.
@@ -166,7 +163,6 @@ M3U can be extended M3U.</p>
 <p><em><a href="https://kodi.wiki/view/Add-on:MPD_Client">KODI Add-on:MPD Client</a></em></p>
 <p>Add-on of KODI formerly known as XBMC.
 If HDMI-CEC is enabled on your monitor device, you can controll MPD with your remote controller.</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200409.html" class="u-url">vlc</a></h1>
         <div class="metadata">
@@ -179,8 +175,7 @@ If HDMI-CEC is enabled on your monitor device, you can controll MPD with your re
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
+    <p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
 <p><em>http interface</em></p>
 <p>VLC(or cvlc) could be controlled with http request. See <a href="https://wiki.videolan.org/VLC_HTTP_requests/">VLC HTTP requests</a> for detail</p>
 <p>start cvlc with http interface</p>
@@ -200,7 +195,6 @@ http://127.0.0.1:8080/requests/status.xml
 ?command=volume&amp;val=+&lt;int&gt;
 ?command=volume&amp;val=-&lt;int&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200403.html" class="u-url">postfix</a></h1>
         <div class="metadata">
@@ -213,8 +207,7 @@ http://127.0.0.1:8080/requests/status.xml
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>alias</p>
+    <p>alias</p>
 <pre><code>$ postconf -n | grep alias
 $ ls -l /etc/aliases*
 $ postalias hash:/etc/aliases
@@ -225,7 +218,6 @@ $ newaliases
 $ echo "This is body message" | mail -s "My subject" pi
 $ MAILDIR=$HOME/Maildir mail
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200315.html" class="u-url">apt-cacher-ng</a></h1>
         <div class="metadata">
@@ -238,8 +230,7 @@ $ MAILDIR=$HOME/Maildir mail
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>make a dockerfile</p>
+    <p>make a dockerfile</p>
 <pre><code>$ cat Dockerfile
 FROM debian:buster
 
@@ -281,7 +272,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200308.html" class="u-url">tcpdump</a></h1>
         <div class="metadata">
@@ -294,8 +284,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>tcpdump</em></p>
+    <p><em>tcpdump</em></p>
 <pre><code>    tcpdump 
      -w &lt;output filename&gt;
      -r &lt;input filename&gt;
@@ -320,7 +309,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
      -R "read filter"
 </code></pre>
 <p>To know detail of read filter, see man page of wireshark-filter</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200209.html" class="u-url">ecs</a></h1>
         <div class="metadata">
@@ -333,8 +321,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>cluster</em></p>
+    <p><em>cluster</em></p>
 <pre><code>$ aws ecs list-clusters 
 $ aws ecs describe-clusters --clusters &lt;clusterArn&gt;
 
@@ -408,7 +395,6 @@ $ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
 $ aws ecs update-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt; --desired-count 0
 $ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200128.html" class="u-url">dynamodb</a></h1>
         <div class="metadata">
@@ -421,8 +407,7 @@ $ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&g
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>create and delete table</em></p>
+    <p><em>create and delete table</em></p>
 <pre><code>$ aws dynamodb list-tables
 $ aws dynamodb describe-table --table-name testtable
 $ aws dynamodb create-table --table-name testtable  \
@@ -458,6 +443,22 @@ $ aws dynamodb put-item --table-name testtable --item file://put-item.json
 <p><em>get and delete item</em></p>
 <pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
 $ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>backup and restore database</em></p>
+<p>create backup</p>
+<pre><code>$ aws dynamodb list-backups --table-name testtable
+$ aws dynamodb create-backup --table-name testtable --backup-name testtablebackup
+</code></pre>
+<p>describe backup</p>
+<pre><code>$ aws dynamodb describe-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+</code></pre>
+<p>restore from newest backup</p>
+<pre><code>$ aws dynamodb delete-table --table-name testtable
+$ aws dynamodb restore-table-from-backup --target-table-name testtable --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+$ aws dynamodb describe-table --table-name testtable --query 'Table.TableStatus'
+</code></pre>
+<p>remove oldest backup</p>
+<pre><code>$ aws dynamodb delete-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
 </code></pre>
 <p><em>sample python script</em></p>
 <p>put-item.py</p>
@@ -543,7 +544,6 @@ print (json.dumps(res))
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200127.html" class="u-url">cryptsetup</a></h1>
         <div class="metadata">
@@ -556,8 +556,7 @@ print (json.dumps(res))
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>luks</p>
+    <p>luks</p>
 <p><em>install a package</em></p>
 <pre><code>$ sudo apt install cryptsetup
 </code></pre>
@@ -581,7 +580,6 @@ $ df -h /mnt
 <pre><code>$ sudo umount /mnt 
 $ sudo cryptsetup close cryptfs
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20200126.html" class="u-url">mdadm</a></h1>
         <div class="metadata">
@@ -594,8 +592,7 @@ $ sudo cryptsetup close cryptfs
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>software raid</p>
+    <p>software raid</p>
 <p><em>install mdadm package</em></p>
 <pre><code>$ sudo apt-get install mdadm
 </code></pre>
@@ -680,7 +677,6 @@ $ sudo mdadm --remove /dev/md0 /dev/loop2
 <p>/dev/loop4 is extra disk for spare</p>
 <pre><code>$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
 </code></pre>
-</div>
     </div>
     </article>
 </div>

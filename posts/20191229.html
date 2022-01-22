@@ -76,8 +76,7 @@ m">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><em>make partition</em></p>
+    <p><em>make partition</em></p>
 <pre><code>parted /dev/sdc print
 parted /dev/sdc rm 1
 parted /dev/sdc mkpart primary ext4 1MiB 1GiB 
@@ -105,7 +104,6 @@ dump -0 -f - /dev/sdb1 | sudo restore -rf -
 <pre><code>grub-install --boot-directory=/media/chroot/boot /dev/sdc
 grub-mkconfig -o /media/chroot/boot/grub/grub.cfg
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/linux.html" rel="tag">linux</a></li>

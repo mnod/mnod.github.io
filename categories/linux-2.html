@@ -69,8 +69,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>make partition</em></p>
+    <p><em>make partition</em></p>
 <pre><code>parted /dev/sdc print
 parted /dev/sdc rm 1
 parted /dev/sdc mkpart primary ext4 1MiB 1GiB 
@@ -98,7 +97,6 @@ dump -0 -f - /dev/sdb1 | sudo restore -rf -
 <pre><code>grub-install --boot-directory=/media/chroot/boot /dev/sdc
 grub-mkconfig -o /media/chroot/boot/grub/grub.cfg
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191228.html" class="u-url">lvm</a></h1>
         <div class="metadata">
@@ -111,8 +109,7 @@ grub-mkconfig -o /media/chroot/boot/grub/grub.cfg
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>for test, create some image files</p>
+    <p>for test, create some image files</p>
 <pre><code>dd if=/dev/zero of=file1.img bs=1M count=0 seek=5120
 dd if=/dev/zero of=file2.img bs=1M count=0 seek=5120
 losetup /dev/loop1 file1.img
@@ -193,7 +190,6 @@ parted /dev/sdx resizepart [num] 100%
 e2fsck -f /dev/sdx[num]
 resize2fs /dev/sdx[num]
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180506.html" class="u-url">kernel parameter</a></h1>
         <div class="metadata">
@@ -206,8 +202,7 @@ resize2fs /dev/sdx[num]
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ipv4 のルーティング設定の例</p>
+    <p>ipv4 のルーティング設定の例</p>
 <p>設定値確認</p>
 <pre><code>cat /proc/sys/net/ipv4/ip_forward
 or
@@ -227,7 +222,6 @@ net.ipv4.conf.all.forwarding = 1
 END
 sysctl -p
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170918.html" class="u-url">backup and restore openldap</a></h1>
         <div class="metadata">
@@ -240,8 +234,7 @@ sysctl -p
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>backup</em></p>
+    <p><em>backup</em></p>
 <pre><code># systemctl stop slapd
 slapcat &gt; ldap.ldif
 slapcat -b cn=config &gt; ldap-config.ldif
@@ -258,7 +251,6 @@ chown openldap:openldap -R /etc/ldap/slapd.d
 chown openldap:openldap -R /var/lib/ldap
 systemctl start slapd
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170826.html" class="u-url">resource monitoring</a></h1>
         <div class="metadata">
@@ -271,8 +263,7 @@ systemctl start slapd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>top</em></p>
+    <p><em>top</em></p>
 <p>topコマンドを一回だけ実行して終了する(バッチモード)。</p>
 <pre><code>top -b -n 1
 </code></pre>
@@ -295,7 +286,6 @@ systemctl start slapd
 -e hh:mm # 以前のデータを表示
 (-fではなく、[interval] [count]の指定で、リアルタイム表示できるらしい)
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170823.html" class="u-url">network commands on linux</a></h1>
         <div class="metadata">
@@ -308,8 +298,7 @@ systemctl start slapd
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Recently, the iproute2 package's commands are recommended instead of net-tools to show or control network settings.</p>
+    <p>Recently, the iproute2 package's commands are recommended instead of net-tools to show or control network settings.</p>
 <p><em>確認コマンド</em></p>
 <p>show mac address table</p>
 <pre><code>ip [-6] neigh
@@ -451,7 +440,6 @@ ip link set br0 up
 ovs-vsctl del-port br0 tap0
 ovs-vsctl del-port br0 eth0
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170822.html" class="u-url">expect</a></h1>
         <div class="metadata">
@@ -464,8 +452,7 @@ ovs-vsctl del-port br0 eth0
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>自動ログインマクロというとTeratermマクロを思い浮かべがちだが、un*x の expect コマンドを使うこともできる。</p>
+    <p>自動ログインマクロというとTeratermマクロを思い浮かべがちだが、un*x の expect コマンドを使うこともできる。</p>
 <p>マクロはホームディレクトリ等に保存してchmod 700 しておく。</p>
 <p>expect を使ったssh自動ログインbashスクリプトの簡単な例(一部抜粋)</p>
 <p>sshで自動ログインだけ考えたら、パスフレーズなしの秘密鍵を使えば済むが、マクロならその後の処理も自動化できる。</p>
@@ -498,7 +485,6 @@ expect {
 }
 interact
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170821.html" class="u-url">archive and compress</a></h1>
         <div class="metadata">
@@ -511,8 +497,7 @@ interact
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>compress</em></p>
+    <p><em>compress</em></p>
 <p>gzip</p>
 <pre><code>gzip filename
 gunzip -lv filename.gz
@@ -631,7 +616,6 @@ p7zip-fullパッケージの7zを使うことで、暗号化することがで�
 <pre><code>zip -0 ....
 7z a -mx=0 ....
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170820.html" class="u-url">sed and awk</a></h1>
         <div class="metadata">
@@ -644,8 +628,7 @@ p7zip-fullパッケージの7zを使うことで、暗号化することがで�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>簡単な使い方の例を記載する。</p>
+    <p>簡単な使い方の例を記載する。</p>
 <p><em>sed</em></p>
 <p>2行目以降で、fooをbarに全て置換</p>
 <pre><code>sed -e '2,$ s/foo/bar/g' filename
@@ -723,7 +706,6 @@ END {
   print "script end"
 }
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20170401.html" class="u-url">nfs</a></h1>
         <div class="metadata">
@@ -736,8 +718,7 @@ END {
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<pre><code>$ service nfs-kernel-server status
+    <pre><code>$ service nfs-kernel-server status
 nfsd running
 
 $ service rpcbind status
@@ -760,7 +741,6 @@ All mount points on yyyyyy:
 <pre><code>$ vi /etc/hosts.allow
 portmap : 192.168.1.0/255.255.255.0
 </code></pre>
-</div>
     </div>
     </article>
 </div>

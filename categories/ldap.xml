@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ldap)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ldap.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>openldap tools</title><link>https://mnod.github.io/posts/20180426.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;ldapエントリの検索&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ldap)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ldap.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:59 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>openldap tools</title><link>https://mnod.github.io/posts/20180426.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;ldapエントリの検索&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ldapsearch -x [-H ldap:///] -D "&amp;lt;basedn&amp;gt;" -W -b &amp;lt;searchbase&amp;gt; [filter]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;ldapmodifyによるエントリの更新&lt;/p&gt;
@@ -18,7 +18,7 @@ dn: uid=user2,ou=user,dc=example
 changetype: modify
 add: gecos
 gecos: user2@example
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ldap</category><guid>https://mnod.github.io/posts/20180426.html</guid><pubDate>Thu, 26 Apr 2018 00:00:00 GMT</pubDate></item><item><title>backup and restore openldap</title><link>https://mnod.github.io/posts/20170918.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;backup&lt;/em&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>ldap</category><guid>https://mnod.github.io/posts/20180426.html</guid><pubDate>Thu, 26 Apr 2018 00:00:00 GMT</pubDate></item><item><title>backup and restore openldap</title><link>https://mnod.github.io/posts/20170918.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;backup&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# systemctl stop slapd
 slapcat &amp;gt; ldap.ldif
 slapcat -b cn=config &amp;gt; ldap-config.ldif
@@ -34,4 +34,4 @@ slapadd -l ldap.ldif
 chown openldap:openldap -R /etc/ldap/slapd.d
 chown openldap:openldap -R /var/lib/ldap
 systemctl start slapd
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>ldap</category><category>linux</category><guid>https://mnod.github.io/posts/20170918.html</guid><pubDate>Mon, 18 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>ldap</category><category>linux</category><guid>https://mnod.github.io/posts/20170918.html</guid><pubDate>Mon, 18 Sep 2017 00:00:00 GMT</pubDate></item></channel></rss>

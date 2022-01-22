@@ -68,8 +68,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>bashスクリプト等でよく使う機能の利用パターンを記載。</p>
+    <p>bashスクリプト等でよく使う機能の利用パターンを記載。</p>
 <p><em>trap</em></p>
 <p>When the script exits, remove tmpfile</p>
 <pre><code>tmpfile=/tmp/tmpfile.$$
@@ -227,7 +226,6 @@ $ ./myscript.sh
 <p>rename the file using a part of original file name.</p>
 <pre><code>$ ls | tail -4 | awk -F_ '{print "mv",$0, "foo_"$4}'
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161016.html" class="u-url">basic commands usage</a></h1>
         <div class="metadata">
@@ -240,8 +238,7 @@ $ ./myscript.sh
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>よく使う基本的コマンドの使用パターンを記載。</p>
+    <p>よく使う基本的コマンドの使用パターンを記載。</p>
 <p><em>sort</em></p>
 <p>IPv4アドレスのソート例</p>
 <pre><code>... | sort -t. -k1n -k2n -k3n -k4n
@@ -322,7 +319,6 @@ export TZ=JST+15
 yesterday=`date +%Y%m%d`
 export TZ=$TEMP_TZ
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161015.html" class="u-url">dump and restore</a></h1>
         <div class="metadata">
@@ -335,8 +331,7 @@ export TZ=$TEMP_TZ
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>dumpとrestoreは、ファイルシステムレベルでバックアップ、リストアを行います。対応してるのはext2等に限られます。</p>
+    <p>dumpとrestoreは、ファイルシステムレベルでバックアップ、リストアを行います。対応してるのはext2等に限られます。</p>
 <p>他のOS、他のファイルシステムでも、同様のアプリケーションがあります。(<a href="https://www.freebsd.org/cgi/man.cgi?dump(8)">FreeBSDの例</a>)</p>
 <p>以下、使い方の例。</p>
 <p>レベル0バックアップ(フルバックアップ)
@@ -384,7 +379,6 @@ ssh user@remotehost dd if=/dir/filename.gz | gzip -cd | restore -rf -
 または
 ssh user@remotehost 'dump -0uf - /mountpoint | gzip -c' | gzip -cd | restore -rf -
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161008.html" class="u-url">rsync</a></h1>
         <div class="metadata">
@@ -397,8 +391,7 @@ ssh user@remotehost 'dump -0uf - /mountpoint | gzip -c' | gzip -cd | restore -rf
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://download.samba.org/pub/rsync/rsync.html">rsync</a> は同期ツールで、バックアップをとるのにとても重宝します。</p>
+    <p><a href="https://download.samba.org/pub/rsync/rsync.html">rsync</a> は同期ツールで、バックアップをとるのにとても重宝します。</p>
 <p>以下、使い方のメモ。</p>
 <p>/src配下のdirディレクトリを、/dst配下のdirディレクトリとしてコピー。
 (/src/dirの内容を、/dst/dirの中にコピー。)</p>
@@ -418,7 +411,6 @@ rsync -av /src/dir/ /dst/dir
 --bwlimit=n # 帯域制限(kbps)
 </code></pre>
 <p>参考: scp の帯域制限は -l n(kbps)</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161005.html" class="u-url">dd</a></h1>
         <div class="metadata">
@@ -431,8 +423,7 @@ rsync -av /src/dir/ /dst/dir
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://linuxjm.osdn.jp/html/GNU_coreutils/man1/dd.1.html">dd</a> はディスクイメージを保存・リストアするのに便利なコマンドです。</p>
+    <p><a href="https://linuxjm.osdn.jp/html/GNU_coreutils/man1/dd.1.html">dd</a> はディスクイメージを保存・リストアするのに便利なコマンドです。</p>
 <p>ifを指定しなければ標準入力を使用。同様に、ofを指定しなければ標準出力を使用します。</p>
 <p>以下、使い方をメモしておきます。
 (コピー&amp;ペーストで利用する場合は充分気をつけて利用してください)</p>
@@ -495,7 +486,6 @@ $ dd if=/dev/urandom of=/dev/sdx bs=4096
 <p>or you can use shred command.</p>
 <pre><code>$ shred --verbose --random-source=/dev/urandom -n 1 /dev/sdx
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20161001.html" class="u-url">docker life cycle</a></h1>
         <div class="metadata">
@@ -508,8 +498,7 @@ $ dd if=/dev/urandom of=/dev/sdx bs=4096
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>ライフサイクルをざっと。</p>
+    <p>ライフサイクルをざっと。</p>
 <p>dockerデーモンの起動と動作確認。ubuntuの場合。</p>
 <pre><code>$ sudo service docker status
 $ sudo service docker start
@@ -636,7 +625,6 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 &amp;&amp; apt-get clean \
 &amp;&amp; rm -rf /var/lib/apt/lists/*
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160926.html" class="u-url">Tiny Tiny RSS</a></h1>
         <div class="metadata">
@@ -649,8 +637,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><a href="https://tt-rss.org/gitlab/fox/tt-rss/wikis/home">Tiny Tiny RSS</a>は、フリーのサーバサイドRSSアグリゲータです。</p>
+    <p><a href="https://tt-rss.org/gitlab/fox/tt-rss/wikis/home">Tiny Tiny RSS</a>は、フリーのサーバサイドRSSアグリゲータです。</p>
 <p>利用するには、構築済みの方にアカウントを払い出してもらうか、自分でwebサーバ、dbサーバを構築・運用していく必要があります。</p>
 <p>スマホのニュースアプリと比較して、RSSアグリゲータは、ニュースソースをお仕着せのものではなく自分で選択することができること、アプリ等が突然サービス終了して泣かされることがないことが利点です。</p>
 <p>RSSアグリゲータといえば、数年前にgoogleのサービスが終了し、今度はYahoo!Japanのサービスが終了することになりました。
@@ -666,7 +653,6 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 </li>
 </ul>
 <p>iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160925.html" class="u-url">arukas</a></h1>
         <div class="metadata">
@@ -679,8 +665,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>2019/10追記</p>
+    <p>2019/10追記</p>
 <p><a href="https://arukas.io/updates/20190930-terminate-of-service/">2020/1/31でのサービス終了</a>が発表されました。すでに新規アカウントの申し込みは終了しています。
 無料で使える範囲での活用方法を自分の中で見いだしたところでしたので、とても残念です。
 大手サービスプロバイダなのに、2018/03 から始まったサービスが 2020/01 で終了してしまうというのは、あまりに早すぎると感じます。利用者が相当少なかったのでしょうか。</p>
@@ -720,7 +705,6 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 <p>URLとポートを指定すれば、起動したコンテナに外部から接続することができます。この場合は通信プロトコルはhttp(s)に限りません。</p>
 <p>同じ内容のものを複数のコンテナで動かすことができますが、この場合、エンドポイントという与えられたurlにhttps接続することで、各コンテナにロードバランスして接続させることができます。(バランスさせるアルゴリズムなどは公開されていないようです。)
 この時、tlsにより通信内容は暗号化されます。自分で証明書を準備する必要がありません。ただし、プロトコルはhttpに限られます。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160923.html" class="u-url">chronicle</a></h1>
         <div class="metadata">
@@ -733,8 +717,7 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em><a href="https://steve.fi/Software/chronicle/">chronicle</a></em></p>
+    <p><em><a href="https://steve.fi/Software/chronicle/">chronicle</a></em></p>
 <p>Markdown等のテキストファイルを、ブログ形式でhtmlファイルに変換するソフトです。
 できたファイルを全てWebサーバに配置するだけで、(全世界に向けて)公開することができるようになります。</p>
 <p>このサイトがまさにこれを利用しています。
@@ -756,7 +739,6 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 <p>chronicleでも、他のソフトでできるのと同様に、使用するテンプレートを変えるだけで見た目を切り替えることができます。インストール時に数種類同梱されていますが、このサイトでは<a href="https://github.com/mnod/chronicle-theme">自分で作成したもの</a>を利用しています。
 テンプレートは簡単なテキストファイルですので、htmlやcssの知識があれば容易に変更することができます。</p>
 <p>サイトの見た目はテンプレートで決まるため、使うテンプレートを決めてしまえば、サイトを運用していく際にはコンテンツの内容のみを考えればいいという利点もあります。</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20160918.html" class="u-url">remote access tool on android</a></h1>
         <div class="metadata">
@@ -769,8 +751,7 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>Androidで動作するリモート接続ツールのご紹介。</p>
+    <p>Androidで動作するリモート接続ツールのご紹介。</p>
 <p><em><a href="https://play.google.com/store/apps/details?id=org.connectbot">ConnectBot</a></em></p>
 <p>フリーのターミナルエミュレータです。</p>
 <ul>
@@ -793,7 +774,6 @@ Docker Hubには沢山のレポジトリが登録されていますが、自分�
 自分は使ってませんが、Dropbox等のクラウドサービスに接続する機能もあります。</p>
 <p><em>[リモートデスクトップツール]</em></p>
 <p>タブレットには、rdpやvncのクライアントも入れてますが、ほとんど使うことがありません。使うようなことがあれば、書き足したいと思います。</p>
-</div>
     </div>
     </article>
 </div>

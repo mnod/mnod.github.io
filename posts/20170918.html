@@ -79,8 +79,7 @@ mkdi">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p><em>backup</em></p>
+    <p><em>backup</em></p>
 <pre><code># systemctl stop slapd
 slapcat &gt; ldap.ldif
 slapcat -b cn=config &gt; ldap-config.ldif
@@ -97,7 +96,6 @@ chown openldap:openldap -R /etc/ldap/slapd.d
 chown openldap:openldap -R /var/lib/ldap
 systemctl start slapd
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/ldap.html" rel="tag">ldap</a></li>

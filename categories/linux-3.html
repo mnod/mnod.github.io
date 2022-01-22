@@ -69,8 +69,7 @@
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>install</p>
+    <p>install</p>
 <pre><code>apt install ntp
 </code></pre>
 <p>sample config
@@ -118,7 +117,6 @@ restrict 192.168.xxx.xxx mask 255.255.255.0 nomodify notrap nopeer noquery
 <pre><code>ntpq -pn &lt;address&gt;
 ntpq -c readlist &lt;address&gt;
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200613.html" class="u-url">journalctl</a></h1>
         <div class="metadata">
@@ -131,8 +129,7 @@ ntpq -c readlist &lt;address&gt;
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show all messages</p>
+    <p>show all messages</p>
 <pre><code>journalctl
 </code></pre>
 <p>show all messages from boot</p>
@@ -174,7 +171,6 @@ systemctl force-reload systemd-journald
 It would be convinient, for example, when you read other system's journal messages which is mounted on any mount point.</p>
 <pre><code>journalctl -D /mnt/var/log/journal -x
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200612.html" class="u-url">systemctl</a></h1>
         <div class="metadata">
@@ -187,8 +183,7 @@ It would be convinient, for example, when you read other system's journal messag
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>show system status</p>
+    <p>show system status</p>
 <pre><code>systemctl status
 </code></pre>
 <p>show running or failed units</p>
@@ -224,7 +219,6 @@ systemctl unmask unit
 <pre><code>systemctl reboot
 systemctl poweroff
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200403.html" class="u-url">postfix</a></h1>
         <div class="metadata">
@@ -237,8 +231,7 @@ systemctl poweroff
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>alias</p>
+    <p>alias</p>
 <pre><code>$ postconf -n | grep alias
 $ ls -l /etc/aliases*
 $ postalias hash:/etc/aliases
@@ -249,7 +242,6 @@ $ newaliases
 $ echo "This is body message" | mail -s "My subject" pi
 $ MAILDIR=$HOME/Maildir mail
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200315.html" class="u-url">apt-cacher-ng</a></h1>
         <div class="metadata">
@@ -262,8 +254,7 @@ $ MAILDIR=$HOME/Maildir mail
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>make a dockerfile</p>
+    <p>make a dockerfile</p>
 <pre><code>$ cat Dockerfile
 FROM debian:buster
 
@@ -305,7 +296,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
 <p>for docker build</p>
 <pre><code>$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t imagename:tagname . | tee build.log
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200308.html" class="u-url">tcpdump</a></h1>
         <div class="metadata">
@@ -318,8 +308,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p><em>tcpdump</em></p>
+    <p><em>tcpdump</em></p>
 <pre><code>    tcpdump 
      -w &lt;output filename&gt;
      -r &lt;input filename&gt;
@@ -344,7 +333,6 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
      -R "read filter"
 </code></pre>
 <p>To know detail of read filter, see man page of wireshark-filter</p>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200127.html" class="u-url">cryptsetup</a></h1>
         <div class="metadata">
@@ -357,8 +345,7 @@ $ sudo docker tag apt-cacher-ng:buster apt-cacher-ng:latest
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>luks</p>
+    <p>luks</p>
 <p><em>install a package</em></p>
 <pre><code>$ sudo apt install cryptsetup
 </code></pre>
@@ -382,7 +369,6 @@ $ df -h /mnt
 <pre><code>$ sudo umount /mnt 
 $ sudo cryptsetup close cryptfs
 </code></pre>
-</div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200126.html" class="u-url">mdadm</a></h1>
         <div class="metadata">
@@ -395,8 +381,7 @@ $ sudo cryptsetup close cryptfs
             </p>
         </div>
     </header><div class="e-content entry-content">
-    <div>
-<p>software raid</p>
+    <p>software raid</p>
 <p><em>install mdadm package</em></p>
 <pre><code>$ sudo apt-get install mdadm
 </code></pre>
@@ -481,7 +466,6 @@ $ sudo mdadm --remove /dev/md0 /dev/loop2
 <p>/dev/loop4 is extra disk for spare</p>
 <pre><code>$ sudo mdadm --create /dev/md0 -l raid10 -n 4 /dev/loop0 /dev/loop1 /dev/loop2 /dev/loop3 -x 1 /dev/loop4
 </code></pre>
-</div>
     </div>
     </article>
 </div>

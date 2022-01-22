@@ -73,8 +73,7 @@ dump -0u -">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>dumpとrestoreは、ファイルシステムレベルでバックアップ、リストアを行います。対応してるのはext2等に限られます。</p>
+    <p>dumpとrestoreは、ファイルシステムレベルでバックアップ、リストアを行います。対応してるのはext2等に限られます。</p>
 <p>他のOS、他のファイルシステムでも、同様のアプリケーションがあります。(<a href="https://www.freebsd.org/cgi/man.cgi?dump(8)">FreeBSDの例</a>)</p>
 <p>以下、使い方の例。</p>
 <p>レベル0バックアップ(フルバックアップ)
@@ -122,7 +121,6 @@ ssh user@remotehost dd if=/dir/filename.gz | gzip -cd | restore -rf -
 または
 ssh user@remotehost 'dump -0uf - /mountpoint | gzip -c' | gzip -cd | restore -rf -
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/linux.html" rel="tag">linux</a></li>

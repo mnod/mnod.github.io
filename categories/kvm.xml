@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about kvm)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/kvm.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about kvm)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/kvm.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:58 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>kvm on raspberrypi</title><link>https://mnod.github.io/posts/20200927.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;kvm On Raspberry Pi OS (64bit) beta test version&lt;/p&gt;
 &lt;p&gt;related packages&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
 &lt;/code&gt;&lt;/pre&gt;
@@ -56,7 +56,7 @@ $ sudo rmmod nbd
 &amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
 &amp;gt; -monitor telnet:localhost:10025,server,nowait \
 &amp;gt; -nographic
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>kvm virtualization</title><link>https://mnod.github.io/posts/20170325.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;qcow2 イメージ&lt;/em&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>kvm virtualization</title><link>https://mnod.github.io/posts/20170325.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;qcow2 イメージ&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;作成。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;qemu-img create -f qcow2 image.qcow2 xxG
 &lt;/code&gt;&lt;/pre&gt;
@@ -99,4 +99,4 @@ qemu-img convert -O qcow2  image.qcow2.bak image.qcow2
 &lt;p&gt;&lt;em&gt;example&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;boot ultra lite linux distribution microcore linux for network configure test&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;kvm -drive if=virtio,file=linux-microcore-6.4.img -netdev tap,id=tap0 -device e1000,netdev=tap0,mac=52:54:00:12:34:56
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>kvm</category><category>linux</category><category>virtualization</category><guid>https://mnod.github.io/posts/20170325.html</guid><pubDate>Sat, 25 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>kvm</category><category>linux</category><category>virtualization</category><guid>https://mnod.github.io/posts/20170325.html</guid><pubDate>Sat, 25 Mar 2017 00:00:00 GMT</pubDate></item></channel></rss>

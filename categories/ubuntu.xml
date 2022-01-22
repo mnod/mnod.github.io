@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ubuntu)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ubuntu.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nfs</title><link>https://mnod.github.io/posts/20170401.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ service nfs-kernel-server status
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ubuntu)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ubuntu.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nfs</title><link>https://mnod.github.io/posts/20170401.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;$ service nfs-kernel-server status
 nfsd running
 
 $ service rpcbind status
@@ -21,7 +21,7 @@ All mount points on yyyyyy:
 &lt;p&gt;allow&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ vi /etc/hosts.allow
 portmap : 192.168.1.0/255.255.255.0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20170401.html</guid><pubDate>Sat, 01 Apr 2017 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20170401.html</guid><pubDate>Sat, 01 Apr 2017 00:00:00 GMT</pubDate></item><item><title>docker life cycle</title><link>https://mnod.github.io/posts/20161001.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;ライフサイクルをざっと。&lt;/p&gt;
 &lt;p&gt;dockerデーモンの起動と動作確認。ubuntuの場合。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ sudo service docker status
 $ sudo service docker start
@@ -147,7 +147,7 @@ RUN apt-get update &amp;amp;&amp;amp; apt-get install -y \
    make \
 &amp;amp;&amp;amp; apt-get clean \
 &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>container</category><category>docker</category><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20161001.html</guid><pubDate>Sat, 01 Oct 2016 00:00:00 GMT</pubDate></item><item><title>removal of old kernel packages in ubuntu</title><link>https://mnod.github.io/posts/20160911.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;新しいカーネルをインストールした後、元のカーネルパッケージを削除せずそのままにしておくと、/bootを小さく切っている場合など、ディスク領域を圧迫してくる場合があります。
+&lt;/code&gt;&lt;/pre&gt;</description><category>container</category><category>docker</category><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20161001.html</guid><pubDate>Sat, 01 Oct 2016 00:00:00 GMT</pubDate></item><item><title>removal of old kernel packages in ubuntu</title><link>https://mnod.github.io/posts/20160911.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;新しいカーネルをインストールした後、元のカーネルパッケージを削除せずそのままにしておくと、/bootを小さく切っている場合など、ディスク領域を圧迫してくる場合があります。
 そんな時は、使用していない古いカーネルを削除することで、ディスクに空きを作ることができます。&lt;/p&gt;
 &lt;p&gt;以下、Ubuntuで、使用していない古いカーネルを削除する流れです。&lt;/p&gt;
 &lt;p&gt;現在のディスク使用状況を確認&lt;/p&gt;
@@ -173,4 +173,4 @@ RUN apt-get update &amp;amp;&amp;amp; apt-get install -y \
 &lt;pre&gt;&lt;code&gt;$ df -h /boot
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;以上、不要なバージョンを全て削除するまで繰り返して実行する。&lt;/p&gt;
-&lt;p&gt;自分は、現在使っているカーネルの他に、何か問題が発生した際の保険として、一世代前のカーネルも削除せずに残すようにしています。&lt;/p&gt;&lt;/div&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20160911.html</guid><pubDate>Sun, 11 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;自分は、現在使っているカーネルの他に、何か問題が発生した際の保険として、一世代前のカーネルも削除せずに残すようにしています。&lt;/p&gt;</description><category>linux</category><category>ubuntu</category><guid>https://mnod.github.io/posts/20160911.html</guid><pubDate>Sun, 11 Sep 2016 00:00:00 GMT</pubDate></item></channel></rss>

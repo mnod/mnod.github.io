@@ -73,8 +73,7 @@ FROM debia">
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
+    <p>The squid packages of debian doesn not support <a href="https://wiki.squid-cache.org/Features/SslBump">sslbump</a>.
 It only redirects ssl traffic. We can not analyze or cache the content of the ssl traffic.</p>
 <h3>build a docker container</h3>
 <p>make a dockerfile</p>
@@ -220,7 +219,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
 </code></pre>
-</div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/docker.html" rel="tag">docker</a></li>

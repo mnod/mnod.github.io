@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about python)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/python.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 28 Nov 2021 00:36:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about python)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/python.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:02 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
 &lt;h3&gt;build a docker container&lt;/h3&gt;
 &lt;p&gt;make a dockerfile&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
@@ -41,7 +41,7 @@ ARG PIP_INDEX_URL
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>json in python</title><link>https://mnod.github.io/posts/20200422.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;em&gt;dictionary&lt;/em&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item><item><title>json in python</title><link>https://mnod.github.io/posts/20200422.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;dictionary&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;add key:value pair to a dictionary&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; newdict = {}
 &amp;gt;&amp;gt;&amp;gt; newdict['foo'] = "bar"
@@ -145,7 +145,7 @@ with open('new.json', 'w') as f:
 &lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=urllib_sample.py"&gt;&lt;/script&gt;
 
 &lt;p&gt;similar as above but using reauests library&lt;/p&gt;
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>json</category><category>python</category><guid>https://mnod.github.io/posts/20200422.html</guid><pubDate>Wed, 22 Apr 2020 00:00:00 GMT</pubDate></item><item><title>sqlite by python</title><link>https://mnod.github.io/posts/20180511.html</link><dc:creator>mnod</dc:creator><description>&lt;div&gt;&lt;p&gt;pythonでsqliteを利用するとき
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=requests_sample.py"&gt;&lt;/script&gt;</description><category>json</category><category>python</category><guid>https://mnod.github.io/posts/20200422.html</guid><pubDate>Wed, 22 Apr 2020 00:00:00 GMT</pubDate></item><item><title>sqlite by python</title><link>https://mnod.github.io/posts/20180511.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;pythonでsqliteを利用するとき
 &lt;a href="http://docs.python.jp/2/library/sqlite3.html"&gt;sqlite 3モジュール&lt;/a&gt;
 を使う&lt;/p&gt;
 &lt;p&gt;簡単なpythonスクリプトの例 (古い環境だと、ライブラリ名はsqliteらしい)&lt;/p&gt;
@@ -154,4 +154,4 @@ with open('new.json', 'w') as f:
 &lt;p&gt;sqliteのデータを
 &lt;a href="https://matplotlib.org"&gt;matplotlib&lt;/a&gt;
 を使ってグラフにプロットする簡単な例。&lt;/p&gt;
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"&gt;&lt;/script&gt;&lt;/div&gt;</description><category>python</category><category>script</category><category>sqlite</category><guid>https://mnod.github.io/posts/20180511.html</guid><pubDate>Fri, 11 May 2018 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=matplotlib_sample.py"&gt;&lt;/script&gt;</description><category>python</category><category>script</category><category>sqlite</category><guid>https://mnod.github.io/posts/20180511.html</guid><pubDate>Fri, 11 May 2018 00:00:00 GMT</pubDate></item></channel></rss>
