@@ -785,6 +785,19 @@ echo http%3A%2F%2Fexample%2Ecom | nkf -w --url-input
 <p><em>convert character code from sjis to UTF8</em></p>
 <pre><code>iconv -f SJIS -t UTF8 oldfile &gt; newfile
 </code></pre>
+<p><em>set positional parameter</em></p>
+<pre><code>$ set -a -b foo bar
+$ echo $# $@
+2 foo bar
+
+$ set -- -a -b foo bar
+$ echo $# $@
+4 -a -b foo bar
+
+w | awk '$1~/'$(whoami)'/{print}' | while read line; do
+  set ${line}; echo USER:$1 TTY:$2 FROM:$3 LOGIN@:$4 IDLE:$5 JCPU:$6 PCPU:$7 WHAT:${*:8}
+done
+</code></pre>
 <p><em>color text</em></p>
 <pre><code>esc=$(printf '\033')
 
