@@ -887,8 +887,9 @@ openssl x509 -in 証明書 -modulus -noout | openssl md5
 <p><em>[おまけ]楕円曲線暗号を使った鍵の作成</em></p>
 <p>google先生によると、prime256v1、secp384r1 あたりが良く使われるらしい。(ecdsaの使用の判断は熟慮の上で。)</p>
 <pre><code>openssl ecparam -list_curves
-openssl ecparam -out secp384r1.key -name secp384r1 -genkey
+openssl ecparam -name secp384r1 -genkey -out secp384r1.key
 openssl ec -in secp384r1.key -text -noout
+openssl ec -in secp384r1.key -out secp384r1_aes256.key -aes256
 </code></pre>
 <p>認証局による証明書は、暗号化とサーバ運営者の身元確認という目的がある。
 個人で作成する自己認証局では、暗号化はできるが身元確認ができないと言われる。
