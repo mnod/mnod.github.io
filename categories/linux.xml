@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:34:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 28 Mar 2022 07:38:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>copy partition of sd card</title><link>https://mnod.github.io/posts/20220328.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;dump partition of original sd card&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo parted /dev/sdx print
+sudo dd if=/dev/sdx1 of=tablet_sdx1.img bs=4M
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;restore to new sd card&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo parted /dev/sdx print
+sudo dd if=tablet_sdx1.img of=/dev/sdx1 bs=4M
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the size of filesystem
+    sudo mount /dev/sdb1 /media/tmp
+    df
+    sudo umount /media/tmp&lt;/p&gt;
+&lt;p&gt;extend the filesystem (if needed)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt install --no-install-recommends fatresize
+sudo fatresize -i /dev/sdb1
+max=$(expr $(sudo fatresize -i /dev/sdb1 | awk -F: '$1~/Max size/{print $2}') / 1024)
+sudo fatresize -s ${max}k /dev/sdb1
+sudo fatresize -i /dev/sdb1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the size of filesystem&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo mount /dev/sdb1 /media/tmp
+df
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20220328.html</guid><pubDate>Mon, 28 Mar 2022 00:00:00 GMT</pubDate></item><item><title>k3s using docker runtime</title><link>https://mnod.github.io/posts/20210629.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;install single-node k3s cluster instead of containerd&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I can install with these commands on debian buster arm64 though can not on bullseye.&lt;/p&gt;
 &lt;p&gt;at first intall docker&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo apt-get update
@@ -663,58 +685,4 @@ list vdisk
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;it can create a new window which executes a specific program&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;screen watch -n 5 ntpq -pn
-&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200616.html</guid><pubDate>Tue, 16 Jun 2020 00:00:00 GMT</pubDate></item><item><title>chrony</title><link>https://mnod.github.io/posts/20200615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;chrony is an implementation of Network Time Protocol&lt;/p&gt;
-&lt;p&gt;install&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;apt install chrony
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;sample config
-specify ntp server at &lt;code&gt;server&lt;/code&gt; or ntp server pool for &lt;code&gt;pool&lt;/code&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
-server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
-keyfile /etc/chrony/chrony.keys
-driftfile /var/lib/chrony/chrony.drift
-logdir /var/log/chrony
-maxupdateskew 100.0
-rtcsync
-makestep 1 3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;reload configuration&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;systemctl status chronyd
-journalctl -u chrony -f
-systemctl force-reload chrony
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show system track performance&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chronyc tracking
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show current time sources&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chronyc sources
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show information about drift rate and offset estimation process&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chronyc sourcestats
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show the last valid measurement and other information&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chronyc ntpdata
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;server&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;For server settings, at least add a &lt;code&gt;allow&lt;/code&gt; line.
-&lt;code&gt;cmdallow&lt;/code&gt; and &lt;code&gt;bindcmdaddress&lt;/code&gt; lines are optional which is for monitoring access&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
-server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
-keyfile /etc/chrony/chrony.keys
-driftfile /var/lib/chrony/chrony.drift
-logdir /var/log/chrony
-maxupdateskew 100.0
-rtcsync
-makestep 1 3
-allow 192.168.xxx.0/24
-cmdallow 192.168.xxx.0/24
-bindcmdaddress 127.0.0.1
-bindcmdaddress 192.168.xxx.xxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show list of clients&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chronyc clients
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;specify a remote host to which chronyd is to be connected (using udp/323)
-default is localhost&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cronyc -h 192.168.xxx.xxx
-&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20200616.html</guid><pubDate>Tue, 16 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>
