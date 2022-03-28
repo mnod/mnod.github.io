@@ -81,10 +81,11 @@ sudo dd if=/dev/sdx1 of=tablet_sdx1.img bs=4M
 <pre><code>sudo parted /dev/sdx print
 sudo dd if=tablet_sdx1.img of=/dev/sdx1 bs=4M
 </code></pre>
-<p>confirm the size of filesystem
-    sudo mount /dev/sdb1 /media/tmp
-    df
-    sudo umount /media/tmp</p>
+<p>confirm the size of filesystem</p>
+<pre><code>sudo mount /dev/sdb1 /media/tmp
+df
+sudo umount /media/tmp
+</code></pre>
 <p>extend the filesystem (if needed)</p>
 <pre><code>sudo apt install --no-install-recommends fatresize
 sudo fatresize -i /dev/sdb1
