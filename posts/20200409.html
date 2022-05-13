@@ -18,9 +18,7 @@
 <meta property="og:title" content="vlc">
 <meta property="og:url" content="https://mnod.github.io/posts/20200409.html">
 <meta property="og:description" content="VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.
-http interface
-VLC(or cvlc) could be controlled with http request. See VLC HTTP requests for detail
-start cv">
+VLC(or cvlc) can stream via http. See Streaming HowTo/Command Line Examples or Streaming HowTo/Advanced Stre">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2020-04-09T00:00:00Z">
 <meta property="article:tag" content="multimedia">
@@ -72,6 +70,11 @@ start cv">
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
     <p>VLC is opensource and crossplatform multimedia player. cvlc is command line version of vlc.</p>
+<p>VLC(or cvlc) can stream via http. See <a href="https://wiki.videolan.org/Documentation:Streaming_HowTo/Command_Line_Examples/">Streaming HowTo/Command Line Examples</a> or <a href="https://wiki.videolan.org/Documentation:Streaming_HowTo/Advanced_Streaming_Using_the_Command_Line/">Streaming HowTo/Advanced Streaming Using the Command Line</a> for detail</p>
+<pre><code>cvlc
+--sout '#standard{access=http,mux=mp3,dst=192.168.x.x:xxxx}' # http stream. mux=dummy or raw will be ok
+vlc://quit
+</code></pre>
 <p><em>http interface</em></p>
 <p>VLC(or cvlc) could be controlled with http request. See <a href="https://wiki.videolan.org/VLC_HTTP_requests/">VLC HTTP requests</a> for detail</p>
 <p>start cvlc with http interface</p>
