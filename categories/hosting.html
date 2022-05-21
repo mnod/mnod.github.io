@@ -56,7 +56,162 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180421.html" class="u-url">serversman vps</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220521.html" class="u-url">WebARENA Indigo API</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220521.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-05-21T00:00:00Z" itemprop="datePublished" title="2022-05-21 00:00">2022-05-21 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p><a href="https://web.arena.ne.jp/indigo/">WebARENA Indigo</a> is one of the cheapest VPS services in Japan.
+It can be controlled via <a href="https://indigo.arena.ne.jp/userapi/">Rest-API</a> for some functions.</p>
+<h3>create API key and API secret key</h3>
+<p>Before you use the Rest-API, you have to access controle panel and create API key and API secret key.</p>
+<ol>
+<li>access <a href="https://indigo.arena.ne.jp/">Indigo ダッシュボード</a>
+</li>
+<li>click API鍵の管理 on the left side menu then select API鍵</li>
+<li>click API鍵の作成 on the top of right side</li>
+<li>write down API鍵 and API秘密鍵 </li>
+</ol>
+<p>If you'd like to do so, set them as environment variable</p>
+<pre><code>$ cat &lt;&lt; END &gt; ~/.webarena_secret
+&gt; export IndigoApiKey=xxxx
+&gt; export IndigoApiPrivateKey=xxxx
+&gt; END
+$ chmod 600 ~/.webarena_secret
+$ cat &lt;&lt; END &gt;&gt; ~/.bashrc
+&gt; if [ -f ~/.webarena_secret ]; then
+&gt;   . ~/.webarena_secret
+&gt; fi
+&gt; END
+</code></pre>
+<h3>create API token</h3>
+<p>After create API key and API secret key, you can create API token.
+You need this API token to call other Rest-APIs.</p>
+<pre><code>IndigoToken=$(curl -s -X POST \
+  https://api.customer.jp/oauth/v1/accesstokens\
+  -H 'Content-Type: application/json' \
+  -d '{
+    "grantType": "client_credentials",
+    "clientId": "'${IndigoApiKey}'",
+    "clientSecret": "'${IndigoApiPrivateKey}'",
+    "code": ""
+}' | jq -r .accessToken)
+</code></pre>
+<p>The output of this API includes <em>"expiresIn": "3599"</em>.
+I have not confirmed but it would expire in about 3600 seconds.</p>
+<h3>register ssh key</h3>
+<p>ssh key will be installed in ~/.ssh/authorized_keys of login user when the instance will be created.
+You can register your own ssh public key instead of create it.</p>
+<pre><code>curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+   "sshName": "testkey",
+   "sshKey": "ssh-rsa xxxx"
+}'
+</code></pre>
+<p>When I tested to upload "ed25519" public key but I got error message like below.
+It seems they don't allow ed25519 keys.</p>
+<pre><code>{"success":false,"errorMessage":"Invalid SSH key.","errorCode":"I10034"}
+</code></pre>
+<h3>retrieve information to create instance</h3>
+<p>list ssh keys</p>
+<pre><code>curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+</code></pre>
+<p>list regions</p>
+<pre><code>instanceTypeId=$(curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/instancetypes \
+  -H "Authorization: Bearer ${IndigoToken}" | jq '.instanceTypes[] | select(.name == "instance") | .id')
+curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/getregion?instanceTypeId=${instanceTypeId} \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+</code></pre>
+<p>list os</p>
+<pre><code>curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/oslist?instanceTypeId=${instanceTypeId} \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+</code></pre>
+<p>list instance plans</p>
+<pre><code>curl -s -X GET \
+  'https://api.customer.jp/webarenaIndigo/v1/vm/getinstancespec?instanceTypeId='${instanceTypeId}'&amp;osId=xx' \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+</code></pre>
+<h3>create instance</h3>
+<pre><code>curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/createinstance \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+  "sshKeyId": xxxx,
+  "regionId": x,
+  "osId": xx,
+  "instancePlan": x,
+  "instanceName": "xxxx"
+}'
+</code></pre>
+<p>list instances</p>
+<pre><code>curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/getinstancelist \
+  -H "Authorization: Bearer ${IndigoToken}"
+</code></pre>
+<p>When you create an instance, "instancestatus" will be "OS installation In Progress".
+After a while it will become "Stopped". It is a time to start your instance.</p>
+<pre><code>curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/instance/statusupdate \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{"instanceId":"xxxx","status":"start"}'
+</code></pre>
+<p>After you start your instance, "instancestatus" will become "Running"</p>
+<h3>firewall</h3>
+<p>The rule is a allow list.
+When you create a firewall rule and apply it to your instance, others will be denied.</p>
+<p>create firewall rule</p>
+<pre><code>curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/nw/createfirewall \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+    "name":"xxxx",
+    "inbound":[
+        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
+    ],
+    "instances":["xxxx"]
+}'
+</code></pre>
+<p>Above rule only allow ssh connection from x.x.x.x. All other inbound connection will be denied.
+Since there are no outbound rules, all outbound connection will be allowed</p>
+<p>list firewall</p>
+<pre><code>curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/nw/getfirewalllist \
+  -H "Authorization: Bearer ${IndigoToken}"
+</code></pre>
+<p>describe a firewall rule</p>
+<pre><code>curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/nw/gettemplate/xxxx \
+  -H "Authorization: Bearer ${IndigoToken}"
+</code></pre>
+<p>update firewall</p>
+<pre><code>curl -s -X PUT \
+  https://api.customer.jp/webarenaIndigo/v1/nw/updatefirewall \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+    "templateid":"xxxx",
+    "name":"xxxx",
+    "inbound":[
+        {"type":"Custom","protocol":"UDP","port":"123","source":"0.0.0.0"},
+        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
+    ],
+    "instances":["xxxx"]
+}'
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180421.html" class="u-url">serversman vps</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

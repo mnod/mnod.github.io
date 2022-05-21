@@ -1,5 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 13 May 2022 00:00:39 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>copy partition of sd card</title><link>https://mnod.github.io/posts/20220328.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;dump partition of original sd card&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 21 May 2022 12:51:53 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>WebARENA Indigo API</title><link>https://mnod.github.io/posts/20220521.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://web.arena.ne.jp/indigo/"&gt;WebARENA Indigo&lt;/a&gt; is one of the cheapest VPS services in Japan.
+It can be controlled via &lt;a href="https://indigo.arena.ne.jp/userapi/"&gt;Rest-API&lt;/a&gt; for some functions.&lt;/p&gt;
+&lt;h3&gt;create API key and API secret key&lt;/h3&gt;
+&lt;p&gt;Before you use the Rest-API, you have to access controle panel and create API key and API secret key.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;access &lt;a href="https://indigo.arena.ne.jp/"&gt;Indigo ダッシュボード&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;click API鍵の管理 on the left side menu then select API鍵&lt;/li&gt;
+&lt;li&gt;click API鍵の作成 on the top of right side&lt;/li&gt;
+&lt;li&gt;write down API鍵 and API秘密鍵 &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you'd like to do so, set them as environment variable&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END &amp;gt; ~/.webarena_secret
+&amp;gt; export IndigoApiKey=xxxx
+&amp;gt; export IndigoApiPrivateKey=xxxx
+&amp;gt; END
+$ chmod 600 ~/.webarena_secret
+$ cat &amp;lt;&amp;lt; END &amp;gt;&amp;gt; ~/.bashrc
+&amp;gt; if [ -f ~/.webarena_secret ]; then
+&amp;gt;   . ~/.webarena_secret
+&amp;gt; fi
+&amp;gt; END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create API token&lt;/h3&gt;
+&lt;p&gt;After create API key and API secret key, you can create API token.
+You need this API token to call other Rest-APIs.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;IndigoToken=$(curl -s -X POST \
+  https://api.customer.jp/oauth/v1/accesstokens\
+  -H 'Content-Type: application/json' \
+  -d '{
+    "grantType": "client_credentials",
+    "clientId": "'${IndigoApiKey}'",
+    "clientSecret": "'${IndigoApiPrivateKey}'",
+    "code": ""
+}' | jq -r .accessToken)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The output of this API includes &lt;em&gt;"expiresIn": "3599"&lt;/em&gt;.
+I have not confirmed but it would expire in about 3600 seconds.&lt;/p&gt;
+&lt;h3&gt;register ssh key&lt;/h3&gt;
+&lt;p&gt;ssh key will be installed in ~/.ssh/authorized_keys of login user when the instance will be created.
+You can register your own ssh public key instead of create it.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+   "sshName": "testkey",
+   "sshKey": "ssh-rsa xxxx"
+}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When I tested to upload "ed25519" public key but I got error message like below.
+It seems they don't allow ed25519 keys.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{"success":false,"errorMessage":"Invalid SSH key.","errorCode":"I10034"}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;retrieve information to create instance&lt;/h3&gt;
+&lt;p&gt;list ssh keys&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list regions&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;instanceTypeId=$(curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/instancetypes \
+  -H "Authorization: Bearer ${IndigoToken}" | jq '.instanceTypes[] | select(.name == "instance") | .id')
+curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/getregion?instanceTypeId=${instanceTypeId} \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list os&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/oslist?instanceTypeId=${instanceTypeId} \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list instance plans&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  'https://api.customer.jp/webarenaIndigo/v1/vm/getinstancespec?instanceTypeId='${instanceTypeId}'&amp;amp;osId=xx' \
+  -H "Authorization: Bearer ${IndigoToken}" | jq .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create instance&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/createinstance \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+  "sshKeyId": xxxx,
+  "regionId": x,
+  "osId": xx,
+  "instancePlan": x,
+  "instanceName": "xxxx"
+}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list instances&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/vm/getinstancelist \
+  -H "Authorization: Bearer ${IndigoToken}"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When you create an instance, "instancestatus" will be "OS installation In Progress".
+After a while it will become "Stopped". It is a time to start your instance.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/vm/instance/statusupdate \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{"instanceId":"xxxx","status":"start"}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After you start your instance, "instancestatus" will become "Running"&lt;/p&gt;
+&lt;h3&gt;firewall&lt;/h3&gt;
+&lt;p&gt;The rule is a allow list.
+When you create a firewall rule and apply it to your instance, others will be denied.&lt;/p&gt;
+&lt;p&gt;create firewall rule&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X POST \
+  https://api.customer.jp/webarenaIndigo/v1/nw/createfirewall \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+    "name":"xxxx",
+    "inbound":[
+        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
+    ],
+    "instances":["xxxx"]
+}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Above rule only allow ssh connection from x.x.x.x. All other inbound connection will be denied.
+Since there are no outbound rules, all outbound connection will be allowed&lt;/p&gt;
+&lt;p&gt;list firewall&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/nw/getfirewalllist \
+  -H "Authorization: Bearer ${IndigoToken}"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;describe a firewall rule&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X GET \
+  https://api.customer.jp/webarenaIndigo/v1/nw/gettemplate/xxxx \
+  -H "Authorization: Bearer ${IndigoToken}"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;update firewall&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -s -X PUT \
+  https://api.customer.jp/webarenaIndigo/v1/nw/updatefirewall \
+  -H "Authorization: Bearer ${IndigoToken}" \
+  -d '{
+    "templateid":"xxxx",
+    "name":"xxxx",
+    "inbound":[
+        {"type":"Custom","protocol":"UDP","port":"123","source":"0.0.0.0"},
+        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
+    ],
+    "instances":["xxxx"]
+}'
+&lt;/code&gt;&lt;/pre&gt;</description><category>hosting</category><guid>https://mnod.github.io/posts/20220521.html</guid><pubDate>Sat, 21 May 2022 00:00:00 GMT</pubDate></item><item><title>copy partition of sd card</title><link>https://mnod.github.io/posts/20220328.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;dump partition of original sd card&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo parted /dev/sdx print
 sudo dd if=/dev/sdx1 of=tablet_sdx1.img bs=4M
 &lt;/code&gt;&lt;/pre&gt;
@@ -663,46 +804,4 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 &lt;pre&gt;&lt;code&gt;$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
-&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item><item><title>devpi-server</title><link>https://mnod.github.io/posts/20210605.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://pypi.org/project/devpi-server/"&gt;devpi-server&lt;/a&gt; is a server for private package indexes and PyPI caching.&lt;/p&gt;
-&lt;h3&gt;build a docker container&lt;/h3&gt;
-&lt;p&gt;make a dockerfile&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;FROM debian:buster-slim
-
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt update &amp;amp;&amp;amp; \
-    apt install --no-install-recommends -y \
-    python3-pip python3-pip python3-setuptools python3-dev build-essential libffi-dev &amp;amp;&amp;amp; \
-    pip3 install devpi-server
-
-EXPOSE 3141
-VOLUME ["/var/cache/devpi"]
-
-CMD chmod 777 /var/cache/devpi &amp;amp;&amp;amp; \
-    devpi-server \
-        --serverdir /var/cache/devpi \
-        --host 0.0.0.0 --port 3141
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;build an image&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker build --build-arg http_proxy=http://192.168.xxx.xxx:3142/ -t devpi-server:buster-slim .
-$ sudo docker tag devpi-server:buster-slim devpi-server:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;run a container&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -d -p 3141:3141 -v /mnt/devpi:/var/cache/devpi devpi-server:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;test the address and port&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ curl http://192.168.xxx.xxx:3141/
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;how to use devpi-server&lt;/h3&gt;
-&lt;p&gt;specify it in a command line&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ pip3 install --trusted-host 192.168.xxx.xxx --index-url http://192.168.xxx.xxx:3141/root/pypi matplotlib
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;or &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ PIP_TRUSTED_HOST=192.168.xxx.xxx PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi pip3 install matplotlib
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;for docker build, write below in a Dockerfile&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ARG PIP_TRUSTED_HOST
-ARG PIP_INDEX_URL
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then specify devpi-server at build-arg parameter in docker run command line.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ docker build --build-arg PIP_TRUSTED_HOST=192.168.xxx.xxx --build-arg PIP_INDEX_URL=http://192.168.xxx.xxx:3141/root/pypi -t imagename .
-&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>python</category><guid>https://mnod.github.io/posts/20210605.html</guid><pubDate>Sat, 05 Jun 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210608.html</guid><pubDate>Tue, 08 Jun 2021 00:00:00 GMT</pubDate></item></channel></rss>
