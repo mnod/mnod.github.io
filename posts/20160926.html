@@ -88,6 +88,21 @@ R">
 </li>
 </ul>
 <p>iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。</p>
+<p>If you get an error 'Your access level is insufficient to run this script' after you update tt-rss, temporary update your account settings.</p>
+<pre><code>$ sudo docker exec -it work_postgres_1 psql -U ttrss
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# BEGIN;
+# UPDATE ttrss_users SET access_level = 10 where login = 'yourname';
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# COMMIT;
+</code></pre>
+<p>After update, set it back as before</p>
+<pre><code># BEGIN;
+# UPDATE ttrss_users SET access_level = 0 where login = 'yourname';
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# COMMIT;
+# \q
+</code></pre>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/serverside.html" rel="tag">serverside</a></li>

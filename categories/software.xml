@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:57 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about software)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/software.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 23 May 2022 12:53:46 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Stay at home</title><link>https://mnod.github.io/posts/20210411.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;不要不急の外出自粛が求められている中、他の多くの方と同様、自宅で過ごす時間が長くなっている。&lt;/p&gt;
 &lt;p&gt;おかげで通勤が不要になり、通勤時間にとられていた時間が自分の好きに扱えるようになった。
 同時に、通勤で消費していたカロリーの消費機会が失われてしまった。&lt;/p&gt;
 &lt;p&gt;そのせいもあり、この春の人間ドッグで、見事にメタボ検診に引っかかってしまった。
@@ -100,7 +100,22 @@ CMD ["/bin/bash"]
 &lt;li&gt;Androidの&lt;a href="https://play.google.com/store/apps/details?id=org.ttrssreader&amp;amp;hl=ja"&gt;TTRSS-Reader&lt;/a&gt; &lt;/li&gt;
 &lt;li&gt;iPhoneの&lt;a href="https://itunes.apple.com/us/app/tiny-reader-rss/id689519762?mt=8"&gt;tiny Reader RSS&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。&lt;/p&gt;</description><category>serverside</category><category>software</category><guid>https://mnod.github.io/posts/20160926.html</guid><pubDate>Mon, 26 Sep 2016 00:00:00 GMT</pubDate></item><item><title>chronicle</title><link>https://mnod.github.io/posts/20160923.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;&lt;a href="https://steve.fi/Software/chronicle/"&gt;chronicle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;iPhone版のほうが自分には使いやすい気がします(Androidが好きな自分としては非常に悔しいけど)。&lt;/p&gt;
+&lt;p&gt;If you get an error 'Your access level is insufficient to run this script' after you update tt-rss, temporary update your account settings.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo docker exec -it work_postgres_1 psql -U ttrss
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# BEGIN;
+# UPDATE ttrss_users SET access_level = 10 where login = 'yourname';
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# COMMIT;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After update, set it back as before&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# BEGIN;
+# UPDATE ttrss_users SET access_level = 0 where login = 'yourname';
+# SELECT access_level FROM ttrss_users WHERE login = 'yourname';
+# COMMIT;
+# \q
+&lt;/code&gt;&lt;/pre&gt;</description><category>serverside</category><category>software</category><guid>https://mnod.github.io/posts/20160926.html</guid><pubDate>Mon, 26 Sep 2016 00:00:00 GMT</pubDate></item><item><title>chronicle</title><link>https://mnod.github.io/posts/20160923.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;&lt;a href="https://steve.fi/Software/chronicle/"&gt;chronicle&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Markdown等のテキストファイルを、ブログ形式でhtmlファイルに変換するソフトです。
 できたファイルを全てWebサーバに配置するだけで、(全世界に向けて)公開することができるようになります。&lt;/p&gt;
 &lt;p&gt;このサイトがまさにこれを利用しています。
