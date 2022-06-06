@@ -146,6 +146,22 @@ SELECT count(*) FROM test;
 SELECT count(*) FROM test;
 END
 </code></pre>
+<p>dump sqlite3 and import to postgresql</p>
+<pre><code>$ sqlite3 database_test.db &lt;&lt; quit
+&gt; .output dump.sql
+&gt; .dump
+&gt; quit
+$ sed -i.bak -e '/^PRAGMA/ s/^/-- /' dump.sql
+$ sudo docker run --rm -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -d postgres:alpine
+    $ sudo docker exec -i xxxxx psql -U postgres &lt;&lt; quit
+&gt; CREATE USER dbuser;
+&gt; CREATE DATABASE dbuser;
+&gt; ALTER ROLE dbuser WITH PASSWORD 'dbuserpassword';
+&gt; GRANT ALL PRIVILEGES ON DABABASE dbuser TO dbuser;
+&gt; ALTER DATABASE dbuser OWNER TO dbuser;
+    &gt; quit
+$ cat dump.sql | sudo docker exec -i xxxx psql -U dbuser
+</code></pre>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/rdbms.html" rel="tag">rdbms</a></li>

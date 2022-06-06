@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about rdbms)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/rdbms.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:59 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>sql for sqlite</title><link>https://mnod.github.io/posts/20180512.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://www.sqlite.org/lang.html"&gt;SQliteで使える言語&lt;/a&gt; について&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about rdbms)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/rdbms.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 06 Jun 2022 23:04:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>sql for sqlite</title><link>https://mnod.github.io/posts/20180512.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://www.sqlite.org/lang.html"&gt;SQliteで使える言語&lt;/a&gt; について&lt;/p&gt;
 &lt;p&gt;SQliteは、型を指定しなくても CREATE  TABLE できるのが特徴。
 型指定するなら、integer, real, text, blob型を使える。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;CREATE TABLE IF NOT EXISTS mytable (
@@ -229,4 +229,20 @@ SELECT count(*) FROM test;
 .restore tmp.backup
 SELECT count(*) FROM test;
 END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;dump sqlite3 and import to postgresql&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sqlite3 database_test.db &amp;lt;&amp;lt; quit
+&amp;gt; .output dump.sql
+&amp;gt; .dump
+&amp;gt; quit
+$ sed -i.bak -e '/^PRAGMA/ s/^/-- /' dump.sql
+$ sudo docker run --rm -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -d postgres:alpine
+    $ sudo docker exec -i xxxxx psql -U postgres &amp;lt;&amp;lt; quit
+&amp;gt; CREATE USER dbuser;
+&amp;gt; CREATE DATABASE dbuser;
+&amp;gt; ALTER ROLE dbuser WITH PASSWORD 'dbuserpassword';
+&amp;gt; GRANT ALL PRIVILEGES ON DABABASE dbuser TO dbuser;
+&amp;gt; ALTER DATABASE dbuser OWNER TO dbuser;
+    &amp;gt; quit
+$ cat dump.sql | sudo docker exec -i xxxx psql -U dbuser
 &lt;/code&gt;&lt;/pre&gt;</description><category>rdbms</category><category>sqlite</category><guid>https://mnod.github.io/posts/20170819.html</guid><pubDate>Sat, 19 Aug 2017 00:00:00 GMT</pubDate></item></channel></rss>
