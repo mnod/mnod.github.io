@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about hosting)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/hosting.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 21 May 2022 12:51:52 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>WebARENA Indigo API</title><link>https://mnod.github.io/posts/20220521.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://web.arena.ne.jp/indigo/"&gt;WebARENA Indigo&lt;/a&gt; is one of the cheapest VPS services in Japan.
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about hosting)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/hosting.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 06 Jun 2022 12:27:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>WebARENA Indigo API</title><link>https://mnod.github.io/posts/20220521.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://web.arena.ne.jp/indigo/"&gt;WebARENA Indigo&lt;/a&gt; is one of the cheapest VPS services in Japan.
 It can be controlled via &lt;a href="https://indigo.arena.ne.jp/userapi/"&gt;Rest-API&lt;/a&gt; for some functions.&lt;/p&gt;
 &lt;h3&gt;create API key and API secret key&lt;/h3&gt;
 &lt;p&gt;Before you use the Rest-API, you have to access controle panel and create API key and API secret key.&lt;/p&gt;
@@ -140,7 +140,23 @@ Since there are no outbound rules, all outbound connection will be allowed&lt;/p
     ],
     "instances":["xxxx"]
 }'
-&lt;/code&gt;&lt;/pre&gt;</description><category>hosting</category><guid>https://mnod.github.io/posts/20220521.html</guid><pubDate>Sat, 21 May 2022 00:00:00 GMT</pubDate></item><item><title>serversman vps</title><link>https://mnod.github.io/posts/20180421.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://dream.jp/vps/"&gt;ServersMan@VPS&lt;/a&gt;は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;snapshot&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;stop instance&lt;/li&gt;
+&lt;li&gt;create/restore snapshot&lt;/li&gt;
+&lt;li&gt;start instance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;When start instance after restore from snapshot, the boot process may stack at GRUB.
+You can confirm the situation at QEMU console.&lt;/p&gt;
+&lt;p&gt;How to access the console:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;access &lt;a href="https://indigo.arena.ne.jp/"&gt;Indigo ダッシュボード&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;click instance management on the left side menu then select instance.&lt;/li&gt;
+&lt;li&gt;click select on the right side of the target instance and select access.&lt;/li&gt;
+&lt;li&gt;click "start console"&lt;/li&gt;
+&lt;li&gt;If it has stacked at GRUB, click force stop of the left side. After stop, start it again.&lt;/li&gt;
+&lt;/ol&gt;</description><category>hosting</category><guid>https://mnod.github.io/posts/20220521.html</guid><pubDate>Sat, 21 May 2022 00:00:00 GMT</pubDate></item><item><title>serversman vps</title><link>https://mnod.github.io/posts/20180421.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://dream.jp/vps/"&gt;ServersMan@VPS&lt;/a&gt;は、コンテナ型仮想化の virtuozzo を採用した、ホスティングサービス。&lt;/p&gt;
 &lt;p&gt;Debianで使っていたのだが、間もなくWheezyのLTSサポート期限を迎えるのに、新しいバージョンの対応が公表されないので、名残惜しいけど退会することにした。&lt;/p&gt;
 &lt;p&gt;よかったこと&lt;/p&gt;
 &lt;ul&gt;

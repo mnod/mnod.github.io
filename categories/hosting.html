@@ -210,7 +210,24 @@ Since there are no outbound rules, all outbound connection will be allowed</p>
     "instances":["xxxx"]
 }'
 </code></pre>
-    </div>
+<h3>snapshot</h3>
+<ol>
+<li>stop instance</li>
+<li>create/restore snapshot</li>
+<li>start instance</li>
+</ol>
+<p>When start instance after restore from snapshot, the boot process may stack at GRUB.
+You can confirm the situation at QEMU console.</p>
+<p>How to access the console:</p>
+<ol>
+<li>access <a href="https://indigo.arena.ne.jp/">Indigo ダッシュボード</a>
+</li>
+<li>click instance management on the left side menu then select instance.</li>
+<li>click select on the right side of the target instance and select access.</li>
+<li>click "start console"</li>
+<li>If it has stacked at GRUB, click force stop of the left side. After stop, start it again.</li>
+</ol>
+</div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20180421.html" class="u-url">serversman vps</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
