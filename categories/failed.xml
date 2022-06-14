@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about failed)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/failed.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 14 Jun 2022 12:02:37 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>wireguard on raspberryrpi</title><link>https://mnod.github.io/posts/20220614.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;I tried to install wireguard with &lt;a href="https://docs.pivpn.io/install/"&gt;pivpn&lt;/a&gt; on 64bit Raspberry pi OS (buster, 4B), but it failed&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END &amp;gt; /tmp/pivpn_options.conf                                                                                                                                           
+IPv4dev=xx
+install_user=pi
+VPN=wireguard
+pivpnNET=10.x.x.0
+subnetClass=24
+ALLOWED_IPS="10.x.x.0/24, 192.168.y.0/24"
+pivpnMTU=1420
+pivpnPORT=51820
+pivpnDNS1=1.1.1.1
+pivpnHOST=myname.example.com
+pivpnPERSISTENTKEEPALIVE=25
+UNATTUPG=1
+END
+
+$ curl -L https://install.pivpn.io &amp;gt; /tmp/pivpn_install.sh
+$ chmod +x /tmp/pivpn_install.sh
+$ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf                                                                                                     
+
+
+:: wireguard is not a supported VPN protocol on arm64 Debian, only 'openvpn' is
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I was not able to select wireguard in intereractive interface. It select openvpn automatically.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ /tmp/pivpn_install.sh --noipv6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Though I successed it on 32bit Raspberry pi OS (bullseye, 3B+)
+It needs NAPT settings to your pi to make a connection from outside wireguard peer.&lt;/p&gt;
+&lt;p&gt;I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)&lt;/p&gt;</description><category>failed</category><category>linux</category><category>raspberrypi</category><category>vpn</category><guid>https://mnod.github.io/posts/20220614.html</guid><pubDate>Tue, 14 Jun 2022 00:00:00 GMT</pubDate></item></channel></rss>

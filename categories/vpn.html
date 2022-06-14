@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about vpn | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/vpn.html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag vpn" hreflang="en" href="vpn.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about vpn</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="vpn.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220614.html" class="u-url">wireguard on raspberryrpi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220614.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-06-14T00:00:00Z" itemprop="datePublished" title="2022-06-14 00:00">2022-06-14 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>I tried to install wireguard with <a href="https://docs.pivpn.io/install/">pivpn</a> on 64bit Raspberry pi OS (buster, 4B), but it failed</p>
+<pre><code>$ cat &lt;&lt; END &gt; /tmp/pivpn_options.conf                                                                                                                                           
+IPv4dev=xx
+install_user=pi
+VPN=wireguard
+pivpnNET=10.x.x.0
+subnetClass=24
+ALLOWED_IPS="10.x.x.0/24, 192.168.y.0/24"
+pivpnMTU=1420
+pivpnPORT=51820
+pivpnDNS1=1.1.1.1
+pivpnHOST=myname.example.com
+pivpnPERSISTENTKEEPALIVE=25
+UNATTUPG=1
+END
+
+$ curl -L https://install.pivpn.io &gt; /tmp/pivpn_install.sh
+$ chmod +x /tmp/pivpn_install.sh
+$ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf                                                                                                     
+
+
+:: wireguard is not a supported VPN protocol on arm64 Debian, only 'openvpn' is
+</code></pre>
+<p>I was not able to select wireguard in intereractive interface. It select openvpn automatically.</p>
+<pre><code>$ /tmp/pivpn_install.sh --noipv6
+</code></pre>
+<p>Though I successed it on 32bit Raspberry pi OS (bullseye, 3B+)
+It needs NAPT settings to your pi to make a connection from outside wireguard peer.</p>
+<p>I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)</p>
+    </div>
+    </article>
+</div>
+
+
+
+    
+
+
+
+
+
+        </main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

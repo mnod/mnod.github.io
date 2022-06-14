@@ -56,7 +56,48 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220521.html" class="u-url">WebARENA Indigo API</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220614.html" class="u-url">wireguard on raspberryrpi</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220614.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-06-14T00:00:00Z" itemprop="datePublished" title="2022-06-14 00:00">2022-06-14 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>I tried to install wireguard with <a href="https://docs.pivpn.io/install/">pivpn</a> on 64bit Raspberry pi OS (buster, 4B), but it failed</p>
+<pre><code>$ cat &lt;&lt; END &gt; /tmp/pivpn_options.conf                                                                                                                                           
+IPv4dev=xx
+install_user=pi
+VPN=wireguard
+pivpnNET=10.x.x.0
+subnetClass=24
+ALLOWED_IPS="10.x.x.0/24, 192.168.y.0/24"
+pivpnMTU=1420
+pivpnPORT=51820
+pivpnDNS1=1.1.1.1
+pivpnHOST=myname.example.com
+pivpnPERSISTENTKEEPALIVE=25
+UNATTUPG=1
+END
+
+$ curl -L https://install.pivpn.io &gt; /tmp/pivpn_install.sh
+$ chmod +x /tmp/pivpn_install.sh
+$ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf                                                                                                     
+
+
+:: wireguard is not a supported VPN protocol on arm64 Debian, only 'openvpn' is
+</code></pre>
+<p>I was not able to select wireguard in intereractive interface. It select openvpn automatically.</p>
+<pre><code>$ /tmp/pivpn_install.sh --noipv6
+</code></pre>
+<p>Though I successed it on 32bit Raspberry pi OS (bullseye, 3B+)
+It needs NAPT settings to your pi to make a connection from outside wireguard peer.</p>
+<p>I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)</p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220521.html" class="u-url">WebARENA Indigo API</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

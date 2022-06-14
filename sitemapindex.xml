@@ -34,12 +34,16 @@
   <lastmod>2022-01-22T05:34:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://mnod.github.io/categories/failed.xml</loc>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://mnod.github.io/categories/git.xml</loc>
   <lastmod>2022-01-22T05:33:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/hosting.xml</loc>
-  <lastmod>2022-01-22T05:34:00Z</lastmod>
+  <lastmod>2022-06-06T12:27:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/jscript.xml</loc>
@@ -63,11 +67,11 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/linux.xml</loc>
-  <lastmod>2022-03-28T07:38:00Z</lastmod>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/multimedia.xml</loc>
-  <lastmod>2022-01-22T05:33:00Z</lastmod>
+  <lastmod>2022-05-13T00:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/openssh.xml</loc>
@@ -91,11 +95,11 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/raspberrypi.xml</loc>
-  <lastmod>2022-01-22T05:33:00Z</lastmod>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/rdbms.xml</loc>
-  <lastmod>2022-01-22T05:33:00Z</lastmod>
+  <lastmod>2022-06-06T23:04:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/script.xml</loc>
@@ -103,7 +107,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/serverside.xml</loc>
-  <lastmod>2022-01-22T05:34:00Z</lastmod>
+  <lastmod>2022-05-23T12:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/shell.xml</loc>
@@ -111,11 +115,11 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/software.xml</loc>
-  <lastmod>2022-01-22T05:33:00Z</lastmod>
+  <lastmod>2022-05-23T12:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/sqlite.xml</loc>
-  <lastmod>2022-01-22T05:33:00Z</lastmod>
+  <lastmod>2022-06-06T23:04:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/svg.xml</loc>
@@ -146,6 +150,10 @@
   <lastmod>2022-01-22T05:34:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>https://mnod.github.io/categories/vpn.xml</loc>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>https://mnod.github.io/categories/windows.xml</loc>
   <lastmod>2022-01-22T05:34:00Z</lastmod>
  </sitemap>
@@ -155,10 +163,10 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2022-03-28T07:38:00Z</lastmod>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2022-03-28T07:38:00Z</lastmod>
+  <lastmod>2022-06-14T12:02:00Z</lastmod>
  </sitemap>
 </sitemapindex>
