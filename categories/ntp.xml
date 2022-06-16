@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about ntp)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/ntp.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 16 Jun 2022 00:40:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>network time security</title><link>https://mnod.github.io/posts/20220615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://fedoramagazine.org/secure-ntp-with-nts/"&gt;Secure NTP with NTS&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Chrony supports nts since version 4.0. I tried to build nts server and client.&lt;/p&gt;
+&lt;h3&gt;server configuration&lt;/h3&gt;
+&lt;p&gt;example of chrony 4.2 on ubuntu 22.04 LTS&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server time.facebook.com iburst maxpoll 11
+server time.google.com   iburst maxpoll 11
+server time.apple.com    iburst maxpoll 11
+
+ntsserverkey /etc/chrony/key.pem
+ntsservercert /etc/chrony/crt.pem
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;key.pem and crt.pem are openssl private key and certificate(with intermediate ca certificate) file pair.
+The certificate needs to include your fqdn of your nts server.&lt;/p&gt;
+&lt;p&gt;When I put key and crt files in a sub directory of /etc/ssl, below error occured.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Could not set credentials : Error while reading file.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In /var/log/syslog, I found audit log of apparmor which shows it denied for chronyd to open the key file.
+When I put them in /etc/chrony, I successed to run it.&lt;/p&gt;
+&lt;p&gt;Before test from client, you have to open not only 123/udp for NTP but also 4460/tcp for NTS-KE.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ chronyd -Q -t 8 'server mynts.example.com iburst nts'
+$ sudo chronyc serverstats
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;client configuration&lt;/h3&gt;
+&lt;p&gt;example of chrony 4.0 on Debian 11&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server mynts.example.com iburst nts
+server ptbtime1.ptb.de   iburst nts
+server nts.time.nl       iburst nts
+server nts.ntp.se        iburst nts
+
+ntstrustedcerts /etc/chrony/cacert.crt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When you use selfsigned CA to make your certificate in the nts server, you have to show your own ca certificate file to chrony.conf in ntstrustedcerts.&lt;/p&gt;</description><category>linux</category><category>ntp</category><guid>https://mnod.github.io/posts/20220615.html</guid><pubDate>Wed, 15 Jun 2022 00:00:00 GMT</pubDate></item><item><title>chrony</title><link>https://mnod.github.io/posts/20200615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;chrony is an implementation of Network Time Protocol&lt;/p&gt;
+&lt;p&gt;install&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apt install chrony
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sample config
+specify ntp server at &lt;code&gt;server&lt;/code&gt; or ntp server pool for &lt;code&gt;pool&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;reload configuration&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl status chronyd
+journalctl -u chrony -f
+systemctl force-reload chrony
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show system track performance&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc tracking
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show current time sources&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc sources
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show information about drift rate and offset estimation process&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc sourcestats
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show the last valid measurement and other information&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc ntpdata
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;server&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;For server settings, at least add a &lt;code&gt;allow&lt;/code&gt; line.
+&lt;code&gt;cmdallow&lt;/code&gt; and &lt;code&gt;bindcmdaddress&lt;/code&gt; lines are optional which is for monitoring access&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ grep -E -v "^#|^$" /etc/chrony/chrony.conf
+server 192.168.xxx.xxx iburst minpoll 6 maxpoll 10
+keyfile /etc/chrony/chrony.keys
+driftfile /var/lib/chrony/chrony.drift
+logdir /var/log/chrony
+maxupdateskew 100.0
+rtcsync
+makestep 1 3
+allow 192.168.xxx.0/24
+cmdallow 192.168.xxx.0/24
+bindcmdaddress 127.0.0.1
+bindcmdaddress 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;show list of clients&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;chronyc clients
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;specify a remote host to which chronyd is to be connected (using udp/323)
+default is localhost&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cronyc -h 192.168.xxx.xxx
+&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><category>ntp</category><guid>https://mnod.github.io/posts/20200615.html</guid><pubDate>Mon, 15 Jun 2020 00:00:00 GMT</pubDate></item></channel></rss>

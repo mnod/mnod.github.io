@@ -11,7 +11,7 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
 <link rel="canonical" href="https://mnod.github.io/categories/linux.html">
-<link rel="next" href="linux-3.html" type="text/html">
+<link rel="next" href="linux-4.html" type="text/html">
 <!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag linux" hreflang="en" href="linux.xml">
 </head>
 <body>
@@ -57,7 +57,51 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220614.html" class="u-url">wireguard on raspberryrpi</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220615.html" class="u-url">network time security</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220615.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-06-15T00:00:00Z" itemprop="datePublished" title="2022-06-15 00:00">2022-06-15 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p><a href="https://fedoramagazine.org/secure-ntp-with-nts/">Secure NTP with NTS</a></p>
+<p>Chrony supports nts since version 4.0. I tried to build nts server and client.</p>
+<h3>server configuration</h3>
+<p>example of chrony 4.2 on ubuntu 22.04 LTS</p>
+<pre><code>server time.facebook.com iburst maxpoll 11
+server time.google.com   iburst maxpoll 11
+server time.apple.com    iburst maxpoll 11
+
+ntsserverkey /etc/chrony/key.pem
+ntsservercert /etc/chrony/crt.pem
+</code></pre>
+<p>key.pem and crt.pem are openssl private key and certificate(with intermediate ca certificate) file pair.
+The certificate needs to include your fqdn of your nts server.</p>
+<p>When I put key and crt files in a sub directory of /etc/ssl, below error occured.</p>
+<pre><code>Could not set credentials : Error while reading file.
+</code></pre>
+<p>In /var/log/syslog, I found audit log of apparmor which shows it denied for chronyd to open the key file.
+When I put them in /etc/chrony, I successed to run it.</p>
+<p>Before test from client, you have to open not only 123/udp for NTP but also 4460/tcp for NTS-KE.</p>
+<pre><code>$ chronyd -Q -t 8 'server mynts.example.com iburst nts'
+$ sudo chronyc serverstats
+</code></pre>
+<h3>client configuration</h3>
+<p>example of chrony 4.0 on Debian 11</p>
+<pre><code>server mynts.example.com iburst nts
+server ptbtime1.ptb.de   iburst nts
+server nts.time.nl       iburst nts
+server nts.ntp.se        iburst nts
+
+ntstrustedcerts /etc/chrony/cacert.crt
+</code></pre>
+<p>When you use selfsigned CA to make your certificate in the nts server, you have to show your own ca certificate file to chrony.conf in ntstrustedcerts.</p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220614.html" class="u-url">wireguard on raspberryrpi</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -809,89 +853,12 @@ help # Show help messages
 docker-compose up -d
 </code></pre>
     </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200924.html" class="u-url">vhd</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200924.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-09-24T00:00:00Z" itemprop="datePublished" title="2020-09-24 00:00">2020-09-24 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p>Windows can mount vhd file as a virtual drive.
-We can use it for application install space or document storage area.</p>
-<p>When we create a vhd file on a flash memory, the memory should be formatted with ntfs format.</p>
-<pre><code>parted /dev/sdb print
-parted /dev/sdb rm 1
-parted /dev/sdb mkpart primary ntfs 0% 100%
-mkfs.ntfs -Q /dev/sdb1
-mount /dev/sdb1 /mnt
-</code></pre>
-<p>At first a raw image file, make label, and make partition.</p>
-<pre><code>dd if=/dev/zero of=file.img bs=1M count=0 seek=59000
-losetup -f
-losetup /dev/loop1 file.img
-losetup -a
-parted /dev/loop1 print
-parted /dev/loop1 mklabel msdos
-parted /dev/loop1 mkpart primary ntfs 0% 100%
-losetup -d /dev/loop1
-</code></pre>
-<p>Then format the partition in ntfs format.</p>
-<pre><code>kpartx -a -v file.img
-mkfs.ntfs -Q /dev/loop1p1
-kpartx -d -v file.img
-</code></pre>
-<p>The vhd file must not be sparse file.
-So after we convert it to vhd format, then we should convert it to normal file.</p>
-<pre><code>cp --sparse=never file.img file_new.img
-qemu-img convert -O vpc -o subformat=fixed,force_size=on file.img output.vhd
-cp -pi --sparse=never output.vhd.sparse file.vhd
-</code></pre>
-<p><strong>diskpart</strong></p>
-<p>In windows os, we can handle partition and filesystem with sub commands of diskpart command.</p>
-<p>format usb drive</p>
-<pre><code>list volume
-select volume=2
-format fs=ntfs quick
-</code></pre>
-<p>create a vhd file and attach it</p>
-<pre><code>list volume
-create vdisk file="d:\image.vhd" maximum=1024
-select vdisk file="d:\image.vhd"
-attach vdisk
-list vdisk
-</code></pre>
-<p>create partition in the vhd file</p>
-<pre><code>select disk 2
-list disk
-create partition primary
-</code></pre>
-<p>format in ntfs and assign drive letter</p>
-<pre><code>list volume
-select volume=3
-format fs=ntfs quick
-assign letter=e:
-</code></pre>
-<p>detach the vhd file</p>
-<pre><code>select vdisk file="d:\image.vhd"
-detach vdisk
-list vdisk
-</code></pre>
-<p>next time, just attach it</p>
-<pre><code>select vdisk file="d:\image.vhd"
-attach vdisk
-list vdisk
-</code></pre>
-    </div>
     </article>
 </div>
 
         <nav class="postindexpager"><ul class="pager">
 <li class="next">
-                <a href="linux-3.html" rel="next">Older posts</a>
+                <a href="linux-4.html" rel="next">Older posts</a>
             </li>
         </ul></nav></main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
             
