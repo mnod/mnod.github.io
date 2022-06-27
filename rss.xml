@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 16 Jun 2022 00:40:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>network time security</title><link>https://mnod.github.io/posts/20220615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://fedoramagazine.org/secure-ntp-with-nts/"&gt;Secure NTP with NTS&lt;/a&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Jun 2022 08:50:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
+&lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
+&lt;li&gt;When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"&gt;&lt;/script&gt;
+
+&lt;p&gt;sample script which delete validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"&gt;&lt;/script&gt;
+
+&lt;pre&gt;&lt;code&gt;certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Once you get your new certificate, you have to update your certificate periodically.&lt;/li&gt;
+&lt;/ul&gt;</description><category>aws</category><category>linux</category><category>openssl</category><guid>https://mnod.github.io/posts/20220627.html</guid><pubDate>Mon, 27 Jun 2022 00:00:00 GMT</pubDate></item><item><title>network time security</title><link>https://mnod.github.io/posts/20220615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://fedoramagazine.org/secure-ntp-with-nts/"&gt;Secure NTP with NTS&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Chrony supports nts since version 4.0. I tried to build nts server and client.&lt;/p&gt;
 &lt;h3&gt;server configuration&lt;/h3&gt;
 &lt;p&gt;example of chrony 4.2 on ubuntu 22.04 LTS&lt;/p&gt;
@@ -502,94 +537,4 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;h2&gt;「自動車社会において、車道を走る自転車は邪魔者である」は誤り&lt;/h2&gt;
 &lt;p&gt;欧州の先進国に止まらず、米国の大都市においても自動車よりも自転車を優先する取り組みが始まっている。
 本邦においても、車道を減らす取り組みが報道されている。
-自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item><item><title>ansible vault</title><link>https://mnod.github.io/posts/20210923.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create a vault file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ansible-vault create test
-New Vault password: 
-Confirm New Vault password: 
-:
-:
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;$ ansible-vault view test
-Vault password: 
-test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;$ cat test 
-$ANSIBLE_VAULT;1.1;AES256
-34373931643530353734633238383738363430616366366463653631316362353730613165316464
-3834656662626430306662333038656263613139373036640a303131396539353663383932323133
-63316564623264323434326138623737326463633830623465373131646134616662363565656132
-3165616239303564330a646436643339303665336333363530346636666339643561336565393434
-3766
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can use vault-id option for password instead of stdin.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ansible-vault view --vault-id test@prompt test
-Vault password (test): 
-test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;$ cat vaultpass.test 
-password
-
-$ ansible-vault view --vault-id test@vaultpass.test test
-test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can also encrypt/decrpt any file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ansible-vault decrypt --vault-id test@vaultpass.test test
-Decryption successful
-
-$ cat test 
-test
-
-$ ansible-vault encrypt --vault-id test@vaultpass.test test
-Encryption successful
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;example for encrypt var file.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat ./roles/test/vars/main.yml 
-target: ansible_os_family
-
-$ ansible-vault encrypt --vault-id test@vaultpass.test ./roles/test/vars/main.yml 
-Encryption successful
-
-$ cat ./roles/test/vars/main.yml 
-$ANSIBLE_VAULT;1.2;AES256;test
-33653839336162646466373262663965636561366464643634643431633639343437633166636137
-3236636535383832383932353865396630313266366264360a363134333532393038396561323137
-30643734663961363561666461326362373035623131663637383636346633393737636234316163
-3463663838626334660a616564343730343561656335343534353161666430313731376631623634
-65643135323666303430616331666165656131373639393936333731626131653764
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;ansible-playbook example using encrypted file.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat ./roles/test/tasks/main.yml 
-- name: print ansible facts
-  debug:
-    var: "{{ target }}"
-
-$ cat hosts 
-[test]
-localhost ansible_connection=local
-
-$ ansible-playbook -i hosts --vault-id test@vaultpass.test --list-tasks test.yml 
-
-playbook: test.yml
-
-  play #1 (test): ansible vault test    TAGS: []
-    tasks:
-      test : print ansible facts    TAGS: []
-
-
-$ ansible-playbook -i hosts --vault-id test@vaultpass.test test.yml 
-
-PLAY [ansible vault test] *****************************************************************************************************
-
-TASK [Gathering Facts] ********************************************************************************************************
-ok: [localhost]
-
-TASK [test : print ansible facts] *********************************************************************************************
-ok: [localhost] =&amp;gt; {
-    "ansible_os_family": "Debian"
-}
-
-PLAY RECAP ********************************************************************************************************************
-localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-
-&lt;/code&gt;&lt;/pre&gt;</description><category>ansible</category><guid>https://mnod.github.io/posts/20210923.html</guid><pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate></item></channel></rss>
+自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。&lt;/p&gt;</description><category>lifestyle</category><guid>https://mnod.github.io/posts/20211014.html</guid><pubDate>Sat, 16 Oct 2021 00:00:00 GMT</pubDate></item></channel></rss>

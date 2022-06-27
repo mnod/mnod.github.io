@@ -57,7 +57,51 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210428.html" class="u-url">ses</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220627.html" class="u-url">let's encrrypt</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220627.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-06-27T00:00:00Z" itemprop="datePublished" title="2022-06-27 00:00">2022-06-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <pre><code>certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+</code></pre>
+<ul>
+<li>When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.</li>
+<li>You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. </li>
+<li>When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).<br>
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.</li>
+</ul>
+<p>sample script which create validtion entry for aws route53</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"></script><p>sample script which delete validtion entry for aws route53</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"></script><pre><code>certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+</code></pre>
+<ul>
+<li>Once you get your new certificate, you have to update your certificate periodically.</li>
+</ul>
+</div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210428.html" class="u-url">ses</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -1148,188 +1192,6 @@ aws sqs purge-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;i
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"></script></p>
 <p>receive message
 <script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"></script></p>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191110.html" class="u-url">apigateway</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20191110.html" rel="bookmark">
-            <time class="published dt-published" datetime="2019-11-10T00:00:00Z" itemprop="datePublished" title="2019-11-10 00:00">2019-11-10 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p><em>create rest-api</em></p>
-<pre><code>$ aws apigateway get-rest-apis
-$ aws apigateway create-rest-api --name &lt;API Name&gt;
-$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
-</code></pre>
-<p><em>create resource</em></p>
-<pre><code>$ aws apigateway get-resources --rest-api-id &lt;API ID&gt;
-$ aws apigateway create-resource --rest-api-id &lt;API ID&gt; --parent-id &lt;Parent Resource ID&gt; --path-part subpath
-$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
-</code></pre>
-<p><em>put method</em></p>
-<pre><code>$ aws apigateway put-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --authorization-type none --http-method get 
-$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-</code></pre>
-<p><em>put integration response</em></p>
-<pre><code>$ aws apigateway put-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json":"{\"json\":\"template\"}"}'
-$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-</code></pre>
-<p><em>put method response</em></p>
-<pre><code>$ aws apigateway put-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200 --response-models '{"text/plain":"Empty"}'
-$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-</code></pre>
-<p><em>update integration</em></p>
-<pre><code>$ jq '.' test.json
-[
-  {
-    "op": "add",
-    "path": "/requestTemplates/application~1json",
-    "value": "{\"example\":\"json\"}"
-  }
-]
-$ aws apigateway update-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations file://test.json
-</code></pre>
-<p><em>create deployment</em></p>
-<pre><code>$ aws apigateway get-deployments --rest-api-id &lt;API ID&gt;
-$ aws apigateway create-deployment --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
-$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
-</code></pre>
-<p><em>create stage</em></p>
-<pre><code>$ aws apigateway get-stages --rest-api-id &lt;API ID&gt;
-$ aws apigateway create-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt; --deployment-id &lt;Deployment ID&gt;
-$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
-</code></pre>
-<p><em>test invoke method</em></p>
-<pre><code>$ aws apigateway test-invoke-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
-  --http-method [GET|POST|DELETE|...]
-  --path-with-query-string "/"
-  --body "bodystring"
-</code></pre>
-<p><em>create api key</em></p>
-<pre><code>$ aws apigateway get-api-keys
-$ aws apigateway create-api-key --name testkey
-$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
-$ aws apigateway get-api-key --api-key &lt;Key ID&gt; --include-value
-</code></pre>
-<p><em>update api key</em></p>
-<pre><code>$ aws apigateway update-api-key --api-key &lt;Key ID&gt; --patch-operations '{ "op":"replace", "path":"/enabled", "value":"true" }'
-</code></pre>
-<p><em>create usage plan</em></p>
-<pre><code>$ aws apigateway get-usage-plans
-$ aws apigateway create-usage-plan --name myusageplan --api-stages '{"apiId":"&lt;API ID&gt;","stage":"&lt;Stage Name&gt;"}' --throttle '{ "burstLimit": 2, "rateLimit": 1.0 }' --quota '{ "limit": 320, "offset": 0, "period": "DAY" }'
-$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
-</code></pre>
-<p><em>associate usage-plan and key</em></p>
-<pre><code>$ aws apigateway get-usage-plan-keys --usage-plan-id &lt;Usage Plan ID&gt;
-$ aws apigateway create-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt; --key-type API_KEY
-$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
-</code></pre>
-<p><em>update method</em></p>
-<pre><code>$ aws apigateway update-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --patch-operations op='replace',path='/apiKeyRequired',value='true'
-$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-</code></pre>
-<p><em>test run with api-key</em></p>
-<pre><code>$ curl https://&lt;API ID&gt;.execute-api.&lt;Region Name&gt;.amazonaws.com/&lt;Stage Name&gt; --header "x-api-key:&lt;API Key Value&gt;"
-</code></pre>
-<p><em>diassociate usage-plan and key</em></p>
-<pre><code>$ aws apigateway get-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
-$ aws apigateway delete-usage-plan-key --usage-plan-id &lt;Usage Plan ID&gt; --key-id &lt;Key ID&gt;
-</code></pre>
-<p><em>delete stage</em></p>
-<pre><code>$ aws apigateway get-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
-$ aws apigateway delete-stage --rest-api-id &lt;API ID&gt; --stage-name &lt;Stage Name&gt;
-</code></pre>
-<p><em>delete deployment</em></p>
-<pre><code>$ aws apigateway get-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
-$ aws apigateway delete-deployment --rest-api-id &lt;API ID&gt; --deployment-id &lt;Deployment ID&gt;
-</code></pre>
-<p><em>delete usage-plan</em></p>
-<pre><code>$ aws apigateway get-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
-$ aws apigateway delete-usage-plan --usage-plan-id &lt;Usage Plan ID&gt;
-</code></pre>
-<p><em>delete api key</em></p>
-<pre><code>$ aws apigateway get-api-key --api-key &lt;Key ID&gt;
-$ aws apigateway delete-api-key --api-key &lt;Key ID&gt;
-</code></pre>
-<p><em>delete integration response</em></p>
-<pre><code>$ aws apigateway get-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-$ aws apigateway delete-integration-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-</code></pre>
-<p><em>delete method response</em></p>
-<pre><code>$ aws apigateway get-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-$ aws apigateway delete-method-response --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET --status-code 200
-</code></pre>
-<p><em>delete integration</em></p>
-<pre><code>$ aws apigateway get-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-$ aws apigateway delete-integration --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-</code></pre>
-<p><em>delete method</em></p>
-<pre><code>$ aws apigateway get-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-$ aws apigateway delete-method --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt; --http-method GET
-</code></pre>
-<p><em>delete resource</em></p>
-<pre><code>$ aws apigateway get-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
-$ aws apigateway delete-resource --rest-api-id &lt;API ID&gt; --resource-id &lt;Resource ID&gt;
-</code></pre>
-<p><em>delete rest-api</em></p>
-<pre><code>$ aws apigateway get-rest-api --rest-api-id &lt;API ID&gt;
-$ aws apigateway delete-rest-api --rest-api-id &lt;API ID&gt;
-</code></pre>
-<p><em>cloudformation sample template</em></p>
-<pre><code>    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: "ApiGatewayRestApi"
-        Tags:
-          - "Key": "Name"
-            "Value": "test"
-    ApiGatewayResourceSubject:
-      Type: AWS::ApiGateway::Resource
-      Properties:
-        ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-        PathPart: "{subject}"
-        RestApiId: !Ref ApiGatewayRestApi
-    TestLambdaPermission:
-      Type: AWS::Lambda::Permission
-      Properties:
-        FunctionName: !GetAtt TestLambda.Arn
-        Action: lambda:InvokeFunction
-        Principal: apigateway.amazonaws.com
-    ApiGatewayGET:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        HttpMethod: "GET"
-        RestApiId: !Ref ApiGatewayRestApi
-        ResourceId: !Ref ApiGatewayResourceSubject
-        RequestParameters:
-          "method.request.path.string": true
-          "method.request.path.year": true
-        AuthorizationType: "NONE"
-        MethodResponses:
-            - StatusCode: 200
-              ResponseModels:
-                application/json;charset=UTF-8: Empty
-        Integration:
-          Type: "AWS_PROXY"
-          IntegrationHttpMethod: "POST"
-          RequestParameters:
-            "integration.request.path.string": "method.request.path.string"
-            "integration.request.path.year": "method.request.path.year"
-          Uri: !Sub &gt;-
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestLambda.Arn}/invocations
-          RequestTemplates:
-            application/json: "{ \"statusCode\" : 200 }"
-    DeployDevel:
-      DependsOn: ApiGatewayGET
-      Type: 'AWS::ApiGateway::Deployment'
-      Properties:
-        RestApiId: !Ref ApiGatewayRestApi
-        StageName: "devel"
-</code></pre>
     </div>
     </article>
 </div>

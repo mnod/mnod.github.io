@@ -47,7 +47,110 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210610.html" class="u-url">squid bump</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210923.html" class="u-url">ansible vault</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20210923.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-09-23T00:00:00Z" itemprop="datePublished" title="2021-09-23 00:00">2021-09-23 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>create a vault file</p>
+<pre><code>$ ansible-vault create test
+New Vault password: 
+Confirm New Vault password: 
+:
+:
+</code></pre>
+<pre><code>$ ansible-vault view test
+Vault password: 
+test
+</code></pre>
+<pre><code>$ cat test 
+$ANSIBLE_VAULT;1.1;AES256
+34373931643530353734633238383738363430616366366463653631316362353730613165316464
+3834656662626430306662333038656263613139373036640a303131396539353663383932323133
+63316564623264323434326138623737326463633830623465373131646134616662363565656132
+3165616239303564330a646436643339303665336333363530346636666339643561336565393434
+3766
+</code></pre>
+<p>We can use vault-id option for password instead of stdin.</p>
+<pre><code>$ ansible-vault view --vault-id test@prompt test
+Vault password (test): 
+test
+</code></pre>
+<pre><code>$ cat vaultpass.test 
+password
+
+$ ansible-vault view --vault-id test@vaultpass.test test
+test
+</code></pre>
+<p>We can also encrypt/decrpt any file</p>
+<pre><code>$ ansible-vault decrypt --vault-id test@vaultpass.test test
+Decryption successful
+
+$ cat test 
+test
+
+$ ansible-vault encrypt --vault-id test@vaultpass.test test
+Encryption successful
+</code></pre>
+<p>example for encrypt var file.</p>
+<pre><code>$ cat ./roles/test/vars/main.yml 
+target: ansible_os_family
+
+$ ansible-vault encrypt --vault-id test@vaultpass.test ./roles/test/vars/main.yml 
+Encryption successful
+
+$ cat ./roles/test/vars/main.yml 
+$ANSIBLE_VAULT;1.2;AES256;test
+33653839336162646466373262663965636561366464643634643431633639343437633166636137
+3236636535383832383932353865396630313266366264360a363134333532393038396561323137
+30643734663961363561666461326362373035623131663637383636346633393737636234316163
+3463663838626334660a616564343730343561656335343534353161666430313731376631623634
+65643135323666303430616331666165656131373639393936333731626131653764
+
+</code></pre>
+<p>ansible-playbook example using encrypted file.</p>
+<pre><code>$ cat ./roles/test/tasks/main.yml 
+- name: print ansible facts
+  debug:
+    var: "{{ target }}"
+
+$ cat hosts 
+[test]
+localhost ansible_connection=local
+
+$ ansible-playbook -i hosts --vault-id test@vaultpass.test --list-tasks test.yml 
+
+playbook: test.yml
+
+  play #1 (test): ansible vault test    TAGS: []
+    tasks:
+      test : print ansible facts    TAGS: []
+
+
+$ ansible-playbook -i hosts --vault-id test@vaultpass.test test.yml 
+
+PLAY [ansible vault test] *****************************************************************************************************
+
+TASK [Gathering Facts] ********************************************************************************************************
+ok: [localhost]
+
+TASK [test : print ansible facts] *********************************************************************************************
+ok: [localhost] =&gt; {
+    "ansible_os_family": "Debian"
+}
+
+PLAY RECAP ********************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210610.html" class="u-url">squid bump</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

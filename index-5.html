@@ -390,6 +390,51 @@ $ chmod +x ami.jq
 
 $ ./ami.jq ami.json
 </code></pre>
+<p>adding value of add.json to ResourceRecordSet part of orig.json</p>
+<pre><code>$ jq . orig.json
+{
+  "Comment": "delete after certbot validation",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "_acme-challenge.'${CERTBOT_DOMAIN}'.",
+        "Type": "TXT"
+      }
+    }
+  ]
+}
+</code></pre>
+<pre><code>$ jq . add.json 
+{
+  "ResourceRecords": [
+    {
+      "Value": "\"abcd1234\""
+    }
+  ],
+  "TTL": 1800
+}
+</code></pre>
+<pre><code>$ jq '.Changes[0].ResourceRecordSet |= .+ '$(jq -c . add.json)'' orig.json
+{
+  "Comment": "delete after certbot validation",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "_acme-challenge.'${CERTBOT_DOMAIN}'.",
+        "Type": "TXT",
+        "ResourceRecords": [
+          {
+            "Value": "\"abcd1234\""
+          }
+        ],
+        "TTL": 1800
+      }
+    }
+  ]
+}
+</code></pre>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20180826.html" class="u-url">eBook reader</a></h1>
         <div class="metadata">

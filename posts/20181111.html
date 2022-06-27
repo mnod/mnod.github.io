@@ -160,6 +160,51 @@ $ chmod +x ami.jq
 
 $ ./ami.jq ami.json
 </code></pre>
+<p>adding value of add.json to ResourceRecordSet part of orig.json</p>
+<pre><code>$ jq . orig.json
+{
+  "Comment": "delete after certbot validation",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "_acme-challenge.'${CERTBOT_DOMAIN}'.",
+        "Type": "TXT"
+      }
+    }
+  ]
+}
+</code></pre>
+<pre><code>$ jq . add.json 
+{
+  "ResourceRecords": [
+    {
+      "Value": "\"abcd1234\""
+    }
+  ],
+  "TTL": 1800
+}
+</code></pre>
+<pre><code>$ jq '.Changes[0].ResourceRecordSet |= .+ '$(jq -c . add.json)'' orig.json
+{
+  "Comment": "delete after certbot validation",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "_acme-challenge.'${CERTBOT_DOMAIN}'.",
+        "Type": "TXT",
+        "ResourceRecords": [
+          {
+            "Value": "\"abcd1234\""
+          }
+        ],
+        "TTL": 1800
+      }
+    }
+  ]
+}
+</code></pre>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
 <li><a class="tag p-category" href="../categories/json.html" rel="tag">json</a></li>

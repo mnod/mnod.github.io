@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
 <link rel="canonical" href="https://mnod.github.io/">
 <link rel="next" href="index-10.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20220615.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20220627.html" type="text/html">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -46,7 +46,51 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220615.html" class="u-url">network time security</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220627.html" class="u-url">let's encrrypt</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20220627.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-06-27T00:00:00Z" itemprop="datePublished" title="2022-06-27 00:00">2022-06-27 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <pre><code>certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+</code></pre>
+<ul>
+<li>When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.</li>
+<li>You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. </li>
+<li>When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).<br>
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.</li>
+</ul>
+<p>sample script which create validtion entry for aws route53</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"></script><p>sample script which delete validtion entry for aws route53</p>
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"></script><pre><code>certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+</code></pre>
+<ul>
+<li>Once you get your new certificate, you have to update your certificate periodically.</li>
+</ul>
+</div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220615.html" class="u-url">network time security</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -675,109 +719,6 @@ You can create a shortcut to it where you like.</li>
 <p>欧州の先進国に止まらず、米国の大都市においても自動車よりも自転車を優先する取り組みが始まっている。
 本邦においても、車道を減らす取り組みが報道されている。
 自動車に依存していると忘れられがちなのかもしれないが、自動車がいつでもどこでも優先されるというのは都合のよい手前勝手な傲慢な幻想にすぎない。</p>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20210923.html" class="u-url">ansible vault</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="posts/20210923.html" rel="bookmark">
-            <time class="published dt-published" datetime="2021-09-23T00:00:00Z" itemprop="datePublished" title="2021-09-23 00:00">2021-09-23 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p>create a vault file</p>
-<pre><code>$ ansible-vault create test
-New Vault password: 
-Confirm New Vault password: 
-:
-:
-</code></pre>
-<pre><code>$ ansible-vault view test
-Vault password: 
-test
-</code></pre>
-<pre><code>$ cat test 
-$ANSIBLE_VAULT;1.1;AES256
-34373931643530353734633238383738363430616366366463653631316362353730613165316464
-3834656662626430306662333038656263613139373036640a303131396539353663383932323133
-63316564623264323434326138623737326463633830623465373131646134616662363565656132
-3165616239303564330a646436643339303665336333363530346636666339643561336565393434
-3766
-</code></pre>
-<p>We can use vault-id option for password instead of stdin.</p>
-<pre><code>$ ansible-vault view --vault-id test@prompt test
-Vault password (test): 
-test
-</code></pre>
-<pre><code>$ cat vaultpass.test 
-password
-
-$ ansible-vault view --vault-id test@vaultpass.test test
-test
-</code></pre>
-<p>We can also encrypt/decrpt any file</p>
-<pre><code>$ ansible-vault decrypt --vault-id test@vaultpass.test test
-Decryption successful
-
-$ cat test 
-test
-
-$ ansible-vault encrypt --vault-id test@vaultpass.test test
-Encryption successful
-</code></pre>
-<p>example for encrypt var file.</p>
-<pre><code>$ cat ./roles/test/vars/main.yml 
-target: ansible_os_family
-
-$ ansible-vault encrypt --vault-id test@vaultpass.test ./roles/test/vars/main.yml 
-Encryption successful
-
-$ cat ./roles/test/vars/main.yml 
-$ANSIBLE_VAULT;1.2;AES256;test
-33653839336162646466373262663965636561366464643634643431633639343437633166636137
-3236636535383832383932353865396630313266366264360a363134333532393038396561323137
-30643734663961363561666461326362373035623131663637383636346633393737636234316163
-3463663838626334660a616564343730343561656335343534353161666430313731376631623634
-65643135323666303430616331666165656131373639393936333731626131653764
-
-</code></pre>
-<p>ansible-playbook example using encrypted file.</p>
-<pre><code>$ cat ./roles/test/tasks/main.yml 
-- name: print ansible facts
-  debug:
-    var: "{{ target }}"
-
-$ cat hosts 
-[test]
-localhost ansible_connection=local
-
-$ ansible-playbook -i hosts --vault-id test@vaultpass.test --list-tasks test.yml 
-
-playbook: test.yml
-
-  play #1 (test): ansible vault test    TAGS: []
-    tasks:
-      test : print ansible facts    TAGS: []
-
-
-$ ansible-playbook -i hosts --vault-id test@vaultpass.test test.yml 
-
-PLAY [ansible vault test] *****************************************************************************************************
-
-TASK [Gathering Facts] ********************************************************************************************************
-ok: [localhost]
-
-TASK [test : print ansible facts] *********************************************************************************************
-ok: [localhost] =&gt; {
-    "ansible_os_family": "Debian"
-}
-
-PLAY RECAP ********************************************************************************************************************
-localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-
-</code></pre>
     </div>
     </article>
 </div>

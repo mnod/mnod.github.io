@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 22 Jan 2022 05:33:57 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;aws command&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Jun 2022 08:50:17 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
+&lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
+&lt;li&gt;When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"&gt;&lt;/script&gt;
+
+&lt;p&gt;sample script which delete validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"&gt;&lt;/script&gt;
+
+&lt;pre&gt;&lt;code&gt;certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Once you get your new certificate, you have to update your certificate periodically.&lt;/li&gt;
+&lt;/ul&gt;</description><category>aws</category><category>linux</category><category>openssl</category><guid>https://mnod.github.io/posts/20220627.html</guid><pubDate>Mon, 27 Jun 2022 00:00:00 GMT</pubDate></item><item><title>ses</title><link>https://mnod.github.io/posts/20210428.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;aws command&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ses list-identities
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;destination.json &lt;/p&gt;
@@ -974,173 +1009,4 @@ aws sqs purge-queue --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.c
 &lt;p&gt;send message
 &lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"&gt;&lt;/script&gt;&lt;/p&gt;
 &lt;p&gt;receive message
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"&gt;&lt;/script&gt;&lt;/p&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200109.html</guid><pubDate>Thu, 09 Jan 2020 00:00:00 GMT</pubDate></item><item><title>apigateway</title><link>https://mnod.github.io/posts/20191110.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;create rest-api&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-rest-apis
-$ aws apigateway create-rest-api --name &amp;lt;API Name&amp;gt;
-$ aws apigateway get-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create resource&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-resources --rest-api-id &amp;lt;API ID&amp;gt;
-$ aws apigateway create-resource --rest-api-id &amp;lt;API ID&amp;gt; --parent-id &amp;lt;Parent Resource ID&amp;gt; --path-part subpath
-$ aws apigateway get-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;put method&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway put-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --authorization-type none --http-method get 
-$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;put integration response&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway put-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200 --selection-pattern "" --response-templates '{"application/json":"{\"json\":\"template\"}"}'
-$ aws apigateway get-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;put method response&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway put-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200 --response-models '{"text/plain":"Empty"}'
-$ aws apigateway get-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;update integration&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' test.json
-[
-  {
-    "op": "add",
-    "path": "/requestTemplates/application~1json",
-    "value": "{\"example\":\"json\"}"
-  }
-]
-$ aws apigateway update-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --patch-operations file://test.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create deployment&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-deployments --rest-api-id &amp;lt;API ID&amp;gt;
-$ aws apigateway create-deployment --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
-$ aws apigateway get-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create stage&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-stages --rest-api-id &amp;lt;API ID&amp;gt;
-$ aws apigateway create-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
-$ aws apigateway get-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;test invoke method&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway test-invoke-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
-  --http-method [GET|POST|DELETE|...]
-  --path-with-query-string "/"
-  --body "bodystring"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create api key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-api-keys
-$ aws apigateway create-api-key --name testkey
-$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt;
-$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt; --include-value
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;update api key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway update-api-key --api-key &amp;lt;Key ID&amp;gt; --patch-operations '{ "op":"replace", "path":"/enabled", "value":"true" }'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;create usage plan&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plans
-$ aws apigateway create-usage-plan --name myusageplan --api-stages '{"apiId":"&amp;lt;API ID&amp;gt;","stage":"&amp;lt;Stage Name&amp;gt;"}' --throttle '{ "burstLimit": 2, "rateLimit": 1.0 }' --quota '{ "limit": 320, "offset": 0, "period": "DAY" }'
-$ aws apigateway get-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;associate usage-plan and key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan-keys --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
-$ aws apigateway create-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt; --key-type API_KEY
-$ aws apigateway get-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;update method&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway update-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --patch-operations op='replace',path='/apiKeyRequired',value='true'
-$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;test run with api-key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ curl https://&amp;lt;API ID&amp;gt;.execute-api.&amp;lt;Region Name&amp;gt;.amazonaws.com/&amp;lt;Stage Name&amp;gt; --header "x-api-key:&amp;lt;API Key Value&amp;gt;"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;diassociate usage-plan and key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
-$ aws apigateway delete-usage-plan-key --usage-plan-id &amp;lt;Usage Plan ID&amp;gt; --key-id &amp;lt;Key ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete stage&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
-$ aws apigateway delete-stage --rest-api-id &amp;lt;API ID&amp;gt; --stage-name &amp;lt;Stage Name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
-$ aws apigateway delete-deployment --rest-api-id &amp;lt;API ID&amp;gt; --deployment-id &amp;lt;Deployment ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete usage-plan&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
-$ aws apigateway delete-usage-plan --usage-plan-id &amp;lt;Usage Plan ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete api key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-api-key --api-key &amp;lt;Key ID&amp;gt;
-$ aws apigateway delete-api-key --api-key &amp;lt;Key ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete integration response&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-$ aws apigateway delete-integration-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete method response&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-$ aws apigateway delete-method-response --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET --status-code 200
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete integration&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-$ aws apigateway delete-integration --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete method&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-$ aws apigateway delete-method --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt; --http-method GET
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete resource&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
-$ aws apigateway delete-resource --rest-api-id &amp;lt;API ID&amp;gt; --resource-id &amp;lt;Resource ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete rest-api&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws apigateway get-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
-$ aws apigateway delete-rest-api --rest-api-id &amp;lt;API ID&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;cloudformation sample template&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: "ApiGatewayRestApi"
-        Tags:
-          - "Key": "Name"
-            "Value": "test"
-    ApiGatewayResourceSubject:
-      Type: AWS::ApiGateway::Resource
-      Properties:
-        ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-        PathPart: "{subject}"
-        RestApiId: !Ref ApiGatewayRestApi
-    TestLambdaPermission:
-      Type: AWS::Lambda::Permission
-      Properties:
-        FunctionName: !GetAtt TestLambda.Arn
-        Action: lambda:InvokeFunction
-        Principal: apigateway.amazonaws.com
-    ApiGatewayGET:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        HttpMethod: "GET"
-        RestApiId: !Ref ApiGatewayRestApi
-        ResourceId: !Ref ApiGatewayResourceSubject
-        RequestParameters:
-          "method.request.path.string": true
-          "method.request.path.year": true
-        AuthorizationType: "NONE"
-        MethodResponses:
-            - StatusCode: 200
-              ResponseModels:
-                application/json;charset=UTF-8: Empty
-        Integration:
-          Type: "AWS_PROXY"
-          IntegrationHttpMethod: "POST"
-          RequestParameters:
-            "integration.request.path.string": "method.request.path.string"
-            "integration.request.path.year": "method.request.path.year"
-          Uri: !Sub &amp;gt;-
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestLambda.Arn}/invocations
-          RequestTemplates:
-            application/json: "{ \"statusCode\" : 200 }"
-    DeployDevel:
-      DependsOn: ApiGatewayGET
-      Type: 'AWS::ApiGateway::Deployment'
-      Properties:
-        RestApiId: !Ref ApiGatewayRestApi
-        StageName: "devel"
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20191110.html</guid><pubDate>Sun, 10 Nov 2019 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"&gt;&lt;/script&gt;&lt;/p&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200109.html</guid><pubDate>Thu, 09 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>

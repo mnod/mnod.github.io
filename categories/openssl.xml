@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about openssl)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/openssl.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 01 Feb 2022 13:15:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>openssl</title><link>https://mnod.github.io/posts/20180503.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;自己認証局の作成・運用を手作業で実施する手順を記載する。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about openssl)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/openssl.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Jun 2022 08:50:17 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
+&lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
+&lt;li&gt;When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"&gt;&lt;/script&gt;
+
+&lt;p&gt;sample script which delete validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"&gt;&lt;/script&gt;
+
+&lt;pre&gt;&lt;code&gt;certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Once you get your new certificate, you have to update your certificate periodically.&lt;/li&gt;
+&lt;/ul&gt;</description><category>aws</category><category>linux</category><category>openssl</category><guid>https://mnod.github.io/posts/20220627.html</guid><pubDate>Mon, 27 Jun 2022 00:00:00 GMT</pubDate></item><item><title>openssl</title><link>https://mnod.github.io/posts/20180503.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;自己認証局の作成・運用を手作業で実施する手順を記載する。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;自己認証局の作成&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;(事前にindex.txtファイル、serialファイル等もろもろ準備した、作業ディレクトリで作業。)&lt;/p&gt;
 &lt;p&gt;擬似乱数ファイルの作成(ほどよく更新されるファイルのダイジェストを得る。パーミッション、更新日時に留意。)&lt;/p&gt;

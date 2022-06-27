@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Thu, 16 Jun 2022 00:40:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>network time security</title><link>https://mnod.github.io/posts/20220615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://fedoramagazine.org/secure-ntp-with-nts/"&gt;Secure NTP with NTS&lt;/a&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Jun 2022 08:50:17 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+--dry-run \
+-d www.example.net \
+-m yourname@example.net \
+--preferred-challenges dns-01  \
+--server https://acme-v02.api.letsencrypt.org/directory \
+--manual \
+--manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
+--manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
+&lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
+&lt;li&gt;When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
+CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"&gt;&lt;/script&gt;
+
+&lt;p&gt;sample script which delete validtion entry for aws route53&lt;/p&gt;
+&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"&gt;&lt;/script&gt;
+
+&lt;pre&gt;&lt;code&gt;certbot renew \
+--dry-run \
+--post-hook /home/user/work/letsencrypt/post-hook.sh \
+--work-dir /home/user/work/letsencrypt/work \
+--logs-dir /home/user/work/letsencrypt/logs \
+--config-dir /home/user/work/letsencrypt/conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Once you get your new certificate, you have to update your certificate periodically.&lt;/li&gt;
+&lt;/ul&gt;</description><category>aws</category><category>linux</category><category>openssl</category><guid>https://mnod.github.io/posts/20220627.html</guid><pubDate>Mon, 27 Jun 2022 00:00:00 GMT</pubDate></item><item><title>network time security</title><link>https://mnod.github.io/posts/20220615.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://fedoramagazine.org/secure-ntp-with-nts/"&gt;Secure NTP with NTS&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Chrony supports nts since version 4.0. I tried to build nts server and client.&lt;/p&gt;
 &lt;h3&gt;server configuration&lt;/h3&gt;
 &lt;p&gt;example of chrony 4.2 on ubuntu 22.04 LTS&lt;/p&gt;
@@ -597,70 +632,4 @@ $ sudo rmmod nbd
 &amp;gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
 &amp;gt; -monitor telnet:localhost:10025,server,nowait \
 &amp;gt; -nographic
-&lt;/code&gt;&lt;/pre&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item><item><title>docker on raspberrypi</title><link>https://mnod.github.io/posts/20200926.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;Install docker on &lt;a href="https://www.raspberrypi.org/forums/viewtopic.php?f=117&amp;amp;t=275370"&gt;Raspberry Pi OS (64bit) beta test version&lt;/a&gt;
-We can download the iso images from https://downloads.raspberrypi.org/raspios_arm64/images/&lt;/p&gt;
-&lt;p&gt;Also we can use torrent to download them&lt;/p&gt;
-&lt;p&gt;make a script to stop transmission when download finished (in this case, the script name is stop_torrent.sh)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;sleep 10
-kill $(ps -ef | grep transmission | grep -v grep | awk '{print $2}')
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then start download&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;transmissIon-cli --download-dir (fullpath) --uplimit (kbps) --downlimit (kbps) --encryption-required --finish (fullpath)/stop_torrent.sh https://(fqdn)/(path)/(filename).torrent
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;a href="https://docs.docker.com/engine/install/debian/"&gt;How to install&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ curl -fsSL https://get.docker.com -o get-docker.sh
-$ sudo sh get-docker.sh --dry-run
-$ sudo sh get-docker.sh
-$ systemctl is-active docker
-$ systemctl is-enabled docker
-$ sudo docker version
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;change the docker root directory where we store the images and containers.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker info | grep Root
-$ sudo systemctl stop docker
-$ sudo mv /var/lib/docker /path/to/
-$ sudo ln -s /path/to/docker /var/lib/docker
-$ sudo systemctl start docker
-$ sudo docker run --rm hello-world
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;confirm the result&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ sudo docker run --rm -it alpine
-/ #
-/ # uptime
- 03:17:44 up 1 day,  2:47,  load average: 0.02, 0.05, 0.01
-/ #
-/ # uname -a
-Linux 4db177a44a14 5.4.42-v8+ #1319 SMP PREEMPT Wed May 20 14:18:56 BST 2020 aarch64 Linux
-/ #
-/ # free -m
-              total        used        free      shared  buff/cache   available
-Mem:           7816         315        6339           2        1161        7460
-Swap:          8191           0        8191
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;install docker-compose&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ http_proxy=http://192.168.xxx.xxx:3142/ sudo -E apt install libffi-dev libssl-dev
-$ sudo pip3 install docker-compose
-$ pip3 show docker-compose
-$ docker-compose version
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;commands of docker-compose&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;config # Validate and view the Compose file
-ps # List containers
-images # List images
-build # (Re)Build services
-create # Create services
-up # Create and start containers
-start # Start services
-stop # Stop services
-rm -f # Remove stopped containers
-down # Stop and remove containers
-version # Show version information
-help # Show help messages
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When update docker-compose.yml, no need to rebuild the image.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker-compose up -d
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When update Dockerfile or edit any source codes, need to rebuild the image.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker-compose build
-docker-compose up -d
-&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200926.html</guid><pubDate>Sat, 26 Sep 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>kvm</category><category>linux</category><category>raspberrypi</category><guid>https://mnod.github.io/posts/20200927.html</guid><pubDate>Sun, 27 Sep 2020 00:00:00 GMT</pubDate></item></channel></rss>
