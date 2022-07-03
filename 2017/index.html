@@ -496,6 +496,9 @@ ip address add 192.168.0.1/24 brd + dev enp0s25
 <pre><code>ip route delete default
 ip route add default via 192.168.0.254
 </code></pre>
+<p>add static route</p>
+<pre><code>ip route add 10.0.0.0/24 via 192.168.0.252
+</code></pre>
 <p><em>operate virtual bridge</em></p>
 <p>show information of virtual bridge</p>
 <pre><code>brctl show

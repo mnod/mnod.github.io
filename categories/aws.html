@@ -85,7 +85,8 @@
 <ul>
 <li>When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.</li>
 <li>You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. </li>
-<li>When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).<br>
+<li>The dns-01 challenge authentication only needs DNS validation and don't need to access via 80/tcp nor web server installation on your server.
+When you use dns-01 challenge, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).<br>
 CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.</li>
 </ul>
 <p>sample script which create validtion entry for aws route53</p>

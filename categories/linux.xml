@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Mon, 27 Jun 2022 08:50:17 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about linux)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/linux.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 03 Jul 2022 09:32:53 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
 --dry-run \
 -d www.example.net \
 -m yourname@example.net \
@@ -16,7 +16,8 @@
 &lt;ul&gt;
 &lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
 &lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
-&lt;li&gt;When you use dns-01 challenge for authenticate, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
+&lt;li&gt;The dns-01 challenge authentication only needs DNS validation and don't need to access via 80/tcp nor web server installation on your server.
+When you use dns-01 challenge, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
 CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
