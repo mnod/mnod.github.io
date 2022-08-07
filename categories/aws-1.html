@@ -57,7 +57,51 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191110.html" class="u-url">apigateway</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200109.html" class="u-url">sqs</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200109.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-09T00:00:00Z" itemprop="datePublished" title="2020-01-09 00:00">2020-01-09 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p><em>create queue</em></p>
+<pre><code>aws sqs list-queues
+aws sqs create-queue --queue-name testqueue
+</code></pre>
+<p><em>get queue url or attributes</em></p>
+<pre><code>aws sqs get-queue-url --queue-name testqueue
+aws sqs get-queue-attributes --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --attribute-names All
+</code></pre>
+<p><em>handle message</em></p>
+<pre><code>aws sqs send-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --message-body {"foo":"bar"}
+aws sqs receive-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+{
+    "Messages": [
+        {
+            "MessageId": "",
+            "ReceiptHandle": "",
+            "MD5OfBody": "",
+            "Body": "{}"
+        }
+    ]
+}
+aws sqs delete-message --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt; --receipt-handle "&lt;ReceiptHandle&gt;"
+aws sqs purge-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+</code></pre>
+<p><em>delete queue</em></p>
+<pre><code>aws sqs delete-queue --queue-url https://&lt;region&gt;.queue.amazonaws.com/&lt;id&gt;/&lt;queuename&gt;
+</code></pre>
+<p><em>sample python script</em></p>
+<p>send message
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"></script></p>
+<p>receive message
+<script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"></script></p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20191110.html" class="u-url">apigateway</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

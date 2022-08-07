@@ -1,5 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 03 Jul 2022 09:32:53 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 07 Aug 2022 09:20:49 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ebs</title><link>https://mnod.github.io/posts/20220807.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create an EBS volume and attach to an EC2 instance&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 create-volume --availability-zone ap-northeast-1a --volume-type gp3 --size 1 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
+aws ec2 describe-volumes --volume-id vol-xxxx
+aws ec2 attach-volume --device /dev/xvdb --instance-id i-xxxx --volume-id vol-xxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;make partition and make filesystem&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ lsblk
+$ sudo parted /dev/nvme1n1 print
+$ sudo parted /dev/nvme1n1 mklabel gpt
+$ sudo parted /dev/nvme1n1 mkpart home ext4 1MB 100%
+
+$ sudo mkfs -t ext4 /dev/nvme1n1p1
+$ sudo tune2fs -L homefs /dev/nvme1n1p1
+$ ls -l /dev/disk/by-label/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;edit /etc/fstab and reboot&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mount /dev/nvme1n1p1 /mnt
+$ sudo cp -pri /home/ubuntu /mnt
+$ sudo cp -pri /etc/fstab /etc/fstab.000
+$ sudo vi /etc/fstab
+$ diff /etc/fstab /etc/fstab.000
+3d2
+
+aws ec2 reboot-instances --instance-ids i-xxxx --dry-run
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;extend disk size&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 modify-volume --volume-id vol-xxxx --size 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;extend partition and filesystem&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ lsblk
+$ sudo growpart /dev/nvme1n1 1
+
+$ df -hT /home
+$ sudo resize2fs /dev/nvme1n1p1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create snapshot&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 describe-snapshots --owner-id xxxx
+aws ec2 create-snapshot --volume-id vol-xxxx --description 'test snapshot of homefs' --tag-specifications 'ResourceType=snapshot,Tags=[{Key=Name,Value=homefs}]'
+aws ec2 describe-snapshots --owner-id xxxx --filters 'Name=volume-id,Values=vol-xxxx'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create new EBS volume from snapshot&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 create-volume --availability-zone ap-northeast-1a --snapshot-id snap-xxxx --volume-type gp3 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
+aws ec2 describe-volumes --volume-id vol-yyyy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;attach new volume and detach old volume&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 attach-volume --device /dev/xvdc --instance-id i-xxxx --volume-id vol-yyyy
+aws ec2 stop-instances --instance-ids i-xxxx
+aws ec2 detach-volume --no-force --instance-id i-xxxx --volume-id vol-xxxx
+aws ec2 start-instances --instance-ids i-xxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;delete volume&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 delete-volume --volume-id vol-yyyy
+aws ec2 describe-volumes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;delete snapshot&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 describe-snapshots --owner-id xxxx
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220807.html</guid><pubDate>Sun, 07 Aug 2022 00:00:00 GMT</pubDate></item><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
 --dry-run \
 -d www.example.net \
 -m yourname@example.net \
@@ -979,35 +1036,4 @@ $ aws iam delete-access-key --user-name &amp;lt;user-name&amp;gt; --access-key-i
               Resource: !GetAtt TestDynamoDBTable.Arn
         Roles:
           - !Ref TestLambdaRole
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200112.html</guid><pubDate>Sun, 12 Jan 2020 00:00:00 GMT</pubDate></item><item><title>sqs</title><link>https://mnod.github.io/posts/20200109.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;create queue&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws sqs list-queues
-aws sqs create-queue --queue-name testqueue
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;get queue url or attributes&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws sqs get-queue-url --queue-name testqueue
-aws sqs get-queue-attributes --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --attribute-names All
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;handle message&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws sqs send-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --message-body {"foo":"bar"}
-aws sqs receive-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
-{
-    "Messages": [
-        {
-            "MessageId": "",
-            "ReceiptHandle": "",
-            "MD5OfBody": "",
-            "Body": "{}"
-        }
-    ]
-}
-aws sqs delete-message --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt; --receipt-handle "&amp;lt;ReceiptHandle&amp;gt;"
-aws sqs purge-queue --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;delete queue&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws sqs delete-queue --queue-url https://&amp;lt;region&amp;gt;.queue.amazonaws.com/&amp;lt;id&amp;gt;/&amp;lt;queuename&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;sample python script&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;send message
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_sendmessage.py"&gt;&lt;/script&gt;&lt;/p&gt;
-&lt;p&gt;receive message
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=sqs_receivemessage.py"&gt;&lt;/script&gt;&lt;/p&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200109.html</guid><pubDate>Thu, 09 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200112.html</guid><pubDate>Sun, 12 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
