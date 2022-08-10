@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 07 Aug 2022 09:20:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ebs</title><link>https://mnod.github.io/posts/20220807.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create an EBS volume and attach to an EC2 instance&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 10 Aug 2022 13:12:23 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://template-000.yml
+aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation describe-stacks --stack-name mystack 
+aws cloudformation describe-stack-resources --stack-name mystack 
+aws cloudformation describe-stack-events --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;change set&lt;/h3&gt;
+&lt;p&gt;create change set after editing template file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-001 --description 'create new Internet Gateway'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;execute the change set&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-001
+aws cloudformation list-change-sets --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;drift&lt;/h3&gt;
+&lt;p&gt;detect stack drift after manual operation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation detect-stack-drift --stack-name mystack 
+aws cloudformation describe-stack-resource-drifts --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create change set after editing template file to fit to current resource&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-002 --description 'reflect manual operation'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;execute the change set&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove change set when the status is false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation delete-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;import&lt;/h3&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220810.html</guid><pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ami</title><link>https://mnod.github.io/posts/20220808.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 create-image --description 'backup ami of test server' --instance-id i-xxxx --name 'backup ami of test server' --no-reboot
+aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)]'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create an instance with AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 run-instances \
+--image-id ami-xxxx \
+--instance-type t4g.nano \
+--key-name testkey \
+--security-group-ids sg-xxxx \
+--subnet-id subnet-xxxx \
+--credit-specification 'CpuCredits=standard' \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=copied_instance}]' \
+--associate-public-ip-address
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;delete AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)].SnapshotId'
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220808.html</guid><pubDate>Mon, 08 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ebs</title><link>https://mnod.github.io/posts/20220807.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create an EBS volume and attach to an EC2 instance&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ec2 create-volume --availability-zone ap-northeast-1a --volume-type gp3 --size 1 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
 aws ec2 describe-volumes --volume-id vol-xxxx
 aws ec2 attach-volume --device /dev/xvdb --instance-id i-xxxx --volume-id vol-xxxx
@@ -452,78 +507,4 @@ You can create a shortcut to it where you like.&lt;/li&gt;
 &lt;li&gt;change value of &lt;code&gt;Ethernet&lt;/code&gt; to &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;restart windows&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item><item><title>Grandstream GXP1610</title><link>https://mnod.github.io/posts/20211030.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615"&gt;GXP1610&lt;/a&gt; は 1SIP 対応の IP電話機。
-液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。&lt;/p&gt;
-&lt;p&gt;以下、備忘録&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;説明書はペラペラ。必要な情報は&lt;a href="http://www.grandstream.com/support/resources?title=GXP1610/GXP1615&amp;amp;hsLang=en"&gt;自ら取りに行く姿勢&lt;/a&gt;が求められる&lt;/li&gt;
-&lt;li&gt;スタンドの取り付け向きに注意&lt;/li&gt;
-&lt;li&gt;スイッチからのケーブルをLANに、PCへのケーブルをPCへ接続すると、ハブ(?)として動作してくれる(10/100Mbps)&lt;/li&gt;
-&lt;li&gt;DHCPが有効なネットワークに接続してほどなくするとIPアドレスを取れる&lt;/li&gt;
-&lt;li&gt;ディスプレイにIPアドレスが表示されるので、PCからWebアクセスすると、管理画面を表示できる&lt;/li&gt;
-&lt;li&gt;管理画面の初期パスワードは同梱の説明書に記載されている。初めてログインすると変更が促される。ログイン時に5回間違えるとやばい&lt;/li&gt;
-&lt;li&gt;Web UI、端末の液晶とも、多言語対応(日本語表示可能)&lt;/li&gt;
-&lt;li&gt;試していないがIPアドレスは静的アドレスを設定可能なようだ&lt;/li&gt;
-&lt;li&gt;設定済みのAsteriskに収容するだけなら、Web UI で SIPサーバ、ID、パスワード等を設定するだけなので、簡単&lt;/li&gt;
-&lt;li&gt;SIPアカウント設定の画面で、Voice Mail Access Number を設定すると、メールアイコンのボタンを押すことで、VoiceMail に架電することができる&lt;/li&gt;
-&lt;li&gt;NTPサーバを指定できる&lt;/li&gt;
-&lt;li&gt;Syslog転送できる(facility=user)&lt;/li&gt;
-&lt;li&gt;試していないけど、SNMPサーバを指定できるようだ&lt;/li&gt;
-&lt;li&gt;試していないけど、LDAPの電話帳が使えるようだ&lt;/li&gt;
-&lt;/ul&gt;</description><category>linux</category><category>voip</category><guid>https://mnod.github.io/posts/20211030.html</guid><pubDate>Sat, 30 Oct 2021 00:00:00 GMT</pubDate></item><item><title>rpm package management</title><link>https://mnod.github.io/posts/20211024.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;list installed packages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm -qa [package name]
-# yum list [package name]
-# dnf list [package name]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;install package / rpm file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm -ivh &amp;lt;rpm file name&amp;gt;
-# microdnf install &amp;lt;package name&amp;gt;
-# dnf install &amp;lt;package name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list installed files&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm -ql &amp;lt;package name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list repositories&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum repolist [repository name] [-v]
-# microdnf repolist
-# dnf repolist [repository name] [-v]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show packages contained in the repository&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum repository-packages [repository name] list
-# dnf repository-packages [repository name] list
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;disable or enable repository with &lt;code&gt;config-manager&lt;/code&gt; module contained in &lt;code&gt;yum-utils&lt;/code&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
-# dnf config-manager &amp;lt;--set-disabled|--set-enabled&amp;gt; epel
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;update installed packages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum update
-# microdnf update
-# dnf update
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;download rpm file with &lt;code&gt;yumdownloader&lt;/code&gt; which is a part of &lt;code&gt;yum-utils&lt;/code&gt; package.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yumdownloder &amp;lt;package name&amp;gt;
-# yumdownloder &amp;lt;package name&amp;gt;.&amp;lt;version&amp;gt;.&amp;lt;architecture&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list files contained in a rpm file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm2cpio &amp;lt;rpm file&amp;gt; | cpio --list
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;extract a rpm file in the current directory&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm2cpio &amp;lt;rpm file&amp;gt; | cpio -id
-# find . -type f
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;remove installed package&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# rpm -e &amp;lt;pakcage name&amp;gt;
-# yum remove &amp;lt;pakcage name&amp;gt;
-# microdnf remove &amp;lt;pakcage name&amp;gt;
-# dnf remove &amp;lt;pakcage name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;remove all cached data&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum clean all
-# microdnf clean
-# dnf clean all
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;show transaction history&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# yum history
-# dnf history
-&lt;/code&gt;&lt;/pre&gt;</description><category>linux</category><guid>https://mnod.github.io/posts/20211024.html</guid><pubDate>Sun, 24 Oct 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item></channel></rss>

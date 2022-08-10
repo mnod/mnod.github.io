@@ -56,7 +56,88 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220807.html" class="u-url">ebs</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220810.html" class="u-url">advanced cloudformation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220810.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-10T00:00:00Z" itemprop="datePublished" title="2022-08-10 00:00">2022-08-10 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>create an initial cloudformation stack</p>
+<pre><code>aws cloudformation validate-template --template-body file://template-000.yml
+aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
+</code></pre>
+<p>confirm the result</p>
+<pre><code>aws cloudformation describe-stacks --stack-name mystack 
+aws cloudformation describe-stack-resources --stack-name mystack 
+aws cloudformation describe-stack-events --stack-name mystack
+</code></pre>
+<h3>change set</h3>
+<p>create change set after editing template file</p>
+<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-001 --description 'create new Internet Gateway'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-001
+</code></pre>
+<p>execute the change set</p>
+<pre><code>aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-001
+aws cloudformation list-change-sets --stack-name mystack
+</code></pre>
+<h3>drift</h3>
+<p>detect stack drift after manual operation</p>
+<pre><code>aws cloudformation detect-stack-drift --stack-name mystack 
+aws cloudformation describe-stack-resource-drifts --stack-name mystack
+</code></pre>
+<p>create change set after editing template file to fit to current resource</p>
+<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-002 --description 'reflect manual operation'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-002
+</code></pre>
+<p>execute the change set</p>
+<pre><code>aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-002
+</code></pre>
+<p>remove change set when the status is false</p>
+<pre><code>aws cloudformation delete-change-set --stack-name mystack --change-set-name mystack-002
+</code></pre>
+<h3>import</h3>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220808.html" class="u-url">ami</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220808.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-08T00:00:00Z" itemprop="datePublished" title="2022-08-08 00:00">2022-08-08 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create AMI</h3>
+<pre><code>aws ec2 create-image --description 'backup ami of test server' --instance-id i-xxxx --name 'backup ami of test server' --no-reboot
+aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)]'
+</code></pre>
+<h3>create an instance with AMI</h3>
+<pre><code>aws ec2 run-instances \
+--image-id ami-xxxx \
+--instance-type t4g.nano \
+--key-name testkey \
+--security-group-ids sg-xxxx \
+--subnet-id subnet-xxxx \
+--credit-specification 'CpuCredits=standard' \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=copied_instance}]' \
+--associate-public-ip-address
+</code></pre>
+<h3>delete AMI</h3>
+<pre><code>aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)].SnapshotId'
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220807.html" class="u-url">ebs</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

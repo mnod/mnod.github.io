@@ -47,7 +47,107 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211014.html" class="u-url">riding bicycle</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20211030.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-10-30T00:00:00Z" itemprop="datePublished" title="2021-10-30 00:00">2021-10-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p><a href="http://www.grandstream.com/products/ip-voice-telephony-gxp-series-ip-phones/gxp-series-basic-ip-phones/product/gxp1610/gxp1615">GXP1610</a> は 1SIP 対応の IP電話機。
+液晶バックライトを搭載してたり、2SIPに対応していたり、PoE対応、Gigabit Ethernet対応してるような上級機がある中の入門機。</p>
+<p>以下、備忘録</p>
+<ul>
+<li>説明書はペラペラ。必要な情報は<a href="http://www.grandstream.com/support/resources?title=GXP1610/GXP1615&amp;hsLang=en">自ら取りに行く姿勢</a>が求められる</li>
+<li>スタンドの取り付け向きに注意</li>
+<li>スイッチからのケーブルをLANに、PCへのケーブルをPCへ接続すると、ハブ(?)として動作してくれる(10/100Mbps)</li>
+<li>DHCPが有効なネットワークに接続してほどなくするとIPアドレスを取れる</li>
+<li>ディスプレイにIPアドレスが表示されるので、PCからWebアクセスすると、管理画面を表示できる</li>
+<li>管理画面の初期パスワードは同梱の説明書に記載されている。初めてログインすると変更が促される。ログイン時に5回間違えるとやばい</li>
+<li>Web UI、端末の液晶とも、多言語対応(日本語表示可能)</li>
+<li>試していないがIPアドレスは静的アドレスを設定可能なようだ</li>
+<li>設定済みのAsteriskに収容するだけなら、Web UI で SIPサーバ、ID、パスワード等を設定するだけなので、簡単</li>
+<li>SIPアカウント設定の画面で、Voice Mail Access Number を設定すると、メールアイコンのボタンを押すことで、VoiceMail に架電することができる</li>
+<li>NTPサーバを指定できる</li>
+<li>Syslog転送できる(facility=user)</li>
+<li>試していないけど、SNMPサーバを指定できるようだ</li>
+<li>試していないけど、LDAPの電話帳が使えるようだ</li>
+</ul>
+</div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211024.html" class="u-url">rpm package management</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20211024.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-10-24T00:00:00Z" itemprop="datePublished" title="2021-10-24 00:00">2021-10-24 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>list installed packages</p>
+<pre><code># rpm -qa [package name]
+# yum list [package name]
+# dnf list [package name]
+</code></pre>
+<p>install package / rpm file</p>
+<pre><code># rpm -ivh &lt;rpm file name&gt;
+# microdnf install &lt;package name&gt;
+# dnf install &lt;package name&gt;
+</code></pre>
+<p>list installed files</p>
+<pre><code># rpm -ql &lt;package name&gt;
+</code></pre>
+<p>list repositories</p>
+<pre><code># yum repolist [repository name] [-v]
+# microdnf repolist
+# dnf repolist [repository name] [-v]
+</code></pre>
+<p>show packages contained in the repository</p>
+<pre><code># yum repository-packages [repository name] list
+# dnf repository-packages [repository name] list
+</code></pre>
+<p>disable or enable repository with <code>config-manager</code> module contained in <code>yum-utils</code></p>
+<pre><code># yum config-manager &lt;--set-disabled|--set-enabled&gt; epel
+# dnf config-manager &lt;--set-disabled|--set-enabled&gt; epel
+</code></pre>
+<p>update installed packages</p>
+<pre><code># yum update
+# microdnf update
+# dnf update
+</code></pre>
+<p>download rpm file with <code>yumdownloader</code> which is a part of <code>yum-utils</code> package.</p>
+<pre><code># yumdownloder &lt;package name&gt;
+# yumdownloder &lt;package name&gt;.&lt;version&gt;.&lt;architecture&gt;
+</code></pre>
+<p>list files contained in a rpm file</p>
+<pre><code># rpm2cpio &lt;rpm file&gt; | cpio --list
+</code></pre>
+<p>extract a rpm file in the current directory</p>
+<pre><code># rpm2cpio &lt;rpm file&gt; | cpio -id
+# find . -type f
+</code></pre>
+<p>remove installed package</p>
+<pre><code># rpm -e &lt;pakcage name&gt;
+# yum remove &lt;pakcage name&gt;
+# microdnf remove &lt;pakcage name&gt;
+# dnf remove &lt;pakcage name&gt;
+</code></pre>
+<p>remove all cached data</p>
+<pre><code># yum clean all
+# microdnf clean
+# dnf clean all
+</code></pre>
+<p>show transaction history</p>
+<pre><code># yum history
+# dnf history
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211014.html" class="u-url">riding bicycle</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

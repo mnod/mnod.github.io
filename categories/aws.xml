@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 07 Aug 2022 09:20:49 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>ebs</title><link>https://mnod.github.io/posts/20220807.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create an EBS volume and attach to an EC2 instance&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 10 Aug 2022 13:12:23 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://template-000.yml
+aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation describe-stacks --stack-name mystack 
+aws cloudformation describe-stack-resources --stack-name mystack 
+aws cloudformation describe-stack-events --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;change set&lt;/h3&gt;
+&lt;p&gt;create change set after editing template file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-001 --description 'create new Internet Gateway'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;execute the change set&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-001
+aws cloudformation list-change-sets --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;drift&lt;/h3&gt;
+&lt;p&gt;detect stack drift after manual operation&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation detect-stack-drift --stack-name mystack 
+aws cloudformation describe-stack-resource-drifts --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create change set after editing template file to fit to current resource&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-002 --description 'reflect manual operation'
+aws cloudformation list-change-sets --stack-name mystack 
+aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;execute the change set&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation execute-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove change set when the status is false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cloudformation delete-change-set --stack-name mystack --change-set-name mystack-002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;import&lt;/h3&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220810.html</guid><pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ami</title><link>https://mnod.github.io/posts/20220808.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 create-image --description 'backup ami of test server' --instance-id i-xxxx --name 'backup ami of test server' --no-reboot
+aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)]'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create an instance with AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 run-instances \
+--image-id ami-xxxx \
+--instance-type t4g.nano \
+--key-name testkey \
+--security-group-ids sg-xxxx \
+--subnet-id subnet-xxxx \
+--credit-specification 'CpuCredits=standard' \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=copied_instance}]' \
+--associate-public-ip-address
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;delete AMI&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)].SnapshotId'
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220808.html</guid><pubDate>Mon, 08 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ebs</title><link>https://mnod.github.io/posts/20220807.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create an EBS volume and attach to an EC2 instance&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ec2 create-volume --availability-zone ap-northeast-1a --volume-type gp3 --size 1 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
 aws ec2 describe-volumes --volume-id vol-xxxx
 aws ec2 attach-volume --device /dev/xvdb --instance-id i-xxxx --volume-id vol-xxxx
@@ -651,389 +706,4 @@ $ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-V
 
 $ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
 $ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><category>json</category><guid>https://mnod.github.io/posts/20200125.html</guid><pubDate>Sat, 25 Jan 2020 00:00:00 GMT</pubDate></item><item><title>vpc</title><link>https://mnod.github.io/posts/20200119.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;describe region and abailability zone&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-regions --filters 'Name=region-name,Values=ap-northeast-1'
-{
-    "Regions": [
-        {
-            "Endpoint": "ec2.ap-northeast-1.amazonaws.com",
-            "RegionName": "ap-northeast-1",
-            "OptInStatus": "opt-in-not-required"
-        }
-    ]
-}
-$ aws ec2 describe-availability-zones --filters 'Name=region-name,Values=ap-northeast-1'
-{
-    "AvailabilityZones": [
-        {
-            "State": "available",
-            "Messages": [],
-            "RegionName": "ap-northeast-1",
-            "ZoneName": "ap-northeast-1a",
-            "ZoneId": "apne1-az4"
-        },
-        {
-            "State": "available",
-            "Messages": [],
-            "RegionName": "ap-northeast-1",
-            "ZoneName": "ap-northeast-1c",
-            "ZoneId": "apne1-az1"
-        },
-        {
-            "State": "available",
-            "Messages": [],
-            "RegionName": "ap-northeast-1",
-            "ZoneName": "ap-northeast-1d",
-            "ZoneId": "apne1-az2"
-        }
-    ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;vpc&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filter "Name=cidr,Values=172.16.100.0/24"
-$ aws ec2 create-vpc --cidr-block 172.16.100.0/24
-
-$ aws ec2 describe-vpc-attribute --attribute enableDnsHostnames --vpc-id &amp;lt;vpc&amp;gt;
-$ aws ec2 modify-vpc-attribute --enable-dns-hostnames --vpc-id &amp;lt;vpc&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before remove vpc, subnet need to be removed.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 delete-vpc --vpc-id &amp;lt;vpc&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;tag&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filters "Name=tag:Name,Values=test"
-$ jq . tags.json
-[
-  {
-    "Key": "Name",
-    "Value": "test"
-  }
-]
-$ aws ec2 create-tags --resources &amp;lt;vpc&amp;gt; --tags file://tags.json
-
-$ aws ec2 create-tags --resources &amp;lt;vpc&amp;gt; --tags '{"Key":"Name", "Value":"test"}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;subnets&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-subnets --filters "Name=cidr-block,Values=172.16.100.0/26"
-$ aws ec2 create-subnet --vpc-id &amp;lt;vpc&amp;gt; --cidr-block 172.16.100.0/26
-$ aws ec2 delete-subnet --subnet-id &amp;lt;subnet&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;nacl&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-network-acls --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
-$ aws ec2 create-network-acl --vpc-id &amp;lt;vpc&amp;gt;
-$ aws ec2 replace-network-acl-association --association-id &amp;lt;aclassoc&amp;gt; --network-acl-id &amp;lt;nacl&amp;gt;
-
-$ aws ec2 delete-network-acl --network-acl-id &amp;lt;nacl&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;nacl entry&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;protocol
-- all: -1
-- icmp: 1
-- tcp: 6
-- udp: 17
-- icmpv6: 58&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-network-acls --filters "Name=network-acl-id,Values=&amp;lt;nacl&amp;gt;"
-$ aws ec2 create-network-acl-entry --ingress --network-acl-id &amp;lt;nacl&amp;gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
-$ aws ec2 create-network-acl-entry --egress  --network-acl-id &amp;lt;nacl&amp;gt; --cidr-block 172.16.100.64/26 --protocol -1 --rule-action allow --rule-number 100
-
-$ aws ec2 delete-network-acl-entry --ingress --network-acl-id &amp;lt;nacl&amp;gt; --rule-number 100
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;internet gateway&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-internet-gateways --query 'InternetGateways[?Attachments[?VpcId == `&amp;lt;vpc&amp;gt;`]]'
-$ aws ec2 create-internet-gateway
-$ aws ec2 attach-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt; --vpc-id &amp;lt;vpc&amp;gt;
-
-$ aws ec2 detach-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt; --vpc-id &amp;lt;vpc&amp;gt;
-$ aws ec2 delete-internet-gateway --internet-gateway-id &amp;lt;internetgateway&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;route table&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-route-tables --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
-$ aws ec2 create-route-table --vpc-id &amp;lt;vpc&amp;gt;
-$ aws ec2 associate-route-table --route-table-id &amp;lt;routetable&amp;gt; --subnet-id &amp;lt;subnet&amp;gt;
-
-$ aws ec2 describe-route-tables --filters "Name=route-table-id,Values=&amp;lt;routetable&amp;gt;"
-$ aws ec2 create-route --destination-cidr-block 0.0.0.0/0 --gateway-id &amp;lt;internetgateway&amp;gt; --route-table-id &amp;lt;routetable&amp;gt;
-
-$ aws ec2 delete-route --destination-cidr-block 0.0.0.0/0 --route-table-id &amp;lt;routetable&amp;gt;
-$ aws ec2 disassociate-route-table --association-id &amp;lt;rtbassoc&amp;gt;
-$ aws ec2 delete-route-table --route-table-id &amp;lt;routetable&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;security group&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-security-groups --filters "Name=vpc-id,Values=&amp;lt;vpc&amp;gt;"
-$ aws ec2 create-security-group --description "&amp;lt;description&amp;gt;" --group-name "&amp;lt;name&amp;gt;" --vpc-id &amp;lt;vpc&amp;gt;
-
-$ aws ec2 describe-security-groups --filters "Name=group-id,Values=&amp;lt;securitygroup&amp;gt;"
-$ aws ec2 authorize-security-group-ingress --group-id &amp;lt;securitygroup&amp;gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
-
-$ aws ec2 revoke-security-group-ingress --group-id &amp;lt;securitygroup&amp;gt; --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "xxx.xxx.xxx.xxx/32", "Description": "ssh incoming access"}]}]'
-$ aws ec2 delete-security-group --group-id &amp;lt;securitygroup&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;key pair&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-key-pairs 
-$ aws ec2 describe-key-pairs --key-names &amp;lt;keyname&amp;gt;
-$ aws ec2 create-key-pair --key-name &amp;lt;keyname&amp;gt; | tee id_rsa.testkey.json
-
-$ aws ec2 delete-key-pair --key-name &amp;lt;keyname&amp;gt;
-$ aws ec2 import-key-pair --key-name &amp;lt;keyname&amp;gt; --public-key-material file://id_rsa.testkey.pub
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;save the private key&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq -r '.KeyMaterial' id_rsa.testkey.json &amp;gt; id_rsa.testkey.nopass
-$ openssl rsa -aes256 -in id_rsa.testkey.nopass -out id_rsa.testkey
-$ chmod 600 id_rsa.testkey
-($ rm id_rsa.testkey.json id_rsa.testkey.nopass)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;volume&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-volumes
-$ aws ec2 create-volume --volume-type gp2 --size &amp;lt;size&amp;gt; --availability-zone &amp;lt;az&amp;gt;
-$ aws ec2 delete-volume --volume-id &amp;lt;volume&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;attach a volume to a instance&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-instances --filters Name=instance-id,Values=&amp;lt;instance&amp;gt; --query 'Reservations[].Instances[].BlockDeviceMappings[]'
-$ aws ec2 attach-volume --volume-id &amp;lt;volume&amp;gt; --instance-id &amp;lt;instance&amp;gt; --device /dev/xvdb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;after the image attached, then make partition table, partition and file system on the os side.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ lsblk
-$ sudo fdisk -l /dev/nvme1n1
-$ sudo fdisk /dev/nvme1n1
-$ sudo mkswap /dev/nvme1n1p1
-$ sudo swapon /dev/nvme1n1p1
-$ cat /proc/swaps
-$ ls -l /dev/disk/by-uuid/
-$ echo "UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx     none        swap   defaults          0   0" | sudo tee -a /etc/fstab
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;extend volume&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-volumes --filters Name=volume-id,Values=&amp;lt;volume&amp;gt;
-$ aws ec2 modify-volume --size &amp;lt;size&amp;gt; --volume-id &amp;lt;volume&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;after that, extend partition and file system&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ df
-$ sudo growpart /dev/nvme0n1 1
-$ lsblk
-$ sudo xfs_growfs -d /
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;ami&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-images --filters "Name=owner-id,Values=&amp;lt;id&amp;gt;"
-$ aws ec2 describe-images --filters "Name=image-id,Values=&amp;lt;ami&amp;gt;"
-$ aws ec2 create-image --instance-id &amp;lt;instance&amp;gt; --name &amp;lt;name&amp;gt;
-$ aws ec2 deregister-image --image-id &amp;lt;ami&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;after deregister-image, need to delete snapshots and volumes&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;snapshot&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-snapshots --filters Name=owner-id,Values=&amp;lt;id&amp;gt;
-$ aws ec2 describe-snapshots --filters Name=snapshot-id,Values=&amp;lt;snapshot&amp;gt;
-$ aws ec2 delete-snapshot --snapshot-id &amp;lt;snapshot&amp;gt;
-$ aws ec2 create-snapshot --volume-id &amp;lt;volume&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;launch template&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-launch-templates
-$ jq . template.json
-{
-  "ImageId": "&amp;lt;ami&amp;gt;",
-  "InstanceType": "t3.nano",
-  "CreditSpecification": {
-    "CpuCredits": "standard"
-  },
-  "KeyName": "&amp;lt;keyname&amp;gt;",
-  "InstanceInitiatedShutdownBehavior": "terminate"
-}
-$ aws ec2 create-launch-template --launch-template-name &amp;lt;name&amp;gt; --launch-template-data file://template.json
-$ aws ec2 describe-launch-template-versions --launch-template-id &amp;lt;templateid&amp;gt; --versions &amp;lt;version&amp;gt;
-
-$ aws ec2 create-launch-template-version \
- --launch-template-id &amp;lt;templateid&amp;gt; \
- --source-version &amp;lt;version&amp;gt; \
- --version-description "&amp;lt;description&amp;gt;" \
- --launch-template-data '{ "Monitoring": { "Enabled": true } }'
-$ aws ec2 modify-launch-template --launch-template-id &amp;lt;templateid&amp;gt; --default-version &amp;lt;version&amp;gt;
-
-$ aws ec2 delete-launch-template-versions --launch-template-id &amp;lt;templateid&amp;gt; --versions &amp;lt;version&amp;gt;
-$ aws ec2 delete-launch-template --launch-template-id &amp;lt;templateid&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;instance&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test"
-$ cat userdata.sh 
-sudo apt update
-sudo apt install nginx
-$ aws ec2 run-instances \
- --security-group-ids &amp;lt;securitygroup&amp;gt; \
- --subnet-id &amp;lt;subnet&amp;gt; \
- --associate-public-ip-address \
- --tag-specifications '{"ResourceType":"instance","Tags":[{"Key":"Name","Value":"test"}]}' \
- --launch-template LaunchTemplateName=&amp;lt;templatename&amp;gt; \
- --user-data file://userdata.sh
-#--image-id &amp;lt;ami&amp;gt;
-#--instance-type t3.nano
-#--credit-specification standard
-#--key-name &amp;lt;keyname&amp;gt;
-#--instance-initiated-shutdown-behavior terminate
-
-$ aws ec2 describe-instances --filters "Name=tag:Name,Values=test" --query 'Reservations[].Instances[].{InstanceId:InstanceId,State:State}'
-$ aws ec2 stop-instances --instance-ids &amp;lt;instance&amp;gt;
-$ aws ec2 start-instances --instance-ids &amp;lt;instance&amp;gt;
-$ aws ec2 terminate-instances --instance-ids &amp;lt;instance&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;instance meta data&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl http://169.254.169.254/latest/meta-data/instance-id
-curl http://169.254.169.254/latest/user-data
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200119.html</guid><pubDate>Sun, 19 Jan 2020 00:00:00 GMT</pubDate></item><item><title>iam</title><link>https://mnod.github.io/posts/20200112.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;user&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-users --query 'Users[?UserName==`&amp;lt;username&amp;gt;`]'
-$ aws iam get-user --user-name &amp;lt;username&amp;gt;
-
-$ aws iam create-user --user-name &amp;lt;username&amp;gt;
-$ aws iam tag-user --user-name &amp;lt;username&amp;gt; --tags '{"Key":"name","Value":"test"}'
-
-$ aws iam delete-user --user-name &amp;lt;username&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;login profile&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam get-login-profile --user-name &amp;lt;username&amp;gt;
-$ aws iam create-login-profile --generate-cli-skeleton &amp;gt; create-login-profile.json
-
-$ jq '.' create-login-profile.json
-{
-  "UserName": "&amp;lt;username&amp;gt;",
-  "Password": "&amp;lt;initialpassword&amp;gt;",
-  "PasswordResetRequired": true
-}
-$ aws iam create-login-profile --user-name &amp;lt;username&amp;gt; --cli-input-json file://create-login-profile.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;group&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-groups  --query 'Groups[?GroupName==`&amp;lt;groupname&amp;gt;`]'
-$ aws iam create-group --group-name &amp;lt;groupname&amp;gt;
-
-$ aws iam delete-group --group-name &amp;lt;groupname&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;policy&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-policies --query 'Policies[?PolicyName==`&amp;lt;policyname&amp;gt;`]'
-$ aws iam get-policy --policy-arn &amp;lt;policyarn&amp;gt;
-
-$ jq . policy.json 
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:Get*",
-        "s3:List*"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-
-$ aws iam create-policy --policy-name &amp;lt;policyname&amp;gt; --policy-document file://policy.json
-
-$ aws iam list-policy-versions --policy-arn &amp;lt;policyarn&amp;gt;
-$ aws iam get-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v1
-$ aws iam create-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --policy-document file://policy_v2.json
-$ aws iam set-default-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v1
-
-$ aws iam delete-policy-version --policy-arn &amp;lt;policyarn&amp;gt; --version-id v2
-$ aws iam delete-policy --policy-arn &amp;lt;policyarn&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;sample policy for allow change password&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ jq '.' policy.json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "iam:GetAccountPasswordPolicy",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "iam:ChangePassword",
-      "Resource": "&amp;lt;userarn&amp;gt;"
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;add user to group&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-groups-for-user --user-name &amp;lt;username&amp;gt;
-$ aws iam add-user-to-group --group-name &amp;lt;groupname&amp;gt; --user-name &amp;lt;username&amp;gt;
-
-$ aws iam remove-user-from-group --group-name &amp;lt;groupname&amp;gt; --user-name &amp;lt;username&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;attach policy to user&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-user-policies --user-name &amp;lt;username&amp;gt;
-$ aws iam attach-user-policy --user-name &amp;lt;username&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
-$ aws iam detach-user-policy --user-name &amp;lt;username&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;attach policy to group&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-group-policies --group-name &amp;lt;groupname&amp;gt;
-$ aws iam attach-group-policy --group-name &amp;lt;groupname&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
-$ aws iam detach-group-policy --group-name &amp;lt;groupname&amp;gt; --policy-arn "&amp;lt;policyarn&amp;gt;"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;role&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-roles --query 'Roles[?RoleName==`&amp;lt;rolename&amp;gt;`]'
-$ jq . assumepolicy.json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-$ aws iam create-role --role-name &amp;lt;rolename&amp;gt; --assume-role-policy-document file://assumepolicy.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;(Before you delte role, you must remove roles from instance profile.)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam delete-role --role-name &amp;lt;rolename&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;attach policy to role&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-attached-role-policies --role-name &amp;lt;rolename&amp;gt;
-$ aws iam attach-role-policy --role-name &amp;lt;rolename&amp;gt; --policy-arn &amp;lt;policyarn&amp;gt;
-$ aws iam detach-role-policy --role-name &amp;lt;rolename&amp;gt; --policy-arn &amp;lt;policyarn&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;add role to instance profile&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-instance-profiles-for-role --role-name &amp;lt;rolename&amp;gt;
-$ aws iam add-role-to-instance-profile --instance-profile-name &amp;lt;rolename&amp;gt; --role-name &amp;lt;rolename&amp;gt;
-$ aws iam remove-role-from-instance-profile --instance-profile-name &amp;lt;rolename&amp;gt; --role-name &amp;lt;rolename&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;associate iam instance profile&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-iam-instance-profile-associations 
-$ aws ec2 associate-iam-instance-profile --iam-instance-profile '{"Arn":"&amp;lt;rolearn&amp;gt;","Name":"&amp;lt;rolename&amp;gt;"}' --instance-id &amp;lt;instanceid&amp;gt;
-$ aws ec2 disassociate-iam-instance-profile --association-id &amp;lt;associationid&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;access key&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws iam list-access-keys --user-name &amp;lt;user-name&amp;gt;
-$ aws iam get-access-key-last-used --access-key-id &amp;lt;access-key-id&amp;gt;
-
-$ aws iam create-access-key --user-name &amp;lt;user-name&amp;gt;
-$ aws iam update-access-key --user-name &amp;lt;user-name&amp;gt; --access-key-id &amp;lt;access-key-id&amp;gt; --status Inactive
-$ aws iam delete-access-key --user-name &amp;lt;user-name&amp;gt; --access-key-id &amp;lt;access-key-id&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;cloudformation sample template&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;    TestLambdaRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: 2012-10-17
-          Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-        Tags:
-          - "Key": "Name"
-            "Value": "test"
-    AllowAccessDynamoDBTable:
-      Type: "AWS::IAM::Policy"
-      Properties:
-        PolicyName: "AllowAccessDynamoDBTable"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:DeleteItem
-              Resource: !GetAtt TestDynamoDBTable.Arn
-        Roles:
-          - !Ref TestLambdaRole
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200112.html</guid><pubDate>Sun, 12 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><category>json</category><guid>https://mnod.github.io/posts/20200125.html</guid><pubDate>Sat, 25 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
