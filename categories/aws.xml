@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 10 Aug 2022 13:12:23 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 12 Aug 2022 12:10:43 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://template-000.yml
 aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
 &lt;/code&gt;&lt;/pre&gt;
@@ -10,7 +10,7 @@ aws cloudformation describe-stack-events --stack-name mystack
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;change set&lt;/h3&gt;
 &lt;p&gt;create change set after editing template file&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-001 --description 'create new Internet Gateway'
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --change-set-name mystack-001 --description 'create new Internet Gateway'
 aws cloudformation list-change-sets --stack-name mystack 
 aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-001
 &lt;/code&gt;&lt;/pre&gt;
@@ -24,7 +24,7 @@ aws cloudformation list-change-sets --stack-name mystack
 aws cloudformation describe-stack-resource-drifts --stack-name mystack
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;create change set after editing template file to fit to current resource&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-002 --description 'reflect manual operation'
+&lt;pre&gt;&lt;code&gt;aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --change-set-name mystack-002 --description 'reflect manual operation'
 aws cloudformation list-change-sets --stack-name mystack 
 aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-002
 &lt;/code&gt;&lt;/pre&gt;
@@ -34,7 +34,99 @@ aws cloudformation describe-change-set --stack-name mystack --change-set-name my
 &lt;p&gt;remove change set when the status is false&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;aws cloudformation delete-change-set --stack-name mystack --change-set-name mystack-002
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;import&lt;/h3&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220810.html</guid><pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ami</title><link>https://mnod.github.io/posts/20220808.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create AMI&lt;/h3&gt;
+&lt;h3&gt;import&lt;/h3&gt;
+&lt;p&gt;create template file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ diff -u template.yml.orig template.yml
++Parameters:
++  ImageId:
++    Type: AWS::EC2::Image::Id
++  InstanceType:
++    Type: String
++  KeyName:
++    Type: AWS::EC2::KeyPair::KeyName
++  SecurityGroupId:
++    Type: AWS::EC2::SecurityGroup::Id
++  SubnetId:
++    Type: AWS::EC2::Subnet::Id
++
+
++  ## EC2 instance
++  EC2Instance1:
++    Type: AWS::EC2::Instance
++    DeletionPolicy: Retain
++    Properties: 
++      InstanceType: !Ref InstanceType
++      ImageId: !Ref ImageId
++      KeyName: !Ref KeyName
++      NetworkInterfaces: 
++        - DeviceIndex: "0"
++          GroupSet:
++            - !Ref SecurityGroupId
++          SubnetId: !Ref SubnetId
++      BlockDeviceMappings: 
++        - DeviceName: "/dev/xvda"
++          Ebs: 
++            VolumeType: "gp3"
++            VolumeSize: "8"
++      CreditSpecification:
++        CPUCredits: "standard"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create parameter file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . parameters.json
+[
+  {
+    "ParameterKey": "ImageId",
+    "ParameterValue": "ami-007daaef51c7530e7"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t4g.nano"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "testkey"
+  },
+  {
+    "ParameterKey": "SecurityGroupId",
+    "ParameterValue": "sg-xxxxxxxxxxxxxxxxx"
+  },
+  {
+    "ParameterKey": "SubnetId",
+    "ParameterValue": "subnet-xxxxxxxxxxxxxxxxx"
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create a resources-to-import file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . import.json 
+[
+  {
+    "ResourceType": "AWS::EC2::Instance",
+    "LogicalResourceId": "EC2Instance1",
+    "ResourceIdentifier": {
+      "InstanceId": "i-xxxxxxxxxxxxxxxxx"
+    }
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create change set for import and execute it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation validate-template --template-body file://template.yml
+$ aws cloudformation create-change-set --stack-name mystack --change-set-name import-ec2instance --change-set-type IMPORT --resources-to-import file://import.json --template-body file://template.yml --parameters file://parameters.json
+$ aws cloudformation describe-change-set --change-set-name import-ec2instance --stack-name mystack
+$ aws cloudformation execute-change-set  --change-set-name import-ec2instance --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm the result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation describe-stacks --stack-name mystack
+$ aws cloudformation describe-stack-events --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;detect stack drift&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation detect-stack-drift --stack-name mystack
+$ aws cloudformation describe-stack-drift-detection-status --stack-drift-detection-id xxxxxxxxxxxxx-xxxx-xxxx-xxxxxxxxxxx
+$ aws cloudformation describe-stack-resource-drifts --stack-name mystack
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If any drift exist, edit stack template to fit to current resource and create and execute change set.&lt;/p&gt;
+&lt;p&gt;after that, change deletion policy to &lt;code&gt;Delete&lt;/code&gt; and update stack if needed&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws cloudformation update-stack --stack-name mystack --template-body file://template.yml --parameters file://parameters.json
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220810.html</guid><pubDate>Wed, 10 Aug 2022 00:00:00 GMT</pubDate></item><item><title>ami</title><link>https://mnod.github.io/posts/20220808.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create AMI&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ec2 create-image --description 'backup ami of test server' --instance-id i-xxxx --name 'backup ami of test server' --no-reboot
 aws ec2 deregister-image --image-id ami-xxxx 
 aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)]'

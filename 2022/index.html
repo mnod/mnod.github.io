@@ -78,7 +78,7 @@ aws cloudformation describe-stack-events --stack-name mystack
 </code></pre>
 <h3>change set</h3>
 <p>create change set after editing template file</p>
-<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-001 --description 'create new Internet Gateway'
+<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-001.yml --change-set-name mystack-001 --description 'create new Internet Gateway'
 aws cloudformation list-change-sets --stack-name mystack 
 aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-001
 </code></pre>
@@ -92,7 +92,7 @@ aws cloudformation list-change-sets --stack-name mystack
 aws cloudformation describe-stack-resource-drifts --stack-name mystack
 </code></pre>
 <p>create change set after editing template file to fit to current resource</p>
-<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --tags 'Key=Name,Value=0502115-roleplay' --change-set-name mystack-002 --description 'reflect manual operation'
+<pre><code>aws cloudformation create-change-set --stack-name mystack --template-body file://mystack-002.yml --change-set-name mystack-002 --description 'reflect manual operation'
 aws cloudformation list-change-sets --stack-name mystack 
 aws cloudformation describe-change-set --stack-name mystack --change-set-name mystack-002
 </code></pre>
@@ -103,6 +103,98 @@ aws cloudformation describe-change-set --stack-name mystack --change-set-name my
 <pre><code>aws cloudformation delete-change-set --stack-name mystack --change-set-name mystack-002
 </code></pre>
 <h3>import</h3>
+<p>create template file</p>
+<pre><code>$ diff -u template.yml.orig template.yml
++Parameters:
++  ImageId:
++    Type: AWS::EC2::Image::Id
++  InstanceType:
++    Type: String
++  KeyName:
++    Type: AWS::EC2::KeyPair::KeyName
++  SecurityGroupId:
++    Type: AWS::EC2::SecurityGroup::Id
++  SubnetId:
++    Type: AWS::EC2::Subnet::Id
++
+
++  ## EC2 instance
++  EC2Instance1:
++    Type: AWS::EC2::Instance
++    DeletionPolicy: Retain
++    Properties: 
++      InstanceType: !Ref InstanceType
++      ImageId: !Ref ImageId
++      KeyName: !Ref KeyName
++      NetworkInterfaces: 
++        - DeviceIndex: "0"
++          GroupSet:
++            - !Ref SecurityGroupId
++          SubnetId: !Ref SubnetId
++      BlockDeviceMappings: 
++        - DeviceName: "/dev/xvda"
++          Ebs: 
++            VolumeType: "gp3"
++            VolumeSize: "8"
++      CreditSpecification:
++        CPUCredits: "standard"
+</code></pre>
+<p>create parameter file</p>
+<pre><code>$ jq . parameters.json
+[
+  {
+    "ParameterKey": "ImageId",
+    "ParameterValue": "ami-007daaef51c7530e7"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t4g.nano"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "testkey"
+  },
+  {
+    "ParameterKey": "SecurityGroupId",
+    "ParameterValue": "sg-xxxxxxxxxxxxxxxxx"
+  },
+  {
+    "ParameterKey": "SubnetId",
+    "ParameterValue": "subnet-xxxxxxxxxxxxxxxxx"
+  }
+]
+</code></pre>
+<p>create a resources-to-import file</p>
+<pre><code>$ jq . import.json 
+[
+  {
+    "ResourceType": "AWS::EC2::Instance",
+    "LogicalResourceId": "EC2Instance1",
+    "ResourceIdentifier": {
+      "InstanceId": "i-xxxxxxxxxxxxxxxxx"
+    }
+  }
+]
+</code></pre>
+<p>create change set for import and execute it</p>
+<pre><code>$ aws cloudformation validate-template --template-body file://template.yml
+$ aws cloudformation create-change-set --stack-name mystack --change-set-name import-ec2instance --change-set-type IMPORT --resources-to-import file://import.json --template-body file://template.yml --parameters file://parameters.json
+$ aws cloudformation describe-change-set --change-set-name import-ec2instance --stack-name mystack
+$ aws cloudformation execute-change-set  --change-set-name import-ec2instance --stack-name mystack
+</code></pre>
+<p>confirm the result</p>
+<pre><code>$ aws cloudformation describe-stacks --stack-name mystack
+$ aws cloudformation describe-stack-events --stack-name mystack
+</code></pre>
+<p>detect stack drift</p>
+<pre><code>$ aws cloudformation detect-stack-drift --stack-name mystack
+$ aws cloudformation describe-stack-drift-detection-status --stack-drift-detection-id xxxxxxxxxxxxx-xxxx-xxxx-xxxxxxxxxxx
+$ aws cloudformation describe-stack-resource-drifts --stack-name mystack
+</code></pre>
+<p>If any drift exist, edit stack template to fit to current resource and create and execute change set.</p>
+<p>after that, change deletion policy to <code>Delete</code> and update stack if needed</p>
+<pre><code>$ aws cloudformation update-stack --stack-name mystack --template-body file://template.yml --parameters file://parameters.json
+</code></pre>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220808.html" class="u-url">ami</a></h1>
         <div class="metadata">
