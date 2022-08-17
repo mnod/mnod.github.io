@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 12 Aug 2022 12:10:43 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 17 Aug 2022 13:06:25 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>cognito user pool</title><link>https://mnod.github.io/posts/20220817.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create user pool&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp create-user-pool --pool-name testpool1 --user-pool-tags 'key=Name,Value=testpool1' --admin-create-user-config 'AllowAdminCreateUserOnly=true' --account-recovery-setting 'RecoveryMechanisms=[{Priority=1,Name=admin_only}]'
+aws cognito-idp list-user-pools --max-results 10
+aws cognito-idp describe-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove user pool&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp delete-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create user and set user password&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-create-user --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --temporary-password temporary_password
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --password parmanent_password --permanent
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create role before import csv&lt;/h3&gt;
+&lt;p&gt;create policy json document&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . AllowCognitoCloudwatchLogs.policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:ap-northeast-1:xxxxxxxxxxxx:log-group:/aws/cognito/*"
+      ]
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create policy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws iam create-policy --policy-name AllowCognitoCloudwatchLogs --policy-document file://AllowCognitoCloudwatchLogs.policy
+aws iam list-policies --query 'Policies[?PolicyName==`AllowCognitoCloudwatchLogs`]'
+aws iam delete-policy --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create assume role policy document&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cognito-idp.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create role&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws iam create-role --role-name Import-Cognito-Userpool --assume-role-policy-document file://assumepolicy.json
+aws iam list-roles --query 'Roles[?RoleName==`Import-Cognito-Userpool`]'
+aws iam attach-role-policy --role-name Import-Cognito-Userpool --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;import csv to user pool&lt;/h3&gt;
+&lt;p&gt;create csv&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;name,given_name,family_name,middle_name,nickname,preferred_username,profile,picture,website,email,email_verified,gender,birthdate,zoneinfo,locale,phone_number,phone_number_verified,address,updated_at,cognito:mfa_enabled,cognito:username
+,,,,,,,,,dummy@example.com,true,,,,,,false,,,false,import001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;import it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp create-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-name import_job --cloud-watch-logs-role-arn arn:aws:iam::xxxxxxxxxxxx:role/service-role/Cognito-UserImport-Role
+curl -v -T "PATH_TO_CSV_FILE" -H "x-amz-server-side-encryption:aws:kms" "PRE_SIGNED_URL"
+aws cognito-idp describe-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+aws cognito-idp start-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove unnecessary attributes and set user password&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-delete-user-attributes --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --user-attribute-names 'email'
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --password permanent_password --permanent
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;disable / enable / delete user&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx --filter 'username="import001"'
+aws cognito-idp admin-disable-user --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-enable-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-delete-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;user pool client&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-user-pool-clients --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp create-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-name test-user-pool-client
+aws cognito-idp describe-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+aws cognito-idp delete-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;example&lt;/h3&gt;
+&lt;p&gt;https://ashura156.hatenablog.com/entry/20180309/1520586674&lt;/p&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220817.html</guid><pubDate>Wed, 17 Aug 2022 00:00:00 GMT</pubDate></item><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://template-000.yml
 aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
 &lt;/code&gt;&lt;/pre&gt;
@@ -744,58 +832,4 @@ print (json.dumps(res))
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200128.html</guid><pubDate>Tue, 28 Jan 2020 00:00:00 GMT</pubDate></item><item><title>aws</title><link>https://mnod.github.io/posts/20200125.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;em&gt;query with JMESPath&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;projection&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
-$ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;selection
-(if the targe command has &lt;code&gt;filters&lt;/code&gt; option, it would be faster than &lt;code&gt;query&lt;/code&gt;.)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[?IsDefault == `true`]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
-
-$ aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `test`]]'
-$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=test'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;function&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --query 'Vpcs[?contains(VpcId, `vpc`)].VpcId'
-
-$ aws ec2 describe-vpcs --query 'sort_by(Vpcs[?contains(VpcId, `vpc`)].VpcId, &amp;amp;VpcId)'
-$ aws ec2 describe-images --filters "Name=owner-id,Values=&amp;lt;id&amp;gt;" --query "sort_by(Images[].{Name:Name, ImageId:ImageId}, &amp;amp;Name)"
-
-$ aws ec2 describe-vpcs --query 'length(Vpcs[?contains(VpcId, `vpc`)])'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;generate-cli-skeleton output&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --generate-cli-skeleton output
-$ aws ec2 describe-vpcs --generate-cli-skeleton output --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
-$ aws ec2 describe-vpcs --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;generate-cli-skeleton input&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --generate-cli-skeleton input | tee describe-vpcs.json
-$ vi describe-vpcs.json
-$ jq . describe-vpcs.json
-{
-  "Filters": [
-    {
-      "Name": "tag:Name",
-      "Values": [
-        "test"
-      ]
-    }
-  ]
-}
-$ aws ec2 describe-vpcs --cli-input-json file://describe-vpcs.json
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;em&gt;samples of filter&lt;/em&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws ec2 describe-vpcs --filters '["Name":"isDefault","Values":["true"]]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"tag-key","Values":["aws:cloudformation:stack-name"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=tag-key,Values=aws:cloudformation:stack-name'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"tag:Name","Values":["terraform_test","mystack-VPC"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-VPC'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><category>json</category><guid>https://mnod.github.io/posts/20200125.html</guid><pubDate>Sat, 25 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20200128.html</guid><pubDate>Tue, 28 Jan 2020 00:00:00 GMT</pubDate></item></channel></rss>

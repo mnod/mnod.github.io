@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
 <link rel="canonical" href="https://mnod.github.io/">
 <link rel="next" href="index-10.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20220810.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="prefetch" href="posts/20220817.html" type="text/html">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -46,7 +46,108 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220810.html" class="u-url">advanced cloudformation</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220817.html" class="u-url">cognito user pool</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20220817.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-17T00:00:00Z" itemprop="datePublished" title="2022-08-17 00:00">2022-08-17 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create user pool</h3>
+<pre><code>aws cognito-idp create-user-pool --pool-name testpool1 --user-pool-tags 'key=Name,Value=testpool1' --admin-create-user-config 'AllowAdminCreateUserOnly=true' --account-recovery-setting 'RecoveryMechanisms=[{Priority=1,Name=admin_only}]'
+aws cognito-idp list-user-pools --max-results 10
+aws cognito-idp describe-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+</code></pre>
+<p>remove user pool</p>
+<pre><code>aws cognito-idp delete-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+</code></pre>
+<h3>create user and set user password</h3>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-create-user --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --temporary-password temporary_password
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --password parmanent_password --permanent
+</code></pre>
+<h3>create role before import csv</h3>
+<p>create policy json document</p>
+<pre><code>$ jq . AllowCognitoCloudwatchLogs.policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:ap-northeast-1:xxxxxxxxxxxx:log-group:/aws/cognito/*"
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>create policy</p>
+<pre><code>aws iam create-policy --policy-name AllowCognitoCloudwatchLogs --policy-document file://AllowCognitoCloudwatchLogs.policy
+aws iam list-policies --query 'Policies[?PolicyName==`AllowCognitoCloudwatchLogs`]'
+aws iam delete-policy --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+</code></pre>
+<p>create assume role policy document</p>
+<pre><code>$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cognito-idp.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+</code></pre>
+<p>create role</p>
+<pre><code>aws iam create-role --role-name Import-Cognito-Userpool --assume-role-policy-document file://assumepolicy.json
+aws iam list-roles --query 'Roles[?RoleName==`Import-Cognito-Userpool`]'
+aws iam attach-role-policy --role-name Import-Cognito-Userpool --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+</code></pre>
+<h3>import csv to user pool</h3>
+<p>create csv</p>
+<pre><code>name,given_name,family_name,middle_name,nickname,preferred_username,profile,picture,website,email,email_verified,gender,birthdate,zoneinfo,locale,phone_number,phone_number_verified,address,updated_at,cognito:mfa_enabled,cognito:username
+,,,,,,,,,dummy@example.com,true,,,,,,false,,,false,import001
+</code></pre>
+<p>import it</p>
+<pre><code>aws cognito-idp create-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-name import_job --cloud-watch-logs-role-arn arn:aws:iam::xxxxxxxxxxxx:role/service-role/Cognito-UserImport-Role
+curl -v -T "PATH_TO_CSV_FILE" -H "x-amz-server-side-encryption:aws:kms" "PRE_SIGNED_URL"
+aws cognito-idp describe-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+aws cognito-idp start-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+</code></pre>
+<p>remove unnecessary attributes and set user password</p>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-delete-user-attributes --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --user-attribute-names 'email'
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --password permanent_password --permanent
+</code></pre>
+<h3>disable / enable / delete user</h3>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx --filter 'username="import001"'
+aws cognito-idp admin-disable-user --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-enable-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-delete-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+</code></pre>
+<h3>user pool client</h3>
+<pre><code>aws cognito-idp list-user-pool-clients --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp create-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-name test-user-pool-client
+aws cognito-idp describe-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+aws cognito-idp delete-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+</code></pre>
+<h3>example</h3>
+<p>https://ashura156.hatenablog.com/entry/20180309/1520586674</p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220810.html" class="u-url">advanced cloudformation</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -739,48 +840,6 @@ sudo kubectl get svc
 <p><em>delete deployment</em></p>
 <pre><code>sudo kubectl delete -f ./nginx-deployment.yaml
 </code></pre>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211031.html" class="u-url">Bluetooth tethering on Windows10</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="posts/20211031.html" rel="bookmark">
-            <time class="published dt-published" datetime="2021-10-31T00:00:00Z" itemprop="datePublished" title="2021-10-31 00:00">2021-10-31 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <h2>connect</h2>
-<ol>
-<li>Pairing</li>
-<li>To open <code>Bluetooth Personal Area Network Device</code>, right click the blootooth icon in the system tray and click <code>Join a Personal Area Network</code>.
-You can create a shortcut to it where you like.</li>
-<li>Right click the icon of your router device and select <code>Connect using</code> then click <code>Access Point</code>
-</li>
-</ol>
-<p>If you use an iphone as your router device, you don't have to tap 'internet sharing' when you start bluetooth tethering.</p>
-<h2>disconnect</h2>
-<ol>
-<li>Open <code>Bluetooth Personal Area Network Device</code>
-</li>
-<li>Right click the icon of your router device and click <code>disconnect</code>
-</li>
-</ol>
-<h2>data usage limit</h2>
-<p>When we use wifi on windows, we have configuration for metered connection but we don't generally when blootooth pan.</p>
-<p>I heard that it would be possible to limit data usage by editing registry.</p>
-<ol>
-<li>run <code>regedit</code>
-</li>
-<li>open <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\DefaultMediaCost</code>
-</li>
-<li>get full control of it for administrators</li>
-<li>change value of <code>Ethernet</code> to <code>2</code>
-</li>
-<li>restart windows</li>
-</ol>
-<p>This configures also ethernet to metered connection.</p>
     </div>
     </article>
 </div>

@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Fri, 12 Aug 2022 12:10:43 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 17 Aug 2022 13:06:25 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>cognito user pool</title><link>https://mnod.github.io/posts/20220817.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create user pool&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp create-user-pool --pool-name testpool1 --user-pool-tags 'key=Name,Value=testpool1' --admin-create-user-config 'AllowAdminCreateUserOnly=true' --account-recovery-setting 'RecoveryMechanisms=[{Priority=1,Name=admin_only}]'
+aws cognito-idp list-user-pools --max-results 10
+aws cognito-idp describe-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove user pool&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp delete-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create user and set user password&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-create-user --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --temporary-password temporary_password
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --password parmanent_password --permanent
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;create role before import csv&lt;/h3&gt;
+&lt;p&gt;create policy json document&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . AllowCognitoCloudwatchLogs.policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:ap-northeast-1:xxxxxxxxxxxx:log-group:/aws/cognito/*"
+      ]
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create policy&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws iam create-policy --policy-name AllowCognitoCloudwatchLogs --policy-document file://AllowCognitoCloudwatchLogs.policy
+aws iam list-policies --query 'Policies[?PolicyName==`AllowCognitoCloudwatchLogs`]'
+aws iam delete-policy --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create assume role policy document&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cognito-idp.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create role&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws iam create-role --role-name Import-Cognito-Userpool --assume-role-policy-document file://assumepolicy.json
+aws iam list-roles --query 'Roles[?RoleName==`Import-Cognito-Userpool`]'
+aws iam attach-role-policy --role-name Import-Cognito-Userpool --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;import csv to user pool&lt;/h3&gt;
+&lt;p&gt;create csv&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;name,given_name,family_name,middle_name,nickname,preferred_username,profile,picture,website,email,email_verified,gender,birthdate,zoneinfo,locale,phone_number,phone_number_verified,address,updated_at,cognito:mfa_enabled,cognito:username
+,,,,,,,,,dummy@example.com,true,,,,,,false,,,false,import001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;import it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp create-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-name import_job --cloud-watch-logs-role-arn arn:aws:iam::xxxxxxxxxxxx:role/service-role/Cognito-UserImport-Role
+curl -v -T "PATH_TO_CSV_FILE" -H "x-amz-server-side-encryption:aws:kms" "PRE_SIGNED_URL"
+aws cognito-idp describe-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+aws cognito-idp start-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove unnecessary attributes and set user password&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-delete-user-attributes --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --user-attribute-names 'email'
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --password permanent_password --permanent
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;disable / enable / delete user&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx --filter 'username="import001"'
+aws cognito-idp admin-disable-user --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-enable-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-delete-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;user pool client&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;aws cognito-idp list-user-pool-clients --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp create-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-name test-user-pool-client
+aws cognito-idp describe-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+aws cognito-idp delete-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;example&lt;/h3&gt;
+&lt;p&gt;https://ashura156.hatenablog.com/entry/20180309/1520586674&lt;/p&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220817.html</guid><pubDate>Wed, 17 Aug 2022 00:00:00 GMT</pubDate></item><item><title>advanced cloudformation</title><link>https://mnod.github.io/posts/20220810.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create an initial cloudformation stack&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://template-000.yml
 aws cloudformation create-stack --stack-name mystack  --template-body file://mystack-000.yml
 &lt;/code&gt;&lt;/pre&gt;
@@ -576,27 +664,4 @@ sudo kubectl get svc
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;delete deployment&lt;/em&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo kubectl delete -f ./nginx-deployment.yaml
-&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item><item><title>Bluetooth tethering on Windows10</title><link>https://mnod.github.io/posts/20211031.html</link><dc:creator>mnod</dc:creator><description>&lt;h2&gt;connect&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;Pairing&lt;/li&gt;
-&lt;li&gt;To open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;, right click the blootooth icon in the system tray and click &lt;code&gt;Join a Personal Area Network&lt;/code&gt;.
-You can create a shortcut to it where you like.&lt;/li&gt;
-&lt;li&gt;Right click the icon of your router device and select &lt;code&gt;Connect using&lt;/code&gt; then click &lt;code&gt;Access Point&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;If you use an iphone as your router device, you don't have to tap 'internet sharing' when you start bluetooth tethering.&lt;/p&gt;
-&lt;h2&gt;disconnect&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;Open &lt;code&gt;Bluetooth Personal Area Network Device&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Right click the icon of your router device and click &lt;code&gt;disconnect&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2&gt;data usage limit&lt;/h2&gt;
-&lt;p&gt;When we use wifi on windows, we have configuration for metered connection but we don't generally when blootooth pan.&lt;/p&gt;
-&lt;p&gt;I heard that it would be possible to limit data usage by editing registry.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;run &lt;code&gt;regedit&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;open &lt;code&gt;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\DefaultMediaCost&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;get full control of it for administrators&lt;/li&gt;
-&lt;li&gt;change value of &lt;code&gt;Ethernet&lt;/code&gt; to &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;restart windows&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;This configures also ethernet to metered connection.&lt;/p&gt;</description><category>windows</category><guid>https://mnod.github.io/posts/20211031.html</guid><pubDate>Sun, 31 Oct 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>docker</category><category>linux</category><guid>https://mnod.github.io/posts/20210629.html</guid><pubDate>Wed, 29 Dec 2021 00:00:00 GMT</pubDate></item></channel></rss>

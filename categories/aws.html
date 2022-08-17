@@ -57,7 +57,108 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220810.html" class="u-url">advanced cloudformation</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220817.html" class="u-url">cognito user pool</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220817.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-17T00:00:00Z" itemprop="datePublished" title="2022-08-17 00:00">2022-08-17 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create user pool</h3>
+<pre><code>aws cognito-idp create-user-pool --pool-name testpool1 --user-pool-tags 'key=Name,Value=testpool1' --admin-create-user-config 'AllowAdminCreateUserOnly=true' --account-recovery-setting 'RecoveryMechanisms=[{Priority=1,Name=admin_only}]'
+aws cognito-idp list-user-pools --max-results 10
+aws cognito-idp describe-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+</code></pre>
+<p>remove user pool</p>
+<pre><code>aws cognito-idp delete-user-pool --user-pool-id ap-northeast-1_xxxxxxxxx
+</code></pre>
+<h3>create user and set user password</h3>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-create-user --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --temporary-password temporary_password
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username testuser001 --password parmanent_password --permanent
+</code></pre>
+<h3>create role before import csv</h3>
+<p>create policy json document</p>
+<pre><code>$ jq . AllowCognitoCloudwatchLogs.policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:ap-northeast-1:xxxxxxxxxxxx:log-group:/aws/cognito/*"
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>create policy</p>
+<pre><code>aws iam create-policy --policy-name AllowCognitoCloudwatchLogs --policy-document file://AllowCognitoCloudwatchLogs.policy
+aws iam list-policies --query 'Policies[?PolicyName==`AllowCognitoCloudwatchLogs`]'
+aws iam delete-policy --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+</code></pre>
+<p>create assume role policy document</p>
+<pre><code>$ jq . assumepolicy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cognito-idp.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+</code></pre>
+<p>create role</p>
+<pre><code>aws iam create-role --role-name Import-Cognito-Userpool --assume-role-policy-document file://assumepolicy.json
+aws iam list-roles --query 'Roles[?RoleName==`Import-Cognito-Userpool`]'
+aws iam attach-role-policy --role-name Import-Cognito-Userpool --policy-arn arn:aws:iam::xxxxxxxxxxxx:policy/AllowCognitoCloudwatchLogs
+</code></pre>
+<h3>import csv to user pool</h3>
+<p>create csv</p>
+<pre><code>name,given_name,family_name,middle_name,nickname,preferred_username,profile,picture,website,email,email_verified,gender,birthdate,zoneinfo,locale,phone_number,phone_number_verified,address,updated_at,cognito:mfa_enabled,cognito:username
+,,,,,,,,,dummy@example.com,true,,,,,,false,,,false,import001
+</code></pre>
+<p>import it</p>
+<pre><code>aws cognito-idp create-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-name import_job --cloud-watch-logs-role-arn arn:aws:iam::xxxxxxxxxxxx:role/service-role/Cognito-UserImport-Role
+curl -v -T "PATH_TO_CSV_FILE" -H "x-amz-server-side-encryption:aws:kms" "PRE_SIGNED_URL"
+aws cognito-idp describe-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+aws cognito-idp start-user-import-job --user-pool-id ap-northeast-1_xxxxxxxxx --job-id import-xxxxxxxxxx
+</code></pre>
+<p>remove unnecessary attributes and set user password</p>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp admin-delete-user-attributes --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --user-attribute-names 'email'
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_xxxxxxxxx --username import001 --password permanent_password --permanent
+</code></pre>
+<h3>disable / enable / delete user</h3>
+<pre><code>aws cognito-idp list-users --user-pool-id ap-northeast-1_xxxxxxxxx --filter 'username="import001"'
+aws cognito-idp admin-disable-user --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-enable-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+aws cognito-idp admin-delete-user  --user-pool-id ap-northeast-1_xxxxxxxxx --username import001
+</code></pre>
+<h3>user pool client</h3>
+<pre><code>aws cognito-idp list-user-pool-clients --user-pool-id ap-northeast-1_xxxxxxxxx
+aws cognito-idp create-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-name test-user-pool-client
+aws cognito-idp describe-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+aws cognito-idp delete-user-pool-client --user-pool-id ap-northeast-1_xxxxxxxxx --client-id xxxxxxxxxxxxxxxxxxxxxxxxx
+</code></pre>
+<h3>example</h3>
+<p>https://ashura156.hatenablog.com/entry/20180309/1520586674</p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220810.html" class="u-url">advanced cloudformation</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -913,73 +1014,6 @@ print (json.dumps(res))
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-</code></pre>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200125.html" class="u-url">aws</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200125.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-01-25T00:00:00Z" itemprop="datePublished" title="2020-01-25 00:00">2020-01-25 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p><em>query with JMESPath</em></p>
-<p>projection</p>
-<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[].VpcId'
-$ aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId, IsDefault:IsDefault}'
-</code></pre>
-<p>selection
-(if the targe command has <code>filters</code> option, it would be faster than <code>query</code>.)</p>
-<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[?IsDefault == `true`]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
-
-$ aws ec2 describe-vpcs --query 'Vpcs[?Tags[?Key == `Name` &amp;&amp; Value == `test`]]'
-$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=test'
-</code></pre>
-<p>function</p>
-<pre><code>$ aws ec2 describe-vpcs --query 'Vpcs[?contains(VpcId, `vpc`)].VpcId'
-
-$ aws ec2 describe-vpcs --query 'sort_by(Vpcs[?contains(VpcId, `vpc`)].VpcId, &amp;VpcId)'
-$ aws ec2 describe-images --filters "Name=owner-id,Values=&lt;id&gt;" --query "sort_by(Images[].{Name:Name, ImageId:ImageId}, &amp;Name)"
-
-$ aws ec2 describe-vpcs --query 'length(Vpcs[?contains(VpcId, `vpc`)])'
-</code></pre>
-<p><em>generate-cli-skeleton output</em></p>
-<pre><code>$ aws ec2 describe-vpcs --generate-cli-skeleton output
-$ aws ec2 describe-vpcs --generate-cli-skeleton output --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
-$ aws ec2 describe-vpcs --query 'Vpcs[].{CidrBlock:CidrBlock, VpcId:VpcId}'
-</code></pre>
-<p><em>generate-cli-skeleton input</em></p>
-<pre><code>$ aws ec2 describe-vpcs --generate-cli-skeleton input | tee describe-vpcs.json
-$ vi describe-vpcs.json
-$ jq . describe-vpcs.json
-{
-  "Filters": [
-    {
-      "Name": "tag:Name",
-      "Values": [
-        "test"
-      ]
-    }
-  ]
-}
-$ aws ec2 describe-vpcs --cli-input-json file://describe-vpcs.json
-</code></pre>
-<p><em>samples of filter</em></p>
-<pre><code>$ aws ec2 describe-vpcs --filters '["Name":"isDefault","Values":["true"]]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"tag-key","Values":["aws:cloudformation:stack-name"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=tag-key,Values=aws:cloudformation:stack-name'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"tag:Name","Values":["terraform_test","mystack-VPC"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=terraform_test,mystack-VPC'
-
-$ aws ec2 describe-vpcs --filters '[{"Name":"isDefault","Values":["false"]}, {"Name":"state","Values":["available"]}]'
-$ aws ec2 describe-vpcs --filters 'Name=isDefault,Values=true','Name=state,Values=available'
 </code></pre>
     </div>
     </article>

@@ -47,7 +47,49 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211031.html" class="u-url">Bluetooth tethering on Windows10</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20211031.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-10-31T00:00:00Z" itemprop="datePublished" title="2021-10-31 00:00">2021-10-31 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h2>connect</h2>
+<ol>
+<li>Pairing</li>
+<li>To open <code>Bluetooth Personal Area Network Device</code>, right click the blootooth icon in the system tray and click <code>Join a Personal Area Network</code>.
+You can create a shortcut to it where you like.</li>
+<li>Right click the icon of your router device and select <code>Connect using</code> then click <code>Access Point</code>
+</li>
+</ol>
+<p>If you use an iphone as your router device, you don't have to tap 'internet sharing' when you start bluetooth tethering.</p>
+<h2>disconnect</h2>
+<ol>
+<li>Open <code>Bluetooth Personal Area Network Device</code>
+</li>
+<li>Right click the icon of your router device and click <code>disconnect</code>
+</li>
+</ol>
+<h2>data usage limit</h2>
+<p>When we use wifi on windows, we have configuration for metered connection but we don't generally when blootooth pan.</p>
+<p>I heard that it would be possible to limit data usage by editing registry.</p>
+<ol>
+<li>run <code>regedit</code>
+</li>
+<li>open <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\DefaultMediaCost</code>
+</li>
+<li>get full control of it for administrators</li>
+<li>change value of <code>Ethernet</code> to <code>2</code>
+</li>
+<li>restart windows</li>
+</ol>
+<p>This configures also ethernet to metered connection.</p>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20211030.html" class="u-url">Grandstream GXP1610</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
