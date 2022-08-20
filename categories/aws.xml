@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 20 Aug 2022 08:33:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nested cloudformation stack</title><link>https://mnod.github.io/posts/20220820.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create sub stack vpc.yml&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 20 Aug 2022 08:40:04 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>nested cloudformation stack</title><link>https://mnod.github.io/posts/20220820.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;create sub stack vpc.yml&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;$ cat vpc.yml 
 AWSTemplateFormatVersion: '2010-09-09'
 
@@ -150,9 +150,10 @@ aws cloudformation deploy --template-file parent_packaged.yml --stack-name neste
 &lt;pre&gt;&lt;code&gt;$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `testnestedstack`]]' | less
 
 $ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
-&amp;gt; aws cloudformation describe-stack-events --stack-name ${stackname}                                                                                                                                  &amp;gt; done | less
+&amp;gt; aws cloudformation describe-stack-events --stack-name ${stackname}
+&amp;gt; done | less
 
-$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
+    $ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;amp;&amp;amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
 &amp;gt; aws cloudformation describe-stack-resources --stack-name ${stackname}
 &amp;gt; done | less
 &lt;/code&gt;&lt;/pre&gt;

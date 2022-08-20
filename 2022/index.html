@@ -218,9 +218,10 @@ aws cloudformation deploy --template-file parent_packaged.yml --stack-name neste
 <pre><code>$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]]' | less
 
 $ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
-&gt; aws cloudformation describe-stack-events --stack-name ${stackname}                                                                                                                                  &gt; done | less
+&gt; aws cloudformation describe-stack-events --stack-name ${stackname}
+&gt; done | less
 
-$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
+    $ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
 &gt; aws cloudformation describe-stack-resources --stack-name ${stackname}
 &gt; done | less
 </code></pre>
