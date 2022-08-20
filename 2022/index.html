@@ -56,7 +56,179 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220817.html" class="u-url">cognito user pool</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220820.html" class="u-url">nested cloudformation stack</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220820.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-20T00:00:00Z" itemprop="datePublished" title="2022-08-20 00:00">2022-08-20 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create sub stack vpc.yml</h3>
+<pre><code>$ cat vpc.yml 
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  CidrBlock:
+    Type: String
+    Default: "10.0.0.0/16"
+  NameTag :
+    Type: String
+    Default: "nested stack"
+
+Resources:
+  VPC:
+
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      Tags:
+      - Key: Name
+        Value: !Ref NameTag
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Ref NameTag
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: 
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+
+Outputs:
+  VpcId: 
+    Value: !Ref VPC
+  IgwId:
+    Value: !Ref InternetGateway
+</code></pre>
+<pre><code>aws cloudformation validate-template --template-body file://vpc.yml
+</code></pre>
+<h3>create another sub stack subnet.yml</h3>
+<pre><code>$ cat subnet.yml                                                                                                                                                [5/1860]
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  NameTag:
+    Type: String
+    Default: "subnetnesting"
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  CidrBlock1:
+    Type: String
+    Default: "10.0.0.0/24"
+  CidrBlock2:
+    Type: String
+    Default: "10.0.1.0/24"
+
+Resources:
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CidrBlock1
+      AvailabilityZone:
+         Fn::Select:
+         - '0'
+         - Fn::GetAZs:
+             Ref: AWS::Region
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref CidrBlock2
+      AvailabilityZone:
+         Fn::Select:
+         - '1'
+         - Fn::GetAZs:
+             Ref: AWS::Region
+
+Outputs:
+  SubnetId1:
+    Value: !Ref Subnet1
+  SubnetAz1:
+    Value: !GetAtt Subnet1.AvailabilityZone
+  SubnetId2:
+    Value: !Ref Subnet2
+  SubnetAz2:
+    Value: !GetAtt Subnet2.AvailabilityZone
+</code></pre>
+<pre><code>aws cloudformation validate-template --template-body file://subnet.yml
+</code></pre>
+<h3>create parent stack parent.yml</h3>
+<pre><code>$ cat parent.yml 
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  NameTag:
+    Default: nested stack test
+    Type: String
+  CidrBlock:
+    Default: 10.1.0.0/16
+    Type: String
+  CidrBlock1:
+    Default: 10.1.0.0/24
+    Type: String
+  CidrBlock2:
+    Default: 10.1.1.0/24
+    Type: String
+
+Resources:
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: vpc.yml
+      Parameters:
+        NameTag : !Ref NameTag
+        CidrBlock: !Ref CidrBlock
+
+  SUBNET:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: subnet.yml
+      Parameters:
+        NameTag : !Ref NameTag
+        VPC: !GetAtt VPC.Outputs.VpcId
+        CidrBlock1: !Ref CidrBlock1
+        CidrBlock2: !Ref CidrBlock2
+
+Outputs:
+  VpcId:
+    Value: !GetAtt VPC.Outputs.VpcId
+  SubnetId1:
+    Value: !GetAtt SUBNET.Outputs.SubnetId1
+  SubnetId2:
+    Value: !GetAtt SUBNET.Outputs.SubnetId2
+</code></pre>
+<pre><code>aws cloudformation validate-template --template-body file://parent.yml
+</code></pre>
+<h3>create or update stack</h3>
+<pre><code>aws cloudformation package --template-file parent.yml --s3-bucket your-s3bucket-name --output-template-file parent_packaged.yml
+aws cloudformation deploy --template-file parent_packaged.yml --stack-name nestedstack --tags Name=testnestedstack
+</code></pre>
+<h3>confirm</h3>
+<pre><code>$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]]' | less
+
+$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
+&gt; aws cloudformation describe-stack-events --stack-name ${stackname}                                                                                                                                  &gt; done | less
+
+$ aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `Name` &amp;&amp; Value == `testnestedstack`]].StackName' | jq -r .[] | while read stackname; do
+&gt; aws cloudformation describe-stack-resources --stack-name ${stackname}
+&gt; done | less
+</code></pre>
+<h3>delete stack</h3>
+<pre><code>aws cloudformation delete-stack --stack-name nestedstack
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220817.html" class="u-url">cognito user pool</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

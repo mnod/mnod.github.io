@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts about aws (old posts, page 2) | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/categories/aws-2.html">
+<link rel="prev" href="aws.html" type="text/html">
+<link rel="next" href="aws-1.html" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag aws" hreflang="en" href="aws.xml">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts about aws (old posts, page 2)</h1>
+        <div class="metadata">
+            
+                <p class="feedlink">
+                        
+            <a href="aws.xml" hreflang="en" type="application/rss+xml">RSS feed</a>
+
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200128.html" class="u-url">dynamodb</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20200128.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-01-28T00:00:00Z" itemprop="datePublished" title="2020-01-28 00:00">2020-01-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p><em>create and delete table</em></p>
+<pre><code>$ aws dynamodb list-tables
+$ aws dynamodb describe-table --table-name testtable
+$ aws dynamodb create-table --table-name testtable  \
+ --attribute-definitions '[{"AttributeName":"Artist","AttributeType":"S"},{"AttributeName":"AlbumTitle","AttributeType":"S"}]' \
+ --key-schema '[{"AttributeName":"Artist","KeyType":"HASH"},{"AttributeName":"AlbumTitle","KeyType":"RANGE"}]' \
+ --provisioned-throughput '{"ReadCapacityUnits": 1,"WriteCapacityUnits": 1}' \
+ --tags '[{"Key": "Name","Value": "test"}]'
+
+$ aws dynamodb delete-table --table-name testtable
+</code></pre>
+<p><em>put item</em></p>
+<pre><code>$ jq '.' put-item.json
+{
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+$ aws dynamodb put-item --table-name testtable --item file://put-item.json
+</code></pre>
+<p><em>get and delete item</em></p>
+<pre><code>$ aws dynamodb get-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+$ aws dynamodb delete-item --table-name testtable --key '{ "Artist": { "S": "The Beatles" },"AlbumTitle": { "S": "Please Please Me" } }'
+</code></pre>
+<p><em>backup and restore database</em></p>
+<p>create backup</p>
+<pre><code>$ aws dynamodb list-backups --table-name testtable
+$ aws dynamodb create-backup --table-name testtable --backup-name testtablebackup
+</code></pre>
+<p>describe backup</p>
+<pre><code>$ aws dynamodb describe-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+</code></pre>
+<p>restore from newest backup</p>
+<pre><code>$ aws dynamodb delete-table --table-name testtable
+$ aws dynamodb restore-table-from-backup --target-table-name testtable --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+$ aws dynamodb describe-table --table-name testtable --query 'Table.TableStatus'
+</code></pre>
+<p>remove oldest backup</p>
+<pre><code>$ aws dynamodb delete-backup --backup-arn $(aws dynamodb list-backups --table-name "testtable" --query 'max_by(BackupSummaries[?BackupName == `testtablebackup`], &amp;BackupCreationDateTime).BackupArn' | jq -r .)
+</code></pre>
+<p><em>sample python script</em></p>
+<p>put-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+item = {
+  "Artist": {
+    "S": "The Beatles"
+  },
+  "AlbumTitle": {
+    "S": "Please Please Me"
+  },
+  "songs": {
+    "L": [
+      {
+        "S": "I Saw Her Standing There"
+      },
+      {
+        "S": "Misery"
+      }
+    ]
+  }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.put_item(TableName=tablename, Item=item)
+print (json.dumps(res))
+</code></pre>
+<p>get-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.get_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+</code></pre>
+<p>delete-item.py</p>
+<pre><code>#! /usr/bin/python3
+import boto3
+import json
+
+tablename = 'testtable'
+key = {
+  "Artist": { "S": "The Beatles" },
+  "AlbumTitle": { "S": "Please Please Me" }
+}
+
+dynamo = boto3.client('dynamodb')
+res = dynamo.delete_item(TableName=tablename, Key=key)
+print (json.dumps(res))
+# print (json.dumps(res['ResponseMetadata']['HTTPStatusCode']))
+</code></pre>
+<p><em>cloudformation template</em></p>
+<pre><code>    TestDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "TestDynamoDBTable"
+        Tags:
+          - Key: "Name"
+            Value: "test"
+        AttributeDefinitions:
+          - AttributeName: "subject"
+            AttributeType: "S"
+          - AttributeName: "year"
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: "subject"
+            KeyType: "HASH"
+          - AttributeName: "year"
+            KeyType: "RANGE"
+        BillingMode: "PROVISIONED"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+</code></pre>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="aws.html" rel="prev">Newer posts</a>
+            </li>
+            <li class="next">
+                <a href="aws-1.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>
