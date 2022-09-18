@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="tech log">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Posts for year 2022 (old posts, page 1) | tech log</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
+<link rel="canonical" href="https://mnod.github.io/2022/index-1.html">
+<link rel="prev" href="." type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="tech log" rel="home">
+
+        <span id="blog-title">tech log</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../archive.html">Archives</a></li>
+                <li><a href="../categories/index.html">Tags</a></li>
+                <li><a href="../rss.xml">RSS feed</a></li>
+
+    
+
+    
+    
+    </ul></nav><div class="searchform" role="search">
+                
+<!-- DuckDuckGo custom search -->
+ <form method="get" id="search" action="https://duckduckgo.com/" class="navbar-form pull-left">
+ <input type="hidden" name="sites" value="https://mnod.github.io/"><input type="hidden" name="k8" value="#444444"><input type="hidden" name="k9" value="#D51920"><input type="hidden" name="kt" value="h"><input type="text" name="q" maxlength="255" placeholder="Search…" class="span2" style="margin-top: 4px;"><input type="submit" value="DuckDuckGo Search" style="visibility: hidden;">
+</form>
+ <!-- End of custom search -->
+
+            </div>
+    </header><main id="content"><header><h1>Posts for year 2022 (old posts, page 1)</h1>
+        
+
+        <div class="metadata">
+            
+                <p class="feedlink">
+                </p>
+
+            
+
+        </div>
+    </header><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220328.html" class="u-url">copy partition of sd card</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220328.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-03-28T00:00:00Z" itemprop="datePublished" title="2022-03-28 00:00">2022-03-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>dump partition of original sd card</p>
+<pre><code>sudo parted /dev/sdx print
+sudo dd if=/dev/sdx1 of=tablet_sdx1.img bs=4M
+</code></pre>
+<p>restore to new sd card</p>
+<pre><code>sudo parted /dev/sdx print
+sudo dd if=tablet_sdx1.img of=/dev/sdx1 bs=4M
+</code></pre>
+<p>confirm the size of filesystem</p>
+<pre><code>sudo mount /dev/sdb1 /media/tmp
+df
+sudo umount /media/tmp
+</code></pre>
+<p>extend the filesystem (if needed)</p>
+<pre><code>sudo apt install --no-install-recommends fatresize
+sudo fatresize -i /dev/sdb1
+max=$(expr $(sudo fatresize -i /dev/sdb1 | awk -F: '$1~/Max size/{print $2}') / 1024)
+sudo fatresize -s ${max}k /dev/sdb1
+sudo fatresize -i /dev/sdb1
+</code></pre>
+<p>confirm the size of filesystem</p>
+<pre><code>sudo mount /dev/sdb1 /media/tmp
+df
+</code></pre>
+    </div>
+    </article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="." rel="prev">Newer posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

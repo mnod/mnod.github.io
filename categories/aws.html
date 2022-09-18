@@ -57,7 +57,63 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220820.html" class="u-url">nested cloudformation stack</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220918.html" class="u-url">acm</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220918.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-09-18T00:00:00Z" itemprop="datePublished" title="2022-09-18 00:00">2022-09-18 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>request certificate</h3>
+<p>This sample will create certificate in us-east-1 region.</p>
+<pre><code>myregion=us-east-1
+myfqdn=www.example.com
+aws acm list-certificates --region ${myregion}
+aws acm request-certificate --region ${myregion} --domain-name ${myfqdn} --validation-method DNS
+CertificateArn=$(aws acm list-certificates --region ${myregion} --query 'CertificateSummaryList[?DomainName == `'${myfqdn}'`].CertificateArn' --output text)
+aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn} --query 'Certificate.DomainValidationOptions[].ResourceRecord'
+</code></pre>
+<h3>add Route53 entry</h3>
+<pre><code>myodmain=exapmle.com
+id=$(aws route53 list-hosted-zones --query 'HostedZones[?Name == `'${mydomain}.'`].Id' --output text)
+aws route53 get-hosted-zone --id ${id}
+aws route53 list-resource-record-sets --hosted-zone-id ${id}
+</code></pre>
+<p>create change batch</p>
+<pre><code>$ jq . change-batch.json 
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "xxxxxx.example.com.",
+        "Type": "CNAME",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxxx.acm-validations.aws."
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+<pre><code>aws route53 change-resource-record-sets --hosted-zone-id ${id} --change-batch file://change-batch.json
+aws route53 get-change --id /change/xxxxxxxx
+</code></pre>
+<h3>confirm the result</h3>
+<pre><code>aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm get-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm get-certificate --region ${myregion} --certificate-arn ${CertificateArn} --query 'Certificate' --output text | openssl x509 -noout -text
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220820.html" class="u-url">nested cloudformation stack</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -952,92 +1008,6 @@ $ aws events list-targets-by-rule --rule testrule
       - Arn: !GetAtt LambdaRssNotification.Arn
         Id: "1"
         Input: !Ref INPUTJSON
-</code></pre>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200209.html" class="u-url">ecs</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200209.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-02-09T00:00:00Z" itemprop="datePublished" title="2020-02-09 00:00">2020-02-09 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p><em>cluster</em></p>
-<pre><code>$ aws ecs list-clusters 
-$ aws ecs describe-clusters --clusters &lt;clusterArn&gt;
-
-$ aws ecs create-cluster --cluster-name &lt;cluster-name&gt; --tags '[{"key": "Name","value": "test"}]'
-$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
-
-$ aws ecs delete-cluster --cluster &lt;clusterArn&gt;
-</code></pre>
-<p><em>task definition</em></p>
-<pre><code>$ aws ecs list-task-definitions
-$ aws ecs describe-task-definition --task-definition &lt;taskDefinitionArn&gt;
-
-$ jq . task-definition.json
-{
-  "family": "sample-fargate",
-  "networkMode": "awsvpc",
-  "containerDefinitions": [
-    {
-      "name": "fargate-app",
-      "image": "busybox",
-      "essential": true,
-      "command": [
-        "sleep",
-        "360"
-      ]
-    }
-  ],
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
-  "cpu": "256",
-  "memory": "512"
-}
-$ aws ecs register-task-definition --cli-input-json file://task-definition.json
-
-$ aws ecs deregister-task-definition --task-definition &lt;taskDefinitionArn&gt;
-</code></pre>
-<p><em>task</em></p>
-<p>When you use fargate and retrieve docker image from docker hub, you have to use internet gateway or nat gateway in the vpc.</p>
-<pre><code>$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
-$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
-
-$ jq . network-configuration.json
-{
-  "awsvpcConfiguration": {
-    "subnets": [
-      "&lt;subnet&gt;"
-    ],
-    "securityGroups": [
-      "&lt;securitygroup&gt;"
-    ],
-    "assignPublicIp": "ENABLED"
-  }
-}
-$ aws ecs run-task --task-definition &lt;taskDefinitionArn&gt; --cluster &lt;clusterArn&gt; --count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
-
-$ aws ecs stop-task --cluster &lt;clusterArn&gt; --task &lt;taskArn&gt;
-</code></pre>
-<p><em>tags</em></p>
-<pre><code>$ aws ecs list-tags-for-resource --resource-arn &lt;resource-arn&gt;
-$ aws ecs tag-resource --resource-arn &lt;resource-arn&gt; --tags '[{"key": "Name","value": "test"}]'
-</code></pre>
-<p><em>service</em></p>
-<pre><code>$ aws ecs list-services --cluster &lt;clusterArn&gt;
-$ aws ecs describe-services --cluster &lt;clusterArn&gt; --services &lt;serviceArn&gt;
-$ aws ecs create-service --cluster &lt;clusterArn&gt; --service-name &lt;serviceName&gt; --task-definition &lt;task-definition&gt; --desired-count 1 --launch-type FARGATE --network-configuration file://network-configuration.json
-
-$ aws ecs list-tasks --cluster &lt;clusterArn&gt;
-$ aws ecs describe-tasks --cluster &lt;clusterArn&gt; --tasks &lt;taskArn&gt;
-
-$ aws ecs update-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt; --desired-count 0
-$ aws ecs delete-service --cluster &lt;clusterArn&gt; --service &lt;serviceArn&gt;
 </code></pre>
     </div>
     </article>

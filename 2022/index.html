@@ -12,6 +12,7 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
 <link rel="canonical" href="https://mnod.github.io/2022/">
+<link rel="next" href="index-1.html" type="text/html">
 <!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
 </head>
 <body>
@@ -56,7 +57,63 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220820.html" class="u-url">nested cloudformation stack</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220918.html" class="u-url">acm</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220918.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-09-18T00:00:00Z" itemprop="datePublished" title="2022-09-18 00:00">2022-09-18 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>request certificate</h3>
+<p>This sample will create certificate in us-east-1 region.</p>
+<pre><code>myregion=us-east-1
+myfqdn=www.example.com
+aws acm list-certificates --region ${myregion}
+aws acm request-certificate --region ${myregion} --domain-name ${myfqdn} --validation-method DNS
+CertificateArn=$(aws acm list-certificates --region ${myregion} --query 'CertificateSummaryList[?DomainName == `'${myfqdn}'`].CertificateArn' --output text)
+aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn} --query 'Certificate.DomainValidationOptions[].ResourceRecord'
+</code></pre>
+<h3>add Route53 entry</h3>
+<pre><code>myodmain=exapmle.com
+id=$(aws route53 list-hosted-zones --query 'HostedZones[?Name == `'${mydomain}.'`].Id' --output text)
+aws route53 get-hosted-zone --id ${id}
+aws route53 list-resource-record-sets --hosted-zone-id ${id}
+</code></pre>
+<p>create change batch</p>
+<pre><code>$ jq . change-batch.json 
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "xxxxxx.example.com.",
+        "Type": "CNAME",
+        "TTL": 3600,
+        "ResourceRecords": [
+          {
+            "Value": "xxxx.acm-validations.aws."
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+<pre><code>aws route53 change-resource-record-sets --hosted-zone-id ${id} --change-batch file://change-batch.json
+aws route53 get-change --id /change/xxxxxxxx
+</code></pre>
+<h3>confirm the result</h3>
+<pre><code>aws acm describe-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm get-certificate --region ${myregion} --certificate-arn ${CertificateArn}
+aws acm get-certificate --region ${myregion} --certificate-arn ${CertificateArn} --query 'Certificate' --output text | openssl x509 -noout -text
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220820.html" class="u-url">nested cloudformation stack</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -875,54 +932,14 @@ You can confirm the situation at QEMU console.</p>
 <li>If it has stacked at GRUB, click force stop of the left side. After stop, start it again.</li>
 </ol>
 </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220328.html" class="u-url">copy partition of sd card</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20220328.html" rel="bookmark">
-            <time class="published dt-published" datetime="2022-03-28T00:00:00Z" itemprop="datePublished" title="2022-03-28 00:00">2022-03-28 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p>dump partition of original sd card</p>
-<pre><code>sudo parted /dev/sdx print
-sudo dd if=/dev/sdx1 of=tablet_sdx1.img bs=4M
-</code></pre>
-<p>restore to new sd card</p>
-<pre><code>sudo parted /dev/sdx print
-sudo dd if=tablet_sdx1.img of=/dev/sdx1 bs=4M
-</code></pre>
-<p>confirm the size of filesystem</p>
-<pre><code>sudo mount /dev/sdb1 /media/tmp
-df
-sudo umount /media/tmp
-</code></pre>
-<p>extend the filesystem (if needed)</p>
-<pre><code>sudo apt install --no-install-recommends fatresize
-sudo fatresize -i /dev/sdb1
-max=$(expr $(sudo fatresize -i /dev/sdb1 | awk -F: '$1~/Max size/{print $2}') / 1024)
-sudo fatresize -s ${max}k /dev/sdb1
-sudo fatresize -i /dev/sdb1
-</code></pre>
-<p>confirm the size of filesystem</p>
-<pre><code>sudo mount /dev/sdb1 /media/tmp
-df
-</code></pre>
-    </div>
     </article>
 </div>
 
-
-
-    
-
-
-
-
-
-        </main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+        <nav class="postindexpager"><ul class="pager">
+<li class="next">
+                <a href="index-1.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><p>Contents © 2022         <a href="mailto:mnod@example.com">mnod</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
             
         </footer>
 </div>
