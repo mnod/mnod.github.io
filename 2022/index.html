@@ -57,7 +57,132 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220918.html" class="u-url">acm</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220920.html" class="u-url">SSM Automation</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220920.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-09-20T00:00:00Z" itemprop="datePublished" title="2022-09-20 00:00">2022-09-20 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>auto stop EC2 instances using AWS System Manager and Cloudwath Events</p>
+<h3>auto stop ec2 instances with instance id</h3>
+<p>stop specified ec2 instances</p>
+<pre><code>jq . parameters.json 
+[
+  {
+    "ParameterKey": "KeyWord",
+    "ParameterValue": "SomeKeyword"
+  },
+  {
+    "ParameterKey": "InstanceIds",
+    "ParameterValue": "[¥"i-xxxx¥",¥"i-yyyy¥"]"
+  }
+]
+</code></pre>
+<pre><code>  RoleAutoStop:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -  Effect: Allow
+             Principal:
+               Service: events.amazonaws.com
+             Action: sts:AssumeRole
+      RoleName: !Sub ${KeyWord}_Role_AutoStop
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_Role_AutoStop
+
+  EvnetRuleAutoStop:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically
+      Name: !Sub ${KeyWord}-AutoStopInstances
+      ScheduleExpression: cron(0 11 * * ? *)
+      #RoleArn: !GetAtt  RoleAutoStop.Arn
+      State: ENABLED
+      Targets:
+        - Arn: 'arn:aws:ssm:ap-northeast-1::automation-definition/AWS-StopEC2Instance:$DEFAULT'
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"InstanceId": ${InstanceIds}}'
+</code></pre>
+<h3>auto stop ec2 instances with tag</h3>
+<p>stop ec2 instances with StopTime tag</p>
+<pre><code>   AllowTagGetResources:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: !Sub ${KeyWord}_allow_tag_getresources
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: 
+              - tag:GetResources
+            Resource: '*'
+      Roles:
+        - !Ref RoleAutoStop
+
+  StopEC2InstancesWithTag:
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentFormat: YAML
+      DocumentType: Automation
+      Tags: 
+        - Key: Name
+          Value: !Sub ${KeyWord}_StopEC2InstancesWithTag
+      Content:
+        description: StopEC2Instances Using Tags:StopTime
+        schemaVersion: "0.3"
+        assumeRole: "{{ AutomationAssumeRole }}"
+        parameters:
+          StopTime:
+            type: String
+            default: 6pm
+            description: (Required) 6pm,7pm,8pm
+            allowedValues:
+              - 6pm
+              - 7pm
+              - 8pm
+          AutomationAssumeRole:
+            type: String
+            description: (Optional) The ARN of the role that allows Automation to perform the actions on your behalf.
+            default: ""
+        mainSteps:
+          - name: StopEC2Instances
+            action: aws:executeAwsApi
+            inputs:
+              Service: ssm
+              Api: StartAutomationExecution
+              DocumentName: AWS-StopEC2Instance
+              TargetParameterName: "InstanceId"
+              Targets:
+                - Key: tag:StopTime
+                  Values:
+                    - "{{ StopTime }}"
+
+  EvnetRuleAutoStopWithTag:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically with tag
+      Name: !Sub ${KeyWord}-AutoStopInstances-with-tag
+      ScheduleExpression: cron(0 10 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !Sub arn:aws:ssm:ap-northeast-1::automation-definition/${StopEC2InstancesWithTag}:$DEFAULT
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"StopTime": ["7pm"]}'
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220918.html" class="u-url">acm</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -760,178 +885,6 @@ $ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf
 It needs NAPT settings to your pi to make a connection from outside wireguard peer.</p>
 <p>I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)</p>
     </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220521.html" class="u-url">WebARENA Indigo API</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20220521.html" rel="bookmark">
-            <time class="published dt-published" datetime="2022-05-21T00:00:00Z" itemprop="datePublished" title="2022-05-21 00:00">2022-05-21 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p><a href="https://web.arena.ne.jp/indigo/">WebARENA Indigo</a> is one of the cheapest VPS services in Japan.
-It can be controlled via <a href="https://indigo.arena.ne.jp/userapi/">Rest-API</a> for some functions.</p>
-<h3>create API key and API secret key</h3>
-<p>Before you use the Rest-API, you have to access controle panel and create API key and API secret key.</p>
-<ol>
-<li>access <a href="https://indigo.arena.ne.jp/">Indigo ダッシュボード</a>
-</li>
-<li>click API鍵の管理 on the left side menu then select API鍵</li>
-<li>click API鍵の作成 on the top of right side</li>
-<li>write down API鍵 and API秘密鍵 </li>
-</ol>
-<p>If you'd like to do so, set them as environment variable</p>
-<pre><code>$ cat &lt;&lt; END &gt; ~/.webarena_secret
-&gt; export IndigoApiKey=xxxx
-&gt; export IndigoApiPrivateKey=xxxx
-&gt; END
-$ chmod 600 ~/.webarena_secret
-$ cat &lt;&lt; END &gt;&gt; ~/.bashrc
-&gt; if [ -f ~/.webarena_secret ]; then
-&gt;   . ~/.webarena_secret
-&gt; fi
-&gt; END
-</code></pre>
-<h3>create API token</h3>
-<p>After create API key and API secret key, you can create API token.
-You need this API token to call other Rest-APIs.</p>
-<pre><code>IndigoToken=$(curl -s -X POST \
-  https://api.customer.jp/oauth/v1/accesstokens\
-  -H 'Content-Type: application/json' \
-  -d '{
-    "grantType": "client_credentials",
-    "clientId": "'${IndigoApiKey}'",
-    "clientSecret": "'${IndigoApiPrivateKey}'",
-    "code": ""
-}' | jq -r .accessToken)
-</code></pre>
-<p>The output of this API includes <em>"expiresIn": "3599"</em>.
-I have not confirmed but it would expire in about 3600 seconds.</p>
-<h3>register ssh key</h3>
-<p>ssh key will be installed in ~/.ssh/authorized_keys of login user when the instance will be created.
-You can register your own ssh public key instead of create it.</p>
-<pre><code>curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-   "sshName": "testkey",
-   "sshKey": "ssh-rsa xxxx"
-}'
-</code></pre>
-<p>When I tested to upload "ed25519" public key but I got error message like below.
-It seems they don't allow ed25519 keys.</p>
-<pre><code>{"success":false,"errorMessage":"Invalid SSH key.","errorCode":"I10034"}
-</code></pre>
-<h3>retrieve information to create instance</h3>
-<p>list ssh keys</p>
-<pre><code>curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-</code></pre>
-<p>list regions</p>
-<pre><code>instanceTypeId=$(curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/instancetypes \
-  -H "Authorization: Bearer ${IndigoToken}" | jq '.instanceTypes[] | select(.name == "instance") | .id')
-curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/getregion?instanceTypeId=${instanceTypeId} \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-</code></pre>
-<p>list os</p>
-<pre><code>curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/oslist?instanceTypeId=${instanceTypeId} \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-</code></pre>
-<p>list instance plans</p>
-<pre><code>curl -s -X GET \
-  'https://api.customer.jp/webarenaIndigo/v1/vm/getinstancespec?instanceTypeId='${instanceTypeId}'&amp;osId=xx' \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-</code></pre>
-<h3>create instance</h3>
-<pre><code>curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/createinstance \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-  "sshKeyId": xxxx,
-  "regionId": x,
-  "osId": xx,
-  "instancePlan": x,
-  "instanceName": "xxxx"
-}'
-</code></pre>
-<p>list instances</p>
-<pre><code>curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/getinstancelist \
-  -H "Authorization: Bearer ${IndigoToken}"
-</code></pre>
-<p>When you create an instance, "instancestatus" will be "OS installation In Progress".
-After a while it will become "Stopped". It is a time to start your instance.</p>
-<pre><code>curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/instance/statusupdate \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{"instanceId":"xxxx","status":"start"}'
-</code></pre>
-<p>After you start your instance, "instancestatus" will become "Running"</p>
-<h3>firewall</h3>
-<p>The rule is a allow list.
-When you create a firewall rule and apply it to your instance, others will be denied.</p>
-<p>create firewall rule</p>
-<pre><code>curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/nw/createfirewall \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-    "name":"xxxx",
-    "inbound":[
-        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
-    ],
-    "instances":["xxxx"]
-}'
-</code></pre>
-<p>Above rule only allow ssh connection from x.x.x.x. All other inbound connection will be denied.
-Since there are no outbound rules, all outbound connection will be allowed</p>
-<p>list firewall</p>
-<pre><code>curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/nw/getfirewalllist \
-  -H "Authorization: Bearer ${IndigoToken}"
-</code></pre>
-<p>describe a firewall rule</p>
-<pre><code>curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/nw/gettemplate/xxxx \
-  -H "Authorization: Bearer ${IndigoToken}"
-</code></pre>
-<p>update firewall</p>
-<pre><code>curl -s -X PUT \
-  https://api.customer.jp/webarenaIndigo/v1/nw/updatefirewall \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-    "templateid":"xxxx",
-    "name":"xxxx",
-    "inbound":[
-        {"type":"Custom","protocol":"UDP","port":"123","source":"0.0.0.0"},
-        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
-    ],
-    "instances":["xxxx"]
-}'
-</code></pre>
-<h3>snapshot</h3>
-<ol>
-<li>stop instance</li>
-<li>create/restore snapshot</li>
-<li>start instance</li>
-</ol>
-<p>When start instance after restore from snapshot, the boot process may stack at GRUB.
-You can confirm the situation at QEMU console.</p>
-<p>How to access the console:</p>
-<ol>
-<li>access <a href="https://indigo.arena.ne.jp/">Indigo ダッシュボード</a>
-</li>
-<li>click instance management on the left side menu then select instance.</li>
-<li>click select on the right side of the target instance and select access.</li>
-<li>click "start console"</li>
-<li>If it has stacked at GRUB, click force stop of the left side. After stop, start it again.</li>
-</ol>
-</div>
     </article>
 </div>
 

@@ -1,5 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 18 Sep 2022 07:15:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>acm</title><link>https://mnod.github.io/posts/20220918.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;request certificate&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 20 Sep 2022 06:45:40 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>SSM Automation</title><link>https://mnod.github.io/posts/20220920.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;auto stop EC2 instances using AWS System Manager and Cloudwath Events&lt;/p&gt;
+&lt;h3&gt;auto stop ec2 instances with instance id&lt;/h3&gt;
+&lt;p&gt;stop specified ec2 instances&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;jq . parameters.json 
+[
+  {
+    "ParameterKey": "KeyWord",
+    "ParameterValue": "SomeKeyword"
+  },
+  {
+    "ParameterKey": "InstanceIds",
+    "ParameterValue": "[¥"i-xxxx¥",¥"i-yyyy¥"]"
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;  RoleAutoStop:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -  Effect: Allow
+             Principal:
+               Service: events.amazonaws.com
+             Action: sts:AssumeRole
+      RoleName: !Sub ${KeyWord}_Role_AutoStop
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_Role_AutoStop
+
+  EvnetRuleAutoStop:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically
+      Name: !Sub ${KeyWord}-AutoStopInstances
+      ScheduleExpression: cron(0 11 * * ? *)
+      #RoleArn: !GetAtt  RoleAutoStop.Arn
+      State: ENABLED
+      Targets:
+        - Arn: 'arn:aws:ssm:ap-northeast-1::automation-definition/AWS-StopEC2Instance:$DEFAULT'
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"InstanceId": ${InstanceIds}}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;auto stop ec2 instances with tag&lt;/h3&gt;
+&lt;p&gt;stop ec2 instances with StopTime tag&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   AllowTagGetResources:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: !Sub ${KeyWord}_allow_tag_getresources
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: 
+              - tag:GetResources
+            Resource: '*'
+      Roles:
+        - !Ref RoleAutoStop
+
+  StopEC2InstancesWithTag:
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentFormat: YAML
+      DocumentType: Automation
+      Tags: 
+        - Key: Name
+          Value: !Sub ${KeyWord}_StopEC2InstancesWithTag
+      Content:
+        description: StopEC2Instances Using Tags:StopTime
+        schemaVersion: "0.3"
+        assumeRole: "{{ AutomationAssumeRole }}"
+        parameters:
+          StopTime:
+            type: String
+            default: 6pm
+            description: (Required) 6pm,7pm,8pm
+            allowedValues:
+              - 6pm
+              - 7pm
+              - 8pm
+          AutomationAssumeRole:
+            type: String
+            description: (Optional) The ARN of the role that allows Automation to perform the actions on your behalf.
+            default: ""
+        mainSteps:
+          - name: StopEC2Instances
+            action: aws:executeAwsApi
+            inputs:
+              Service: ssm
+              Api: StartAutomationExecution
+              DocumentName: AWS-StopEC2Instance
+              TargetParameterName: "InstanceId"
+              Targets:
+                - Key: tag:StopTime
+                  Values:
+                    - "{{ StopTime }}"
+
+  EvnetRuleAutoStopWithTag:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically with tag
+      Name: !Sub ${KeyWord}-AutoStopInstances-with-tag
+      ScheduleExpression: cron(0 10 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !Sub arn:aws:ssm:ap-northeast-1::automation-definition/${StopEC2InstancesWithTag}:$DEFAULT
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"StopTime": ["7pm"]}'
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220920.html</guid><pubDate>Tue, 20 Sep 2022 00:00:00 GMT</pubDate></item><item><title>acm</title><link>https://mnod.github.io/posts/20220918.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;request certificate&lt;/h3&gt;
 &lt;p&gt;This sample will create certificate in us-east-1 region.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;myregion=us-east-1
 myfqdn=www.example.com
@@ -801,29 +913,4 @@ Resources:
       "ParameterValue": "example.net"
   }
 ]
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item><item><title>CloudWatch Events</title><link>https://mnod.github.io/posts/20201028.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;create and delete rule&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws events list-rules
-$ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
-$ aws events enable-rule --name testrule
-$ aws events disable-rule --name testrule
-$ aws events delete-rule --name testrule
-$ aws events describe-rule --name testrule
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create and remove targets&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ aws events put-targets --rule testrule --targets '{"Input":"{\"interval\":60,\"rss\":\"https://status.aws.amazon.com/rss/ec2-ap-northeast-1.rss\",\"topicarn\":\"arn:aws:sns:ap-northeast-1:xxxxxxxxxxxx:mysnstopic\"}","Id":"1","Arn":"arn:aws:lambda:ap-northeast-1:xxxxxxxxxxxx:function:mylambdafunction"}'
-$ aws events remove-targets --rule testrule --ids 1
-$ aws events list-targets-by-rule --rule testrule
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;CloudFormation stack template sample&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;EventsRuleRssNotify:
-  Type: 'AWS::Events::Rule'
-  Properties:
-    Description: 'rss notification'
-    Name: rssnotifycf
-    ScheduleExpression: 'rate(15 minutes)'
-    State: ENABLED
-    Targets:
-      - Arn: !GetAtt LambdaRssNotification.Arn
-        Id: "1"
-        Input: !Ref INPUTJSON
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20201028.html</guid><pubDate>Wed, 28 Oct 2020 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>

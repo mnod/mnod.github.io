@@ -58,7 +58,45 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200209.html" class="u-url">ecs</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20201028.html" class="u-url">CloudWatch Events</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20201028.html" rel="bookmark">
+            <time class="published dt-published" datetime="2020-10-28T00:00:00Z" itemprop="datePublished" title="2020-10-28 00:00">2020-10-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>create and delete rule</p>
+<pre><code>$ aws events list-rules
+$ aws events put-rule --name testrule --schedule-expression "rate(60 minutes)"  --state DISABLED
+$ aws events enable-rule --name testrule
+$ aws events disable-rule --name testrule
+$ aws events delete-rule --name testrule
+$ aws events describe-rule --name testrule
+</code></pre>
+<p>create and remove targets</p>
+<pre><code>$ aws events put-targets --rule testrule --targets '{"Input":"{\"interval\":60,\"rss\":\"https://status.aws.amazon.com/rss/ec2-ap-northeast-1.rss\",\"topicarn\":\"arn:aws:sns:ap-northeast-1:xxxxxxxxxxxx:mysnstopic\"}","Id":"1","Arn":"arn:aws:lambda:ap-northeast-1:xxxxxxxxxxxx:function:mylambdafunction"}'
+$ aws events remove-targets --rule testrule --ids 1
+$ aws events list-targets-by-rule --rule testrule
+</code></pre>
+<p>CloudFormation stack template sample</p>
+<pre><code>EventsRuleRssNotify:
+  Type: 'AWS::Events::Rule'
+  Properties:
+    Description: 'rss notification'
+    Name: rssnotifycf
+    ScheduleExpression: 'rate(15 minutes)'
+    State: ENABLED
+    Targets:
+      - Arn: !GetAtt LambdaRssNotification.Arn
+        Id: "1"
+        Input: !Ref INPUTJSON
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200209.html" class="u-url">ecs</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

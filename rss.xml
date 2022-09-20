@@ -1,5 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 18 Sep 2022 07:15:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>acm</title><link>https://mnod.github.io/posts/20220918.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;request certificate&lt;/h3&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log</title><link>https://mnod.github.io/</link><description>tech log</description><atom:link href="https://mnod.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 20 Sep 2022 06:45:40 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>SSM Automation</title><link>https://mnod.github.io/posts/20220920.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;auto stop EC2 instances using AWS System Manager and Cloudwath Events&lt;/p&gt;
+&lt;h3&gt;auto stop ec2 instances with instance id&lt;/h3&gt;
+&lt;p&gt;stop specified ec2 instances&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;jq . parameters.json 
+[
+  {
+    "ParameterKey": "KeyWord",
+    "ParameterValue": "SomeKeyword"
+  },
+  {
+    "ParameterKey": "InstanceIds",
+    "ParameterValue": "[¥"i-xxxx¥",¥"i-yyyy¥"]"
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;  RoleAutoStop:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -  Effect: Allow
+             Principal:
+               Service: events.amazonaws.com
+             Action: sts:AssumeRole
+      RoleName: !Sub ${KeyWord}_Role_AutoStop
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_Role_AutoStop
+
+  EvnetRuleAutoStop:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically
+      Name: !Sub ${KeyWord}-AutoStopInstances
+      ScheduleExpression: cron(0 11 * * ? *)
+      #RoleArn: !GetAtt  RoleAutoStop.Arn
+      State: ENABLED
+      Targets:
+        - Arn: 'arn:aws:ssm:ap-northeast-1::automation-definition/AWS-StopEC2Instance:$DEFAULT'
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"InstanceId": ${InstanceIds}}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;auto stop ec2 instances with tag&lt;/h3&gt;
+&lt;p&gt;stop ec2 instances with StopTime tag&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   AllowTagGetResources:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: !Sub ${KeyWord}_allow_tag_getresources
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: 
+              - tag:GetResources
+            Resource: '*'
+      Roles:
+        - !Ref RoleAutoStop
+
+  StopEC2InstancesWithTag:
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentFormat: YAML
+      DocumentType: Automation
+      Tags: 
+        - Key: Name
+          Value: !Sub ${KeyWord}_StopEC2InstancesWithTag
+      Content:
+        description: StopEC2Instances Using Tags:StopTime
+        schemaVersion: "0.3"
+        assumeRole: "{{ AutomationAssumeRole }}"
+        parameters:
+          StopTime:
+            type: String
+            default: 6pm
+            description: (Required) 6pm,7pm,8pm
+            allowedValues:
+              - 6pm
+              - 7pm
+              - 8pm
+          AutomationAssumeRole:
+            type: String
+            description: (Optional) The ARN of the role that allows Automation to perform the actions on your behalf.
+            default: ""
+        mainSteps:
+          - name: StopEC2Instances
+            action: aws:executeAwsApi
+            inputs:
+              Service: ssm
+              Api: StartAutomationExecution
+              DocumentName: AWS-StopEC2Instance
+              TargetParameterName: "InstanceId"
+              Targets:
+                - Key: tag:StopTime
+                  Values:
+                    - "{{ StopTime }}"
+
+  EvnetRuleAutoStopWithTag:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event rule to stop instances automatically with tag
+      Name: !Sub ${KeyWord}-AutoStopInstances-with-tag
+      ScheduleExpression: cron(0 10 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !Sub arn:aws:ssm:ap-northeast-1::automation-definition/${StopEC2InstancesWithTag}:$DEFAULT
+          Id: StopEc2
+          RoleArn: !GetAtt RoleAutoStop.Arn
+          Input: !Sub '{"StopTime": ["7pm"]}'
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220920.html</guid><pubDate>Tue, 20 Sep 2022 00:00:00 GMT</pubDate></item><item><title>acm</title><link>https://mnod.github.io/posts/20220918.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;request certificate&lt;/h3&gt;
 &lt;p&gt;This sample will create certificate in us-east-1 region.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;myregion=us-east-1
 myfqdn=www.example.com
@@ -589,161 +701,4 @@ $ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Though I successed it on 32bit Raspberry pi OS (bullseye, 3B+)
 It needs NAPT settings to your pi to make a connection from outside wireguard peer.&lt;/p&gt;
-&lt;p&gt;I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)&lt;/p&gt;</description><category>failed</category><category>linux</category><category>raspberrypi</category><category>vpn</category><guid>https://mnod.github.io/posts/20220614.html</guid><pubDate>Tue, 14 Jun 2022 00:00:00 GMT</pubDate></item><item><title>WebARENA Indigo API</title><link>https://mnod.github.io/posts/20220521.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;&lt;a href="https://web.arena.ne.jp/indigo/"&gt;WebARENA Indigo&lt;/a&gt; is one of the cheapest VPS services in Japan.
-It can be controlled via &lt;a href="https://indigo.arena.ne.jp/userapi/"&gt;Rest-API&lt;/a&gt; for some functions.&lt;/p&gt;
-&lt;h3&gt;create API key and API secret key&lt;/h3&gt;
-&lt;p&gt;Before you use the Rest-API, you have to access controle panel and create API key and API secret key.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;access &lt;a href="https://indigo.arena.ne.jp/"&gt;Indigo ダッシュボード&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;click API鍵の管理 on the left side menu then select API鍵&lt;/li&gt;
-&lt;li&gt;click API鍵の作成 on the top of right side&lt;/li&gt;
-&lt;li&gt;write down API鍵 and API秘密鍵 &lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;If you'd like to do so, set them as environment variable&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END &amp;gt; ~/.webarena_secret
-&amp;gt; export IndigoApiKey=xxxx
-&amp;gt; export IndigoApiPrivateKey=xxxx
-&amp;gt; END
-$ chmod 600 ~/.webarena_secret
-$ cat &amp;lt;&amp;lt; END &amp;gt;&amp;gt; ~/.bashrc
-&amp;gt; if [ -f ~/.webarena_secret ]; then
-&amp;gt;   . ~/.webarena_secret
-&amp;gt; fi
-&amp;gt; END
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;create API token&lt;/h3&gt;
-&lt;p&gt;After create API key and API secret key, you can create API token.
-You need this API token to call other Rest-APIs.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;IndigoToken=$(curl -s -X POST \
-  https://api.customer.jp/oauth/v1/accesstokens\
-  -H 'Content-Type: application/json' \
-  -d '{
-    "grantType": "client_credentials",
-    "clientId": "'${IndigoApiKey}'",
-    "clientSecret": "'${IndigoApiPrivateKey}'",
-    "code": ""
-}' | jq -r .accessToken)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The output of this API includes &lt;em&gt;"expiresIn": "3599"&lt;/em&gt;.
-I have not confirmed but it would expire in about 3600 seconds.&lt;/p&gt;
-&lt;h3&gt;register ssh key&lt;/h3&gt;
-&lt;p&gt;ssh key will be installed in ~/.ssh/authorized_keys of login user when the instance will be created.
-You can register your own ssh public key instead of create it.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-   "sshName": "testkey",
-   "sshKey": "ssh-rsa xxxx"
-}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When I tested to upload "ed25519" public key but I got error message like below.
-It seems they don't allow ed25519 keys.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{"success":false,"errorMessage":"Invalid SSH key.","errorCode":"I10034"}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;retrieve information to create instance&lt;/h3&gt;
-&lt;p&gt;list ssh keys&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/sshkey \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list regions&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;instanceTypeId=$(curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/instancetypes \
-  -H "Authorization: Bearer ${IndigoToken}" | jq '.instanceTypes[] | select(.name == "instance") | .id')
-curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/getregion?instanceTypeId=${instanceTypeId} \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list os&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/oslist?instanceTypeId=${instanceTypeId} \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list instance plans&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  'https://api.customer.jp/webarenaIndigo/v1/vm/getinstancespec?instanceTypeId='${instanceTypeId}'&amp;amp;osId=xx' \
-  -H "Authorization: Bearer ${IndigoToken}" | jq .
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;create instance&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/createinstance \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-  "sshKeyId": xxxx,
-  "regionId": x,
-  "osId": xx,
-  "instancePlan": x,
-  "instanceName": "xxxx"
-}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;list instances&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/vm/getinstancelist \
-  -H "Authorization: Bearer ${IndigoToken}"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When you create an instance, "instancestatus" will be "OS installation In Progress".
-After a while it will become "Stopped". It is a time to start your instance.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/vm/instance/statusupdate \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{"instanceId":"xxxx","status":"start"}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;After you start your instance, "instancestatus" will become "Running"&lt;/p&gt;
-&lt;h3&gt;firewall&lt;/h3&gt;
-&lt;p&gt;The rule is a allow list.
-When you create a firewall rule and apply it to your instance, others will be denied.&lt;/p&gt;
-&lt;p&gt;create firewall rule&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X POST \
-  https://api.customer.jp/webarenaIndigo/v1/nw/createfirewall \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-    "name":"xxxx",
-    "inbound":[
-        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
-    ],
-    "instances":["xxxx"]
-}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Above rule only allow ssh connection from x.x.x.x. All other inbound connection will be denied.
-Since there are no outbound rules, all outbound connection will be allowed&lt;/p&gt;
-&lt;p&gt;list firewall&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/nw/getfirewalllist \
-  -H "Authorization: Bearer ${IndigoToken}"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;describe a firewall rule&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X GET \
-  https://api.customer.jp/webarenaIndigo/v1/nw/gettemplate/xxxx \
-  -H "Authorization: Bearer ${IndigoToken}"
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;update firewall&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;curl -s -X PUT \
-  https://api.customer.jp/webarenaIndigo/v1/nw/updatefirewall \
-  -H "Authorization: Bearer ${IndigoToken}" \
-  -d '{
-    "templateid":"xxxx",
-    "name":"xxxx",
-    "inbound":[
-        {"type":"Custom","protocol":"UDP","port":"123","source":"0.0.0.0"},
-        {"type":"Custom","protocol":"TCP","port":"22","source":"x.x.x.x"}
-    ],
-    "instances":["xxxx"]
-}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;snapshot&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;stop instance&lt;/li&gt;
-&lt;li&gt;create/restore snapshot&lt;/li&gt;
-&lt;li&gt;start instance&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;When start instance after restore from snapshot, the boot process may stack at GRUB.
-You can confirm the situation at QEMU console.&lt;/p&gt;
-&lt;p&gt;How to access the console:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;access &lt;a href="https://indigo.arena.ne.jp/"&gt;Indigo ダッシュボード&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;click instance management on the left side menu then select instance.&lt;/li&gt;
-&lt;li&gt;click select on the right side of the target instance and select access.&lt;/li&gt;
-&lt;li&gt;click "start console"&lt;/li&gt;
-&lt;li&gt;If it has stacked at GRUB, click force stop of the left side. After stop, start it again.&lt;/li&gt;
-&lt;/ol&gt;</description><category>hosting</category><guid>https://mnod.github.io/posts/20220521.html</guid><pubDate>Sat, 21 May 2022 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;p&gt;I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)&lt;/p&gt;</description><category>failed</category><category>linux</category><category>raspberrypi</category><category>vpn</category><guid>https://mnod.github.io/posts/20220614.html</guid><pubDate>Tue, 14 Jun 2022 00:00:00 GMT</pubDate></item></channel></rss>
