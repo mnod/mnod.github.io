@@ -255,7 +255,7 @@ domain=&lt;your domain&gt;
 </code></pre>
 <p>write fstab entry and test it</p>
 <pre><code>$ sudo grep /mnt /etc/fstab
-//10.0.0.126/share      /mnt    cifs    vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred        0 0      
+//10.0.0.xxx/share      /mnt    cifs    vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred        0 0      
 </code></pre>
 <pre><code>$ sudo mount /mountpoint
 $ df /mountpoint
