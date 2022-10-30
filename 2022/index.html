@@ -57,7 +57,223 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220920.html" class="u-url">SSM Automation</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221030.html" class="u-url">FSx for Windows</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20221030.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-10-30T00:00:00Z" itemprop="datePublished" title="2022-10-30 00:00">2022-10-30 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>cloudformation template <code>microsoftad.yml</code> for AWS managed AD</p>
+<pre><code>AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  KeyWord:
+    Type: String
+  DirectoryName:
+    Type: String
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  VPC:
+    Type: AWS::EC2::VPC::Id
+
+Resources:
+  MicrosoftAD: 
+    Type: AWS::DirectoryService::MicrosoftAD
+    Properties: 
+      Name: !Ref DirectoryName
+      Edition: Standard
+      Password: '{{resolve:ssm-secure:test-directory-password:1}}'
+      VpcSettings: 
+        SubnetIds: 
+          - !Ref Subnet1
+          - !Ref Subnet2
+        VpcId: !Ref VPC
+
+Outputs:
+  MicrosoftAD:
+    Value: !Ref MicrosoftAD
+  MicrosoftADDns:
+    Value: !Join
+      - ','
+      - !GetAtt MicrosoftAD.DnsIpAddresses
+</code></pre>
+<p>cloudformation template <code>fsx.yml</code> for FSx for Windows</p>
+<pre><code>AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  KeyWord:
+    Type: String
+  MicrosoftAD:
+    Type: String
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  SecurityGroupWeb:
+    Type: AWS::EC2::SecurityGroup::Id
+
+Resources:
+  SecurityGroupFSx:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupName: !Sub ${KeyWord}_SecurityGroupFSx
+      GroupDescription: 'FSx for windows securitygroup'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 445
+          ToPort: 445
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+        - IpProtocol: tcp
+          FromPort: 5985
+          ToPort: 5985
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_SecurityGroupFSx
+
+  FSxForWindows:
+    Type: 'AWS::FSx::FileSystem'
+    Properties:
+      FileSystemType: WINDOWS
+      StorageCapacity: 32
+      StorageType: SSD
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+      SecurityGroupIds:
+        - !Ref SecurityGroupFSx
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_FSx_for_windows
+      WindowsConfiguration:
+        ActiveDirectoryId: !Ref MicrosoftAD
+        DeploymentType: MULTI_AZ_1
+        PreferredSubnetId: !Ref Subnet1
+        ThroughputCapacity: 8
+
+Outputs:
+  FSxForWindows:
+    Value: !Ref FSxForWindows
+  SecurityGroupFSx:
+    Value: !Ref SecurityGroupFSx
+  FSxForWindowsDNSName:
+    Value: !GetAtt FSxForWindows.DNSName
+</code></pre>
+<p>cloudformation parent template <code>parent_fsx.yml</code></p>
+<pre><code>AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  KeyWord:
+    Default: nestedstacktest
+    Type: String
+  DirectoryName:
+    Default: mydirectory.example.com
+    Type: String
+
+Resources:
+  MicrosoftAD:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: microsoftad.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        VPC: !ImportValue mystack-Vpc
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        DirectoryName: !Ref DirectoryName
+
+  FSx:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: fsx.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        VPC: !ImportValue mystack-Vpc
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        SecurityGroupWeb: !ImportValue mystack-SecurityGroupPub
+        MicrosoftAD: !GetAtt MicrosoftAD.Outputs.MicrosoftAD
+
+Outputs:
+  MicrosoftAD:
+    Value: !GetAtt MicrosoftAD.Outputs.MicrosoftAD
+  MicrosoftADDns:
+    Value: !GetAtt MicrosoftAD.Outputs.MicrosoftADDns
+  SecurityGroupFSx:
+    Value: !GetAtt FSx.Outputs.SecurityGroupFSx
+  FSxForWindows:
+    Value: !GetAtt FSx.Outputs.FSxForWindows
+  FSxForWindowsDNSName:
+    Value: !GetAtt FSx.Outputs.FSxForWindowsDNSName
+</code></pre>
+<p>Makefile</p>
+<pre><code>template_file=parent_fsx.yml
+package_file=parent_fsx_packaged.yml
+stack_name=testfsx
+bucket_name=mybucketname
+
+validate:
+    aws cloudformation validate-template --template-body file://microsoftad.yml
+    aws cloudformation validate-template --template-body file://fsx.yml
+    aws cloudformation validate-template --template-body file://parent_fsx.yml
+
+$(package_file):
+    aws cloudformation package --template-file $(template_file) --s3-bucket $(bucket_name) --output-template-file $(package_file)
+
+package: $(package_file)
+
+build: $(package_file)
+    aws cloudformation deploy --template-file $(package_file) --stack-name $(stack_name) --tags Name=testnestedstack --capabilities CAPABILITY_IAM
+
+events:
+    aws cloudformation describe-stack-events --stack-name $(stack_name)
+
+describe:
+    aws cloudformation describe-stacks --stack-name $(stack_name)
+
+delete:
+    aws cloudformation delete-stack --stack-name $(stack_name)
+
+clean:
+    rm $(package_file)
+</code></pre>
+<h3>mount FSx for Windows on ubuntu server</h3>
+<p>we can check address for mount point ip address</p>
+<pre><code>$ dig &lt;access point dns name&gt; +short @&lt;dns of your directory&gt;
+</code></pre>
+<p>check whether you can mount your file system</p>
+<pre><code>$ sudo apt update &amp;&amp; sudo apt install -y cifs-utils
+$ sudo mount -t cifs -o vers=3.0,sec=ntlmsspi,user=&lt;your username&gt;@&lt;your domain&gt; //10.0.0.xxx/share /mountpoint
+</code></pre>
+<p>create credential file and test it</p>
+<pre><code>$ sudo chmod 600 /root/smb.cred
+$ sudo cat /root/smb.cred
+username=&lt;your username&gt;
+password=&lt;your password&gt;
+domain=&lt;your domain&gt;
+</code></pre>
+<pre><code>sudo mount -t cifs -o vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred //10.0.0.xxx/share /mountpoint
+</code></pre>
+<p>write fstab entry and test it</p>
+<pre><code>$ sudo grep /mnt /etc/fstab
+//10.0.0.126/share      /mnt    cifs    vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred        0 0      
+</code></pre>
+<pre><code>$ sudo mount /mountpoint
+$ df /mountpoint
+$ sudo umount /mountpoint
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220920.html" class="u-url">SSM Automation</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -843,47 +1059,6 @@ server nts.ntp.se        iburst nts
 ntstrustedcerts /etc/chrony/cacert.crt
 </code></pre>
 <p>When you use selfsigned CA to make your certificate in the nts server, you have to show your own ca certificate file to chrony.conf in ntstrustedcerts.</p>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220614.html" class="u-url">wireguard on raspberryrpi</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20220614.html" rel="bookmark">
-            <time class="published dt-published" datetime="2022-06-14T00:00:00Z" itemprop="datePublished" title="2022-06-14 00:00">2022-06-14 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p>I tried to install wireguard with <a href="https://docs.pivpn.io/install/">pivpn</a> on 64bit Raspberry pi OS (buster, 4B), but it failed</p>
-<pre><code>$ cat &lt;&lt; END &gt; /tmp/pivpn_options.conf                                                                                                                                           
-IPv4dev=xx
-install_user=pi
-VPN=wireguard
-pivpnNET=10.x.x.0
-subnetClass=24
-ALLOWED_IPS="10.x.x.0/24, 192.168.y.0/24"
-pivpnMTU=1420
-pivpnPORT=51820
-pivpnDNS1=1.1.1.1
-pivpnHOST=myname.example.com
-pivpnPERSISTENTKEEPALIVE=25
-UNATTUPG=1
-END
-
-$ curl -L https://install.pivpn.io &gt; /tmp/pivpn_install.sh
-$ chmod +x /tmp/pivpn_install.sh
-$ /tmp/pivpn_install.sh --noipv6 --unattended /tmp/pivpn_options.conf                                                                                                     
-
-
-:: wireguard is not a supported VPN protocol on arm64 Debian, only 'openvpn' is
-</code></pre>
-<p>I was not able to select wireguard in intereractive interface. It select openvpn automatically.</p>
-<pre><code>$ /tmp/pivpn_install.sh --noipv6
-</code></pre>
-<p>Though I successed it on 32bit Raspberry pi OS (bullseye, 3B+)
-It needs NAPT settings to your pi to make a connection from outside wireguard peer.</p>
-<p>I'd like to try it on bookwarm 32bit/64bit when it will be released on the next version of the pi :)</p>
     </div>
     </article>
 </div>

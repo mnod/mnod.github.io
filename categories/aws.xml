@@ -1,5 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Tue, 20 Sep 2022 06:45:40 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>SSM Automation</title><link>https://mnod.github.io/posts/20220920.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;auto stop EC2 instances using AWS System Manager and Cloudwath Events&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 30 Oct 2022 09:54:47 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>FSx for Windows</title><link>https://mnod.github.io/posts/20221030.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;cloudformation template &lt;code&gt;microsoftad.yml&lt;/code&gt; for AWS managed AD&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  KeyWord:
+    Type: String
+  DirectoryName:
+    Type: String
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  VPC:
+    Type: AWS::EC2::VPC::Id
+
+Resources:
+  MicrosoftAD: 
+    Type: AWS::DirectoryService::MicrosoftAD
+    Properties: 
+      Name: !Ref DirectoryName
+      Edition: Standard
+      Password: '{{resolve:ssm-secure:test-directory-password:1}}'
+      VpcSettings: 
+        SubnetIds: 
+          - !Ref Subnet1
+          - !Ref Subnet2
+        VpcId: !Ref VPC
+
+Outputs:
+  MicrosoftAD:
+    Value: !Ref MicrosoftAD
+  MicrosoftADDns:
+    Value: !Join
+      - ','
+      - !GetAtt MicrosoftAD.DnsIpAddresses
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cloudformation template &lt;code&gt;fsx.yml&lt;/code&gt; for FSx for Windows&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  KeyWord:
+    Type: String
+  MicrosoftAD:
+    Type: String
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  Subnet1:
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+  SecurityGroupWeb:
+    Type: AWS::EC2::SecurityGroup::Id
+
+Resources:
+  SecurityGroupFSx:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupName: !Sub ${KeyWord}_SecurityGroupFSx
+      GroupDescription: 'FSx for windows securitygroup'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 445
+          ToPort: 445
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+        - IpProtocol: tcp
+          FromPort: 5985
+          ToPort: 5985
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_SecurityGroupFSx
+
+  FSxForWindows:
+    Type: 'AWS::FSx::FileSystem'
+    Properties:
+      FileSystemType: WINDOWS
+      StorageCapacity: 32
+      StorageType: SSD
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+      SecurityGroupIds:
+        - !Ref SecurityGroupFSx
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_FSx_for_windows
+      WindowsConfiguration:
+        ActiveDirectoryId: !Ref MicrosoftAD
+        DeploymentType: MULTI_AZ_1
+        PreferredSubnetId: !Ref Subnet1
+        ThroughputCapacity: 8
+
+Outputs:
+  FSxForWindows:
+    Value: !Ref FSxForWindows
+  SecurityGroupFSx:
+    Value: !Ref SecurityGroupFSx
+  FSxForWindowsDNSName:
+    Value: !GetAtt FSxForWindows.DNSName
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cloudformation parent template &lt;code&gt;parent_fsx.yml&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  KeyWord:
+    Default: nestedstacktest
+    Type: String
+  DirectoryName:
+    Default: mydirectory.example.com
+    Type: String
+
+Resources:
+  MicrosoftAD:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: microsoftad.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        VPC: !ImportValue mystack-Vpc
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        DirectoryName: !Ref DirectoryName
+
+  FSx:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: fsx.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        VPC: !ImportValue mystack-Vpc
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        SecurityGroupWeb: !ImportValue mystack-SecurityGroupPub
+        MicrosoftAD: !GetAtt MicrosoftAD.Outputs.MicrosoftAD
+
+Outputs:
+  MicrosoftAD:
+    Value: !GetAtt MicrosoftAD.Outputs.MicrosoftAD
+  MicrosoftADDns:
+    Value: !GetAtt MicrosoftAD.Outputs.MicrosoftADDns
+  SecurityGroupFSx:
+    Value: !GetAtt FSx.Outputs.SecurityGroupFSx
+  FSxForWindows:
+    Value: !GetAtt FSx.Outputs.FSxForWindows
+  FSxForWindowsDNSName:
+    Value: !GetAtt FSx.Outputs.FSxForWindowsDNSName
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Makefile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;template_file=parent_fsx.yml
+package_file=parent_fsx_packaged.yml
+stack_name=testfsx
+bucket_name=mybucketname
+
+validate:
+    aws cloudformation validate-template --template-body file://microsoftad.yml
+    aws cloudformation validate-template --template-body file://fsx.yml
+    aws cloudformation validate-template --template-body file://parent_fsx.yml
+
+$(package_file):
+    aws cloudformation package --template-file $(template_file) --s3-bucket $(bucket_name) --output-template-file $(package_file)
+
+package: $(package_file)
+
+build: $(package_file)
+    aws cloudformation deploy --template-file $(package_file) --stack-name $(stack_name) --tags Name=testnestedstack --capabilities CAPABILITY_IAM
+
+events:
+    aws cloudformation describe-stack-events --stack-name $(stack_name)
+
+describe:
+    aws cloudformation describe-stacks --stack-name $(stack_name)
+
+delete:
+    aws cloudformation delete-stack --stack-name $(stack_name)
+
+clean:
+    rm $(package_file)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;mount FSx for Windows on ubuntu server&lt;/h3&gt;
+&lt;p&gt;we can check address for mount point ip address&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ dig &amp;lt;access point dns name&amp;gt; +short @&amp;lt;dns of your directory&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;check whether you can mount your file system&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt update &amp;amp;&amp;amp; sudo apt install -y cifs-utils
+$ sudo mount -t cifs -o vers=3.0,sec=ntlmsspi,user=&amp;lt;your username&amp;gt;@&amp;lt;your domain&amp;gt; //10.0.0.xxx/share /mountpoint
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;create credential file and test it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo chmod 600 /root/smb.cred
+$ sudo cat /root/smb.cred
+username=&amp;lt;your username&amp;gt;
+password=&amp;lt;your password&amp;gt;
+domain=&amp;lt;your domain&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;sudo mount -t cifs -o vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred //10.0.0.xxx/share /mountpoint
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;write fstab entry and test it&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo grep /mnt /etc/fstab
+//10.0.0.126/share      /mnt    cifs    vers=3.0,sec=ntlmsspi,credentials=/root/smb.cred        0 0      
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mount /mountpoint
+$ df /mountpoint
+$ sudo umount /mountpoint
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20221030.html</guid><pubDate>Sun, 30 Oct 2022 00:00:00 GMT</pubDate></item><item><title>SSM Automation</title><link>https://mnod.github.io/posts/20220920.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;auto stop EC2 instances using AWS System Manager and Cloudwath Events&lt;/p&gt;
 &lt;h3&gt;auto stop ec2 instances with instance id&lt;/h3&gt;
 &lt;p&gt;stop specified ec2 instances&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;jq . parameters.json 
@@ -768,149 +971,4 @@ for template in templates['TemplatesMetadata']:
     )
     print(response['Template'])
 
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item><item><title>route53</title><link>https://mnod.github.io/posts/20210422.html</link><dc:creator>mnod</dc:creator><description>&lt;h3&gt;aws command&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;aws route53 list-hosted-zones
-aws route53 get-hosted-zone --id /hostedzone/xxxxxxxxxxxxxxxxxxxxx
-
-aws route53 list-resource-record-sets   --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --query "ResourceRecordSets[?Name == 'example.example.net.']"
-aws route53 test-dns-answer --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --record-name "example.example.net" --record-type "A"
-
-aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://create.json
-aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
-aws route53 change-resource-record-sets  --hosted-zone-id /hostedzone/xxxxxxxxxxxxxxxxxxxxx --change-batch file://delete.json
-aws route53 get-change --id /change/xxxxxxxxxxxxxxxxxxxx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;create.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-  "Changes": [
-    {
-      "Action": "CREATE",
-      "ResourceRecordSet": {
-        "Name": "example.example.net",
-        "Type": "A",
-        "TTL": 3600,
-        "ResourceRecords": [
-          {
-            "Value": "xxx.xxx.xxx.xxx"
-          }
-        ]
-      }
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;delete.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-  "Changes": [
-    {
-      "Action": "DELETE",
-      "ResourceRecordSet": {
-        "Name": "example.example.net",
-        "Type": "A",
-        "TTL": 3600,
-        "ResourceRecords": [
-          {
-            "Value": "xxx.xxx.xxx.xxx"
-          }
-        ]
-      }
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;python sample script&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;#! /usr/bin/python2
-import boto3
-import time
-
-client = boto3.client('route53')
-zones = client.list_hosted_zones()
-
-for zone in zones['HostedZones']:
-    id =zone['Id']
-    name = zone['Name']
-    #print(client.get_hosted_zone(Id=id).get('HostedZone'))
-    for set in client.list_resource_record_sets(HostedZoneId=id).get('ResourceRecordSets'):
-        print(set)
-    #action = 'CREATE'
-    action = 'DELETE'
-    address = 'xxx.xxx.xxx.xxx'
-
-    batch = {
-        'Changes': [
-            {
-                'Action': action,
-                'ResourceRecordSet': {
-                    'Name': 'example.%s' % name,
-                    'Type': 'A',
-                    'TTL': 3600,
-                    'ResourceRecords': [
-                        {
-                            "Value": address
-                        },
-                    ],
-                }
-            },
-        ]
-    }
-    response = client.change_resource_record_sets(
-        HostedZoneId=id,
-        ChangeBatch=batch
-    )
-    print(response)
-    responseid = response['ChangeInfo']['Id']
-    status = response['ChangeInfo']['Status']
-    while ( status != 'INSYNC'):
-        response = client.get_change(Id=responseid)
-        status = response['ChangeInfo']['Status']
-        time.sleep(30)
-    else:
-        print(response)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;cloud formation sample stack&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;aws cloudformation validate-template --template-body file://route53.yml
-aws cloudformation create-stack --template-body file://route53.yml --parameters file://parameters.json --stack-name route53test
-aws cloudformation describe-stack-events --stack-name route53test
-aws cloudformation list-stack-resources --stack-name route53test
-aws cloudformation delete-stack --stack-name route53test
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;route53.yml&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Parameters:
-  HostedZoneId:
-    Type: String
-  Domain:
-    Type: String
-  Address:
-    Type: String
-Resources:
-  myDNSRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId : 
-         Ref: HostedZoneId
-      Name:  
-        Fn::Join: 
-            - '.'
-            - - 'example'
-              - !Ref Domain
-      ResourceRecords:
-      - Ref: Address
-      TTL: '3600'
-      Type: A
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;parameters.json&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[
-  {
-      "ParameterKey": "Address",
-      "ParameterValue": "xxx.xxx.xxx.xxx"
-  },
-  {
-      "ParameterKey": "HostedZoneId",
-      "ParameterValue": "xxxxxxxxxxxxxxxxxxxxx"
-  },
-  {
-      "ParameterKey": "Domain",
-      "ParameterValue": "example.net"
-  }
-]
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210422.html</guid><pubDate>Thu, 22 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20210428.html</guid><pubDate>Wed, 28 Apr 2021 00:00:00 GMT</pubDate></item></channel></rss>
