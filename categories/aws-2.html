@@ -58,7 +58,146 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210422.html" class="u-url">route53</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210428.html" class="u-url">ses</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20210428.html" rel="bookmark">
+            <time class="published dt-published" datetime="2021-04-28T00:00:00Z" itemprop="datePublished" title="2021-04-28 00:00">2021-04-28 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>aws command</h3>
+<pre><code>aws ses list-identities
+</code></pre>
+<p>destination.json </p>
+<pre><code>{
+  "ToAddresses": [
+    "test@example.com"
+  ],
+  "CcAddresses": [],
+  "BccAddresses": []
+}
+</code></pre>
+<p>message.json </p>
+<pre><code>{
+  "Subject": {
+    "Data": "test mail",
+    "Charset": "UTF-8"
+  },
+  "Body": {
+    "Text": {
+      "Data": "Hi.\n\nThis is a test mail.",
+      "Charset": "UTF-8"
+    }
+  }
+}
+</code></pre>
+<pre><code>aws ses send-email --from noreply@example.net --destination file://destination.json --message file://message.json
+</code></pre>
+<p>template.json </p>
+<pre><code>{
+  "TemplateName": "testtemplate",
+  "SubjectPart": "Greetings, {{name}}!",
+  "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+}
+</code></pre>
+<pre><code>aws ses list-templates
+aws ses create-template --template file://template.json
+aws ses get-template --template testtemplate
+</code></pre>
+<p>template-parameters.json </p>
+<pre><code>{
+  "name": "john",
+  "favoriteanimal": "cat"
+}
+</code></pre>
+<pre><code>aws ses test-render-template --template-name testtemplate --template-data file://template-data.json
+aws ses send-templated-email --source noreply@example.net --destination file://destination.json --template testtemplate --template-data file://template-data.json
+aws ses delete-template --template-name testtemplate
+</code></pre>
+<h3>python test script</h3>
+<pre><code>#!/bin/usr/python
+
+import boto3
+import json
+
+fromaddr = 'noreply@example.net'
+destaddr = 'test@example.com'
+destination = {
+    'ToAddresses': [
+        destaddr,
+    ]
+}
+
+client = boto3.client('ses')
+
+## send email
+response = client.send_email(
+    Source = fromaddr,
+    Destination = destination,
+    Message={
+        'Subject': {
+            'Data': 'test mail',
+            'Charset': 'UTF-8'
+        },
+        'Body': {
+            'Text': {
+                'Data': 'Hi.\n\nThis is a test mail',
+                'Charset': 'UTF-8'
+            },
+        }
+    }
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+## create template
+response = client.create_template(
+    Template={
+        "TemplateName": "testtemplate",
+        "SubjectPart": "Greetings, {{name}}!",
+        "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
+    }
+)
+templatedata = {
+    "name": "john",
+    "favoriteanimal": "cat"
+}
+
+## send templated email
+response = client.send_templated_email(
+    Source=fromaddr,
+    Destination=destination,
+    Template='testtemplate',
+    TemplateData=json.dumps(templatedata)
+)
+print(response)
+
+## delete template
+response = client.delete_template(
+    TemplateName='testtemplate'
+)
+print(response)
+
+templates = client.list_templates()
+for template in templates['TemplatesMetadata']:
+    response = client.get_template(
+        TemplateName=template['Name']
+    )
+    print(response['Template'])
+
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210422.html" class="u-url">route53</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod

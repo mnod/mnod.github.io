@@ -57,7 +57,72 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221030.html" class="u-url">FSx for Windows</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221113.html" class="u-url">EC2 spot instance</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20221113.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-11-13T00:00:00Z" itemprop="datePublished" title="2022-11-13 00:00">2022-11-13 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>sample launch template
+In some instance type and OS, we are able to stop or hybernate the EC2 spot instances, and restart or resume them when we want to do so.
+While stop or hybernate the instances, we must pay for EBS and Elastic IP etc...</p>
+<pre><code>  MyLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: spot-instance-template
+      LaunchTemplateData:
+        InstanceType: "t3.nano"
+        CreditSpecification:
+          CpuCredits: "standard"
+        InstanceInitiatedShutdownBehavior: stop
+        KeyName: "mykeyname"
+        NetworkInterfaces:
+          - DeviceIndex: "0"
+            AssociatePublicIpAddress: "true"
+            Groups:
+              - Ref: mysecuritygroup
+            SubnetId:
+              Ref: mysubnet
+        InstanceMarketOptions:
+          MarketType: spot
+          SpotOptions:
+            InstanceInterruptionBehavior: stop
+            SpotInstanceType: persistent
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              DeleteOnTermination: true
+              VolumeType: gp3
+              VolumeSize: 8
+</code></pre>
+<p>after create or update the stack, confirm the launch template you've just created</p>
+<pre><code>aws ec2 describe-launch-templates
+aws ec2 describe-launch-template-versions --launch-template-id lt-xxxx --versions x
+</code></pre>
+<p>create spot instance with the launch template.
+this example override image id, instance type.</p>
+<pre><code>$ aws ec2 run-instances --image-id ami-xxxx --instance-type t2.medium --launch-template 'LaunchTemplateId=lt-xxxx,Version=x' --dry-run
+$ aws ec2 run-instances --image-id ami-xxxx --instance-type t2.medium --launch-template 'LaunchTemplateId=lt-xxxx,Version=x'
+</code></pre>
+<p>confirm spot instance</p>
+<pre><code>$ aws ec2 describe-spot-instance-requests --query 'SpotInstanceRequests[].{"SpotInstanceRequestId":SpotInstanceRequestId, "InstanceId":InstanceId, "Status":Status, "State":State}'  
+4 aws ec2 describe-instances --filter 'Name=spot-instance-request-id,Values=sir-xxxx' --query 'Reservations[].Instances[].{"State":State, "InstanceId":InstanceId}'
+</code></pre>
+<p>temporary stop instance and restart it</p>
+<pre><code>$ aws ec2 stop-instances --instance-id i-xxxx
+$ aws ec2 start-instances --instance-id i-xxxx
+</code></pre>
+<p>cancel spot instance request and terminate spot instance</p>
+<pre><code>$ aws ec2 cancel-spot-instance-requests --spot-instance-request-ids sir-xxxx
+$ aws ec2 terminate-instances --instance-id i-xxxx
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221030.html" class="u-url">FSx for Windows</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -1016,145 +1081,6 @@ CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTB
 <li>Once you get your new certificate, you have to update your certificate periodically.</li>
 </ul>
 </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20210428.html" class="u-url">ses</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20210428.html" rel="bookmark">
-            <time class="published dt-published" datetime="2021-04-28T00:00:00Z" itemprop="datePublished" title="2021-04-28 00:00">2021-04-28 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <h3>aws command</h3>
-<pre><code>aws ses list-identities
-</code></pre>
-<p>destination.json </p>
-<pre><code>{
-  "ToAddresses": [
-    "test@example.com"
-  ],
-  "CcAddresses": [],
-  "BccAddresses": []
-}
-</code></pre>
-<p>message.json </p>
-<pre><code>{
-  "Subject": {
-    "Data": "test mail",
-    "Charset": "UTF-8"
-  },
-  "Body": {
-    "Text": {
-      "Data": "Hi.\n\nThis is a test mail.",
-      "Charset": "UTF-8"
-    }
-  }
-}
-</code></pre>
-<pre><code>aws ses send-email --from noreply@example.net --destination file://destination.json --message file://message.json
-</code></pre>
-<p>template.json </p>
-<pre><code>{
-  "TemplateName": "testtemplate",
-  "SubjectPart": "Greetings, {{name}}!",
-  "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
-}
-</code></pre>
-<pre><code>aws ses list-templates
-aws ses create-template --template file://template.json
-aws ses get-template --template testtemplate
-</code></pre>
-<p>template-parameters.json </p>
-<pre><code>{
-  "name": "john",
-  "favoriteanimal": "cat"
-}
-</code></pre>
-<pre><code>aws ses test-render-template --template-name testtemplate --template-data file://template-data.json
-aws ses send-templated-email --source noreply@example.net --destination file://destination.json --template testtemplate --template-data file://template-data.json
-aws ses delete-template --template-name testtemplate
-</code></pre>
-<h3>python test script</h3>
-<pre><code>#!/bin/usr/python
-
-import boto3
-import json
-
-fromaddr = 'noreply@example.net'
-destaddr = 'test@example.com'
-destination = {
-    'ToAddresses': [
-        destaddr,
-    ]
-}
-
-client = boto3.client('ses')
-
-## send email
-response = client.send_email(
-    Source = fromaddr,
-    Destination = destination,
-    Message={
-        'Subject': {
-            'Data': 'test mail',
-            'Charset': 'UTF-8'
-        },
-        'Body': {
-            'Text': {
-                'Data': 'Hi.\n\nThis is a test mail',
-                'Charset': 'UTF-8'
-            },
-        }
-    }
-)
-print(response)
-
-templates = client.list_templates()
-for template in templates['TemplatesMetadata']:
-    response = client.get_template(
-        TemplateName=template['Name']
-    )
-    print(response['Template'])
-
-## create template
-response = client.create_template(
-    Template={
-        "TemplateName": "testtemplate",
-        "SubjectPart": "Greetings, {{name}}!",
-        "TextPart": "Dear {{name}},\n\nYour favorite animal is {{favoriteanimal}}."
-    }
-)
-templatedata = {
-    "name": "john",
-    "favoriteanimal": "cat"
-}
-
-## send templated email
-response = client.send_templated_email(
-    Source=fromaddr,
-    Destination=destination,
-    Template='testtemplate',
-    TemplateData=json.dumps(templatedata)
-)
-print(response)
-
-## delete template
-response = client.delete_template(
-    TemplateName='testtemplate'
-)
-print(response)
-
-templates = client.list_templates()
-for template in templates['TemplatesMetadata']:
-    response = client.get_template(
-        TemplateName=template['Name']
-    )
-    print(response['Template'])
-
-</code></pre>
-    </div>
     </article>
 </div>
 
