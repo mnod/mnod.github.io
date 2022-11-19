@@ -1,5 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 13 Nov 2022 02:29:13 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>EC2 spot instance</title><link>https://mnod.github.io/posts/20221113.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;sample launch template
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about aws)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/aws.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sat, 19 Nov 2022 02:18:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>EFS and ECS</title><link>https://mnod.github.io/posts/20221119.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;efs.yml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  KeyWord:
+    Type: String
+  SecurityGroupWeb:
+    Type: AWS::EC2::SecurityGroup::Id
+  Subnet1:
+    #Type: List&amp;lt;AWS::EC2::Subnet::Id&amp;gt;
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Type: AWS::EC2::Subnet::Id
+
+Resources:
+  SecurityGroupEFS:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupName: !Sub ${KeyWord}_SecurityGroupEFS
+      GroupDescription: 'efs-filesystem securitygroup'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 2049
+          ToPort: 2049
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_SecurityGroupEFS
+
+  ElasticFileSystem:
+    Type: 'AWS::EFS::FileSystem'
+    Properties:
+      BackupPolicy:
+        Status: DISABLED
+      Encrypted: true
+      FileSystemTags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_test_efs
+      FileSystemPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "elasticfilesystem:ClientMount"
+              - "elasticfilesystem:ClientWrite"
+            Principal:
+              # AWS: !GetAtt RoleECS.Arn
+              AWS: '*'
+      PerformanceMode: 'generalPurpose'
+      ThroughputMode: 'bursting'
+
+  MountTargetResource1:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref ElasticFileSystem
+      SubnetId: !Ref Subnet1
+      SecurityGroups:
+        - !Ref SecurityGroupEFS
+
+  MountTargetResource2:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref ElasticFileSystem
+      SubnetId: !Ref Subnet2
+      SecurityGroups:
+        - !Ref SecurityGroupEFS
+
+  AccessPointResource:
+    Type: 'AWS::EFS::AccessPoint'
+    Properties:
+      FileSystemId: !Ref ElasticFileSystem
+      PosixUser:
+        Uid: "1000"
+        Gid: "1000"
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: "1000"
+          OwnerUid: "1000"
+          Permissions: "0755"
+        Path: "/efs/accesspoint1"
+
+Outputs:
+  SecurityGroupEFS:
+    Value: !Ref SecurityGroupEFS
+  ElasticFileSystem:
+    Value: !Ref ElasticFileSystem
+  AccessPointResource:
+    Value: !Ref AccessPointResource
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ecs.yml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  KeyWord:
+    Type: String
+  ElasticFileSystem:
+    Type: String
+  SecurityGroup1:
+    Type: String
+  Subnet1:
+    Type: String
+  Subnet2:
+    Type: String
+  AccessPointResource:
+    Type: String
+
+Resources:
+  RoleECS:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'ecs-tasks.amazonaws.com'
+            Action: 'sts:AssumeRole'
+
+  ECSCluster:
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: !Sub ecs-cluster-${KeyWord}
+      CapacityProviders:
+        - FARGATE
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_ecs_cluster
+
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: !Sub ${KeyWord}_taskdefinition
+          Image: "nginx"
+          PortMappings:
+            - ContainerPort: 80
+          MountPoints:
+            - SourceVolume: 'efs-filesystem'
+              ContainerPath: '/usr/share/nginx/html'
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      NetworkMode: awsvpc
+      TaskRoleArn: !GetAtt RoleECS.Arn
+      Volumes:
+        - Name: 'efs-filesystem'
+          EFSVolumeConfiguration:
+            AuthorizationConfig:
+              AccessPointId: !Ref AccessPointResource
+              IAM: 'ENABLED'
+            FilesystemId: !Ref ElasticFileSystem
+            TransitEncryption: 'ENABLED'
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_ecs_taskdefinition
+
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: 0
+      TaskDefinition: !Ref ECSTaskDefinition
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref SecurityGroup1
+          Subnets:
+            - !Ref Subnet1
+            - !Ref Subnet2
+      Tags:
+        - Key: Name
+          Value: !Sub ${KeyWord}_ecs_service
+
+Outputs:
+  RoleECS:
+    Value: !Ref RoleECS
+  ECSCluster:
+    Value: !Ref ECSCluster
+  ECSServiceName:
+    Value: !GetAtt ECSService.Name
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;parent_efs.yml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  KeyWord:
+    Default: nestedstacktest
+    Type: String
+
+Resources:
+  EFS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: efs.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        VPC: !ImportValue mystack-Vpc
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        SecurityGroupWeb: !ImportValue mystack-SecurityGroupPub
+
+  ECS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ecs.yml
+      Parameters:
+        KeyWord : !Ref KeyWord
+        Subnet1: !ImportValue mystack-PublicSubnet1
+        Subnet2: !ImportValue mystack-PublicSubnet2
+        SecurityGroup1: !ImportValue mystack-SecurityGroupPub
+        AccessPointResource: !GetAtt EFS.Outputs.AccessPointResource
+        ElasticFileSystem: !GetAtt EFS.Outputs.ElasticFileSystem
+
+Outputs:
+  SecurityGroupEFS:
+    Value: !GetAtt EFS.Outputs.SecurityGroupEFS
+  ElasticFileSystem:
+    Value: !GetAtt EFS.Outputs.ElasticFileSystem
+  RoleECS:
+    Value: !GetAtt ECS.Outputs.RoleECS
+  ECSCluster:
+    Value: !GetAtt ECS.Outputs.ECSCluster
+  ECSServiceName:
+    Value: !GetAtt ECS.Outputs.ECSServiceName
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Makefile.efs&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;template_file=parent_efs.yml
+package_file=parent_efs_packaged.yml
+bucket_name=mybucketname
+stack_name=testefs
+
+validate:
+    aws cloudformation validate-template --template-body file://efs.yml
+    aws cloudformation validate-template --template-body file://ecs.yml
+    aws cloudformation validate-template --template-body file://parent_efs.yml
+
+$(package_file):
+    aws cloudformation package --template-file $(template_file) --s3-bucket $(bucket_name) --output-template-file $(package_file)
+
+package: $(package_file)
+
+build: $(package_file)
+    aws cloudformation deploy --template-file $(package_file) --stack-name $(stack_name) --tags Name=testnestedstack --capabilities CAPABILITY_IAM
+
+events:
+    aws cloudformation describe-stack-events --stack-name $(stack_name)
+
+describe:
+    aws cloudformation describe-stacks --stack-name $(stack_name)
+
+delete:
+    aws cloudformation delete-stack --stack-name $(stack_name)
+
+clean:
+    rm $(package_file)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm filesystem and acccess points&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws efs describe-file-systems
+$ aws efs describe-access-points --file-system-id fs-xxxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;install efs-utils on debian EC2 instance&lt;/p&gt;
+&lt;p&gt;for detail see https://docs.aws.amazon.com/ja_jp/efs/latest/ug/installing-amazon-efs-utils.html&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt update -y &amp;amp;&amp;amp; sudo apt install -y git binutils
+$ git clone https://github.com/aws/efs-utils
+$ cd efs-utils
+$ ./build-deb.sh
+$ sudo apt install ./build/amazon-efs-utils-*_all.deb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mount and test&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo mount -t efs -o tls,accesspoint=fsap-xxxx fs-xxxx:/ /mnt
+or sudo mount -t efs -o tls fs-xxxx:/ /mnt
+
+$ echo hellow world /mnt/index.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;update desired count using AWS CLI&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-clusters
+$ aws ecs describe-clusters --cluster xxxx
+$ aws ecs list-services --cluster xxxx
+$ aws ecs describe-services --cluster xxxx --services testefs-ECS-xxxx
+$ aws ecs update-service --cluster xxxx --service testefs-ECS-xxxx  --desired-count 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;confirm Public IP address&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ aws ecs list-tasks --cluster xxxx
+$ aws ecs describe-tasks --cluster xxxx --task xxxx
+$ aws ec2 describe-network-interfaces --network-interface-ids eni-xxxx
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20221119.html</guid><pubDate>Sat, 19 Nov 2022 00:00:00 GMT</pubDate></item><item><title>EC2 spot instance</title><link>https://mnod.github.io/posts/20221113.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;sample launch template
 In some instance type and OS, we are able to stop or hybernate the EC2 spot instances, and restart or resume them when we want to do so.
 While stop or hybernate the instances, we must pay for EBS and Elastic IP etc...&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;  MyLaunchTemplate:
@@ -861,40 +1151,4 @@ aws ec2 describe-volumes
 &lt;h3&gt;delete snapshot&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;aws ec2 describe-snapshots --owner-id xxxx
 aws ec2 delete-snapshot --snapshot-id snap-xxxx
-&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220807.html</guid><pubDate>Sun, 07 Aug 2022 00:00:00 GMT</pubDate></item><item><title>let's encrrypt</title><link>https://mnod.github.io/posts/20220627.html</link><dc:creator>mnod</dc:creator><description>&lt;pre&gt;&lt;code&gt;certbot certonly \
---dry-run \
--d www.example.net \
--m yourname@example.net \
---preferred-challenges dns-01  \
---server https://acme-v02.api.letsencrypt.org/directory \
---manual \
---manual-auth-hook /home/user/work/letsencrypt/dns01-auth.sh \
---manual-cleanup-hook /home/user/work/letsencrypt/dns01-clean.sh \
---post-hook /home/user/work/letsencrypt/post-hook.sh \
---work-dir /home/user/work/letsencrypt/work \
---logs-dir /home/user/work/letsencrypt/logs \
---config-dir /home/user/work/letsencrypt/conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-&lt;li&gt;When you run certbot in non-root user, you have to specify --work-dir, --logs-dir, and --config-dir options.  These directories have to be writable with your user.&lt;/li&gt;
-&lt;li&gt;You can only publish new certificate file via certbot. Your new certificate file will pushed under config-dir directory. Afterward, you can deploy it with your deploy tool which you like. &lt;/li&gt;
-&lt;li&gt;The dns-01 challenge authentication only needs DNS validation and don't need to access via 80/tcp nor web server installation on your server.
-When you use dns-01 challenge, you can use your script to update your dns resource to --manual-auth-hook (for authentication) and --manual-cleanup-hook (for cleanup entry).&lt;br&gt;
-CERTBOT_DOMAIN varaible is used to show domain name which you want to use. CERTBOT_VALIDATION vaibale is used to show validation code.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;sample script which create validtion entry for aws route53&lt;/p&gt;
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-auth.sh"&gt;&lt;/script&gt;
-
-&lt;p&gt;sample script which delete validtion entry for aws route53&lt;/p&gt;
-&lt;script src="https://gist.github.com/mnod/0ed9ec48287d3a785a1e648911720b37.js?file=dns01-clean.sh"&gt;&lt;/script&gt;
-
-&lt;pre&gt;&lt;code&gt;certbot renew \
---dry-run \
---post-hook /home/user/work/letsencrypt/post-hook.sh \
---work-dir /home/user/work/letsencrypt/work \
---logs-dir /home/user/work/letsencrypt/logs \
---config-dir /home/user/work/letsencrypt/conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-&lt;li&gt;Once you get your new certificate, you have to update your certificate periodically.&lt;/li&gt;
-&lt;/ul&gt;</description><category>aws</category><category>linux</category><category>openssl</category><guid>https://mnod.github.io/posts/20220627.html</guid><pubDate>Mon, 27 Jun 2022 00:00:00 GMT</pubDate></item></channel></rss>
+&lt;/code&gt;&lt;/pre&gt;</description><category>aws</category><guid>https://mnod.github.io/posts/20220807.html</guid><pubDate>Sun, 07 Aug 2022 00:00:00 GMT</pubDate></item></channel></rss>
