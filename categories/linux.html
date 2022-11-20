@@ -57,7 +57,259 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220627.html" class="u-url">let's encrrypt</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221120.html" class="u-url">build a test labo for cisco certificate</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20221120.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-11-20T00:00:00Z" itemprop="datePublished" title="2022-11-20 00:00">2022-11-20 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <p>I like cli environment, so I prefer to use dynagen with dynamips.</p>
+<p>The last version of debian which offer dynagen deb package is debian10 buster, so I select it.</p>
+<p>Install related packages.</p>
+<pre><code>version=0.2.22
+sed -i.bak 's/ main$/ main contrib non-free/' /etc/apt/sources.list \
+&amp;&amp; apt update &amp;&amp; apt upgrade -y \
+&amp;&amp; apt install -y  \
+ vpcs \
+ openvswitch-switch \
+ snmp snmptrapd \
+ freeradius \
+ tcpdump \
+ telnet \
+ tmux \
+&amp;&amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh  &amp;&amp; \
+wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz &amp;&amp; \
+tar zxf v${version}.tar.gz &amp;&amp; \
+rm v${version}.tar.gz &amp;&amp; \
+cd dynamips-${version} &amp;&amp; \
+apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 &amp;&amp; \
+mkdir -p dynamips-${version}/build &amp;&amp; \
+cd dynamips-${version}/build &amp;&amp; \
+cmake .. &amp;&amp; \
+make &amp;&amp; \
+make install &amp;&amp; \
+rm -rf dynamips-${version} &amp;&amp; \
+apt remove -y gcc cmake make musl-dev linux-headers &amp;&amp; \
+apt autoremove -y \
+apt install -y dynagen
+</code></pre>
+<h3>openvswitch</h3>
+<p>create openvswitch virtual bridge and tap device.</p>
+<pre><code>sudo ovs-vsctl show
+sudo ovs-vsctl add-br br0
+
+sudo ip link set br0 up
+ip link show br0
+
+sudo ip address add 10.2.0.1/24 brd + dev br0
+ip address show br0
+
+sudo ip tuntap add dev tap0 mode tap
+sudo ovs-vsctl add-port br0 tap0
+sudo ip link set tap0 up
+sudo ip route add 10.2.0.0/16 dev br0
+ip link show tap0
+</code></pre>
+<p>everytime you restart the computer, you have to add tap device to the bridge </p>
+<pre><code>sudo ovs-vsctl show
+sudo ip address add 10.2.0.1/24 brd + dev br0
+sudo ip tuntap add dev tap0 mode tap
+sudo ip link set tap0 up
+sudo ip link set br0 up
+sudo ip route add 10.2.0.0/16 dev br0
+ip link show tap0
+</code></pre>
+<p>you have to start dynamips by root user to connect to tap device.</p>
+<pre><code>sudo dynamips -H 127.0.0.1:7200
+</code></pre>
+<p>you can start dynagen by your own user.</p>
+<pre><code>dynagen labo.net
+</code></pre>
+<p>you can connect tap device to dynamips labo with dynagen using <code>NIO_tap:tap0</code> like below:</p>
+<pre><code>NIO_tap:tap0
+</code></pre>
+<h3>vpcs</h3>
+<p>you can connect vpcs to dynagen using NIO_udp device like below:</p>
+<pre><code>NIO_udp:30000:127.0.0.1:20000
+</code></pre>
+<h3>rsyslog</h3>
+<p>change rsyslog config to receive syslog message.</p>
+<pre><code>$ sudo cp -pi /etc/rsyslog.conf{,.000}
+$ sudo vi /etc/rsyslog.conf
+$ diff -u /etc/rsyslog.conf{,.000}
+@@ -13,8 +13,8 @@
+ #module(load="immark")  # provides --MARK-- message capability
+
+ # provides UDP syslog reception
+-module(load="imudp")
+-input(type="imudp" port="514")
++#module(load="imudp")
++#input(type="imudp" port="514")
+
+ # provides TCP syslog reception
+ #module(load="imtcp")
+@@ -90,7 +90,3 @@
+ # Emergencies are sent to everybody logged in.
+ #
+ *.emerg                                :omusrmsg:*
+-
+-
+-
+-local0.*                       -/var/log/local0.log
+
+$ sudo touch /var/log/local0.log
+$ sudo systemctl restart rsyslog
+$ tail -f /var/log/local0.log
+
+</code></pre>
+<h3>chronyd</h3>
+<p>change chronyd config to serve ntp clock to labo network.</p>
+<p>In this example, 10.2.0.0/16 is labo network address range</p>
+<pre><code>$ sudo cp -pi /etc/chrony/chrony.conf{,.000}
+$ sudo vi /etc/chrony/chrony.conf
+$ diff -u /etc/chrony/chrony.conf{,.000}
+@@ -29,5 +29,3 @@
+ # Step the system clock instead of slewing it if the adjustment is larger than
+ # one second, but only in the first three clock updates.
+ makestep 1 3
+-
+-allow 10.2.0.0/16
+
+$ sudo systemctl restart chrony
+$ chronyc sources
+</code></pre>
+<h3>snmp</h3>
+<p>on cisco device</p>
+<pre><code># snmp-server community cisco ro
+</code></pre>
+<pre><code>$ snmpwalk -v 1 10.2.0.254 -c cisco 1.3.6.1.2.1.2.2.1.10
+$ snmpwalk -v 1 10.2.0.254 -c cisco 1.3.6.1.2.1.2.2.1.16
+</code></pre>
+<h3>snmptrap</h3>
+<pre><code>$ sudo cp -pi /etc/snmp/snmptrapd.conf{,.000}
+$ sudo vi /etc/snmp/snmptrapd.conf
+
+$ diff -u /etc/snmp/snmptrapd.conf{,.000}
+@@ -16,7 +16,6 @@
+ #
+ #authCommunity log,execute,net private　
+ #authCommunity log,execute,net public
+-authCommunity log cisco
+ #
+ ## send mail when get any events
+ #traphandle default /usr/bin/traptoemail -s smtp.example.org foobar@example.org
+
+$ sudo systemctl start snmptrapd.service
+$ tail -f /var/log/messages
+</code></pre>
+<p>on cisco device</p>
+<pre><code># snmp-server host address traps version 1 cisco 
+# snmp-server enable traps
+# int fa0/0
+# no shut
+</code></pre>
+<h3>freeradius</h3>
+<pre><code>$ sudo cp -pi  /etc/freeradius/3.0/clients.conf{,.000}
+$ sudo vi  /etc/freeradius/3.0/clients.conf
+$ sudo diff -u /etc/freeradius/3.0/clients.conf{,.000}
+@@ -266,8 +266,3 @@
+ #              secret = testing123
+ #      }
+ #}
+-client ciscolabo {
+-       ipaddr = 10.2.0.0/16
+-       secret = radiussecret
+-}
+-
+</code></pre>
+<pre><code>$ sudo ls -l /etc/freeradius/3.0/mods-config/files/authorize{,.000}
+$ sudo vi /etc/freeradius/3.0/mods-config/files/authorize
+$ sudo diff -u /etc/freeradius/3.0/mods-config/files/authorize{,.000}
+--- /etc/freeradius/3.0/mods-config/files/authorize     2022-11-19 20:50:54.008631636 +0900
++++ /etc/freeradius/3.0/mods-config/files/authorize.000 2022-08-28 04:29:38.000000000 +0900
+@@ -1,4 +1,3 @@
+-cisco1 Cleartext-Password := "cisco1pass"
+ #
+ #      Configuration file for the rlm_files module.
+ #      Please see rlm_files(5) manpage for more information.
+
+</code></pre>
+<p>restart freeradius and test</p>
+<pre><code>$ sudo systemctl restart freeradius
+$ sudo apt install -y freeradius-utils
+$ radtest cisco1 cisco1pass 127.0.0.1 1812 testing123
+$ radtest cisco1 cisco1pass 10.2.0.1 1812 radiussecret
+</code></pre>
+<p>on cisco device </p>
+<pre><code>conf t
+aaa new-model
+radius-server host 10.2.0.1 auth-port 1812 key radiussecret
+aaa group server radius freeradius
+server 10.2.0.1 auth-port 1812
+exit
+exit
+</code></pre>
+<p>test</p>
+<pre><code>test aaa group freeradius cisco1 cisco1pass port 1812 new-code
+</code></pre>
+<p>config vty settings</p>
+<pre><code>conf t
+aaa authentication login freeradius group radius
+line vty 0 15
+login authentication freeradius
+</code></pre>
+<p>telnet from server</p>
+<pre><code>telnet 10.2.1.254
+</code></pre>
+<h3>netflow</h3>
+<p>install fluent-plugin-netflow and change configuration </p>
+<pre><code>sudo td-agent-gem install fluent-plugin-netflow
+sudo cp -pi /etc/td-agent/td-agent.conf{,.000}
+sudo vi /etc/td-agent/td-agent.conf
+diff -u /etc/td-agent/td-agent.conf{,.000}
+@@ -126,15 +126,3 @@
+ #    path /var/log/td-agent/td-%Y-%m-%d/%H.log
+ #  &lt;/store&gt;
+ #&lt;/match&gt;
+-
+-&lt;match netflow.*&gt;
+-  @type stdout
+-&lt;/match&gt;
+-
+-&lt;source&gt;
+-  @type netflow
+-  tag netflow.event
+-  port 5141
+-  versions [5, 9]
+-&lt;/source&gt;
+-
+</code></pre>
+<p>test configuration and restart td-agent service</p>
+<pre><code>sudo td-agent --dry-run
+sudo systemctl restart td-agent.service
+</code></pre>
+<p>on cisco device</p>
+<pre><code>conf t
+int fa0/0
+ip flow ingress
+ip flow egress
+exit
+ip flow-export version 5
+ip flow-export destination 10.2.0.1 5141 udp
+ip flow-export source fa0/0
+end
+show ip cache flow
+</code></pre>
+<p>after a while confirm td-agent log file</p>
+<pre><code>sudo tail -f /var/log/td-agent/td-agent.log
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220627.html" class="u-url">let's encrrypt</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
@@ -747,76 +999,6 @@ $ docker run --rm -p 3128:3128 -v /mnt/squid:/var/spool/squid -d squid:test
 <pre><code>$ sudo docker exec xxxxxxxxxxxx tail /var/log/squid/access.log
 :
 1622950724.481    170 192.168.xxx.xxx TCP_TUNNEL/200 18439 CONNECT www.google.com:443 - HIER_DIRECT/172.217.175.4 -
-</code></pre>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20200927.html" class="u-url">kvm on raspberrypi</a></h1>
-        <div class="metadata">
-            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                mnod
-            </span></p> -->
-            <p class="dateline">
-            <a href="../posts/20200927.html" rel="bookmark">
-            <time class="published dt-published" datetime="2020-09-27T00:00:00Z" itemprop="datePublished" title="2020-09-27 00:00">2020-09-27 00:00</time></a>
-            </p>
-        </div>
-    </header><div class="e-content entry-content">
-    <p>kvm On Raspberry Pi OS (64bit) beta test version</p>
-<p>related packages</p>
-<pre><code>$ sudo apt install --no-install-recommends qemu-system-arm qemu-utils kpartx
-</code></pre>
-<p><strong>boot alpine linux</strong></p>
-<p>get kernel and initra from the iso file</p>
-<pre><code>$ sudo mount -o loop alpine-standard-3.12.0-aarch64.iso /media/tmp
-$ sudo cp /media/tmp/boot/initramfs-lts .
-$ sudo cp /media/tmp/boot/vmlinuz-lts .
-$ sudo umount /media/tmp
-</code></pre>
-<p>boot</p>
-<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -nographic -m 512 \
-&gt; -kernel vmlinuz-lts -initrd initramfs-lts \
-&gt; -drive if=none,id=image,file=alpine-standard-3.12.0-aarch64.iso -device virtio-blk-device,drive=image \
-&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
-&gt; -monitor telnet:localhost:10025,server,nowait
-</code></pre>
-<p><strong>install debian10</strong></p>
-<p>download kernel and initrd file and create an empty virtual image file.</p>
-<pre><code>$ wget -O linux http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/linux
-$ wget -O initrd.gz http://ftp.jp.debian.org/debian/dists/buster/main/installer-arm64/current/images/netboot/debian-installer/arm64/initrd.gz
-$ qemu-img create -f qcow2 hda.qcow2 16G
-</code></pre>
-<p>boot the installer with downloaded kernel and initrd file and install to the virtual image file.</p>
-<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
-&gt; -kernel linux -initrd initrd.gz \
-&gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
-&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
-&gt; -monitor telnet:localhost:10025,server,nowait \
-&gt; -no-reboot -vnc :1
-
-$ vncviewer xxx.xxx.xxx.xxx:5901
-</code></pre>
-<p>get kernel and initrd file from qcow2 file</p>
-<pre><code>$ lsmod | grep nbd
-$ sudo modprobe nbd
-$ sudo qemu-nbd -c /dev/nbd0 debian10.qcow2
-$ sudo kpartx -av /dev/nbd0
-$ sudo mount /dev/mapper/nbd0p1 /media/tmp
-
-$ cp /media/tmp/initrd.img-4.19.0-11-arm64 .
-$ cp /media/tmp/vmlinuz-4.19.0-11-arm64 .
-
-$ sudo umount /media/tmp
-$ sudo kpartx -dv /dev/nbd0
-$ sudo qemu-nbd -d /dev/nbd0
-$ sudo rmmod nbd
-</code></pre>
-<p>boot</p>
-<pre><code>$ sudo qemu-system-aarch64 -cpu host -enable-kvm -machine virt -m 512 \
-&gt; -kernel vmlinuz-4.19.0-11-arm64 -initrd initrd.img-4.19.0-11-arm64 \
-&gt; -append 'root=/dev/vda2' \
-&gt; -drive if=none,id=image,file=debian10.qcow2 -device virtio-blk-device,drive=image \
-&gt; -netdev user,id=user0 -device virtio-net-device,netdev=user0 \
-&gt; -monitor telnet:localhost:10025,server,nowait \
-&gt; -nographic
 </code></pre>
     </div>
     </article>

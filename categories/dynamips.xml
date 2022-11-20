@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about dynamips)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/dynamips.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 20 Nov 2022 12:01:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>build a test labo for cisco certificate</title><link>https://mnod.github.io/posts/20221120.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;I like cli environment, so I prefer to use dynagen with dynamips.&lt;/p&gt;
+&lt;p&gt;The last version of debian which offer dynagen deb package is debian10 buster, so I select it.&lt;/p&gt;
+&lt;p&gt;Install related packages.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;version=0.2.22
+sed -i.bak 's/ main$/ main contrib non-free/' /etc/apt/sources.list \
+&amp;amp;&amp;amp; apt update &amp;amp;&amp;amp; apt upgrade -y \
+&amp;amp;&amp;amp; apt install -y  \
+ vpcs \
+ openvswitch-switch \
+ snmp snmptrapd \
+ freeradius \
+ tcpdump \
+ telnet \
+ tmux \
+&amp;amp;&amp;amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh  &amp;amp;&amp;amp; \
+wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz &amp;amp;&amp;amp; \
+tar zxf v${version}.tar.gz &amp;amp;&amp;amp; \
+rm v${version}.tar.gz &amp;amp;&amp;amp; \
+cd dynamips-${version} &amp;amp;&amp;amp; \
+apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 &amp;amp;&amp;amp; \
+mkdir -p dynamips-${version}/build &amp;amp;&amp;amp; \
+cd dynamips-${version}/build &amp;amp;&amp;amp; \
+cmake .. &amp;amp;&amp;amp; \
+make &amp;amp;&amp;amp; \
+make install &amp;amp;&amp;amp; \
+rm -rf dynamips-${version} &amp;amp;&amp;amp; \
+apt remove -y gcc cmake make musl-dev linux-headers &amp;amp;&amp;amp; \
+apt autoremove -y \
+apt install -y dynagen
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;openvswitch&lt;/h3&gt;
+&lt;p&gt;create openvswitch virtual bridge and tap device.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo ovs-vsctl show
+sudo ovs-vsctl add-br br0
+
+sudo ip link set br0 up
+ip link show br0
+
+sudo ip address add 10.2.0.1/24 brd + dev br0
+ip address show br0
+
+sudo ip tuntap add dev tap0 mode tap
+sudo ovs-vsctl add-port br0 tap0
+sudo ip link set tap0 up
+sudo ip route add 10.2.0.0/16 dev br0
+ip link show tap0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;everytime you restart the computer, you have to add tap device to the bridge &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo ovs-vsctl show
+sudo ip address add 10.2.0.1/24 brd + dev br0
+sudo ip tuntap add dev tap0 mode tap
+sudo ip link set tap0 up
+sudo ip link set br0 up
+sudo ip route add 10.2.0.0/16 dev br0
+ip link show tap0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;you have to start dynamips by root user to connect to tap device.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo dynamips -H 127.0.0.1:7200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;you can start dynagen by your own user.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dynagen labo.net
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;you can connect tap device to dynamips labo with dynagen using &lt;code&gt;NIO_tap:tap0&lt;/code&gt; like below:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NIO_tap:tap0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;vpcs&lt;/h3&gt;
+&lt;p&gt;you can connect vpcs to dynagen using NIO_udp device like below:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NIO_udp:30000:127.0.0.1:20000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;rsyslog&lt;/h3&gt;
+&lt;p&gt;change rsyslog config to receive syslog message.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cp -pi /etc/rsyslog.conf{,.000}
+$ sudo vi /etc/rsyslog.conf
+$ diff -u /etc/rsyslog.conf{,.000}
+@@ -13,8 +13,8 @@
+ #module(load="immark")  # provides --MARK-- message capability
+
+ # provides UDP syslog reception
+-module(load="imudp")
+-input(type="imudp" port="514")
++#module(load="imudp")
++#input(type="imudp" port="514")
+
+ # provides TCP syslog reception
+ #module(load="imtcp")
+@@ -90,7 +90,3 @@
+ # Emergencies are sent to everybody logged in.
+ #
+ *.emerg                                :omusrmsg:*
+-
+-
+-
+-local0.*                       -/var/log/local0.log
+
+$ sudo touch /var/log/local0.log
+$ sudo systemctl restart rsyslog
+$ tail -f /var/log/local0.log
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;chronyd&lt;/h3&gt;
+&lt;p&gt;change chronyd config to serve ntp clock to labo network.&lt;/p&gt;
+&lt;p&gt;In this example, 10.2.0.0/16 is labo network address range&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cp -pi /etc/chrony/chrony.conf{,.000}
+$ sudo vi /etc/chrony/chrony.conf
+$ diff -u /etc/chrony/chrony.conf{,.000}
+@@ -29,5 +29,3 @@
+ # Step the system clock instead of slewing it if the adjustment is larger than
+ # one second, but only in the first three clock updates.
+ makestep 1 3
+-
+-allow 10.2.0.0/16
+
+$ sudo systemctl restart chrony
+$ chronyc sources
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;snmp&lt;/h3&gt;
+&lt;p&gt;on cisco device&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# snmp-server community cisco ro
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ snmpwalk -v 1 10.2.0.254 -c cisco 1.3.6.1.2.1.2.2.1.10
+$ snmpwalk -v 1 10.2.0.254 -c cisco 1.3.6.1.2.1.2.2.1.16
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;snmptrap&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cp -pi /etc/snmp/snmptrapd.conf{,.000}
+$ sudo vi /etc/snmp/snmptrapd.conf
+
+$ diff -u /etc/snmp/snmptrapd.conf{,.000}
+@@ -16,7 +16,6 @@
+ #
+ #authCommunity log,execute,net private　
+ #authCommunity log,execute,net public
+-authCommunity log cisco
+ #
+ ## send mail when get any events
+ #traphandle default /usr/bin/traptoemail -s smtp.example.org foobar@example.org
+
+$ sudo systemctl start snmptrapd.service
+$ tail -f /var/log/messages
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;on cisco device&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# snmp-server host address traps version 1 cisco 
+# snmp-server enable traps
+# int fa0/0
+# no shut
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;freeradius&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cp -pi  /etc/freeradius/3.0/clients.conf{,.000}
+$ sudo vi  /etc/freeradius/3.0/clients.conf
+$ sudo diff -u /etc/freeradius/3.0/clients.conf{,.000}
+@@ -266,8 +266,3 @@
+ #              secret = testing123
+ #      }
+ #}
+-client ciscolabo {
+-       ipaddr = 10.2.0.0/16
+-       secret = radiussecret
+-}
+-
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo ls -l /etc/freeradius/3.0/mods-config/files/authorize{,.000}
+$ sudo vi /etc/freeradius/3.0/mods-config/files/authorize
+$ sudo diff -u /etc/freeradius/3.0/mods-config/files/authorize{,.000}
+--- /etc/freeradius/3.0/mods-config/files/authorize     2022-11-19 20:50:54.008631636 +0900
++++ /etc/freeradius/3.0/mods-config/files/authorize.000 2022-08-28 04:29:38.000000000 +0900
+@@ -1,4 +1,3 @@
+-cisco1 Cleartext-Password := "cisco1pass"
+ #
+ #      Configuration file for the rlm_files module.
+ #      Please see rlm_files(5) manpage for more information.
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;restart freeradius and test&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo systemctl restart freeradius
+$ sudo apt install -y freeradius-utils
+$ radtest cisco1 cisco1pass 127.0.0.1 1812 testing123
+$ radtest cisco1 cisco1pass 10.2.0.1 1812 radiussecret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;on cisco device &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;conf t
+aaa new-model
+radius-server host 10.2.0.1 auth-port 1812 key radiussecret
+aaa group server radius freeradius
+server 10.2.0.1 auth-port 1812
+exit
+exit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;test aaa group freeradius cisco1 cisco1pass port 1812 new-code
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;config vty settings&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;conf t
+aaa authentication login freeradius group radius
+line vty 0 15
+login authentication freeradius
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;telnet from server&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;telnet 10.2.1.254
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;netflow&lt;/h3&gt;
+&lt;p&gt;install fluent-plugin-netflow and change configuration &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo td-agent-gem install fluent-plugin-netflow
+sudo cp -pi /etc/td-agent/td-agent.conf{,.000}
+sudo vi /etc/td-agent/td-agent.conf
+diff -u /etc/td-agent/td-agent.conf{,.000}
+@@ -126,15 +126,3 @@
+ #    path /var/log/td-agent/td-%Y-%m-%d/%H.log
+ #  &amp;lt;/store&amp;gt;
+ #&amp;lt;/match&amp;gt;
+-
+-&amp;lt;match netflow.*&amp;gt;
+-  @type stdout
+-&amp;lt;/match&amp;gt;
+-
+-&amp;lt;source&amp;gt;
+-  @type netflow
+-  tag netflow.event
+-  port 5141
+-  versions [5, 9]
+-&amp;lt;/source&amp;gt;
+-
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test configuration and restart td-agent service&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo td-agent --dry-run
+sudo systemctl restart td-agent.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;on cisco device&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;conf t
+int fa0/0
+ip flow ingress
+ip flow egress
+exit
+ip flow-export version 5
+ip flow-export destination 10.2.0.1 5141 udp
+ip flow-export source fa0/0
+end
+show ip cache flow
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;after a while confirm td-agent log file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo tail -f /var/log/td-agent/td-agent.log
+&lt;/code&gt;&lt;/pre&gt;</description><category>cisco</category><category>dynamips</category><category>linux</category><guid>https://mnod.github.io/posts/20221120.html</guid><pubDate>Sun, 20 Nov 2022 00:00:00 GMT</pubDate></item></channel></rss>

@@ -15,11 +15,15 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/aws.xml</loc>
-  <lastmod>2022-10-30T09:49:00Z</lastmod>
+  <lastmod>2022-11-19T02:18:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/centos.xml</loc>
   <lastmod>2022-10-30T09:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://mnod.github.io/categories/cisco.xml</loc>
+  <lastmod>2022-11-20T12:01:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/container.xml</loc>
@@ -32,6 +36,10 @@
  <sitemap>
   <loc>https://mnod.github.io/categories/docker.xml</loc>
   <lastmod>2022-10-30T09:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://mnod.github.io/categories/dynamips.xml</loc>
+  <lastmod>2022-11-20T12:01:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/failed.xml</loc>
@@ -67,7 +75,7 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/linux.xml</loc>
-  <lastmod>2022-10-30T09:49:00Z</lastmod>
+  <lastmod>2022-11-20T12:01:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/categories/multimedia.xml</loc>
@@ -167,10 +175,10 @@
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/rss.xml</loc>
-  <lastmod>2022-10-30T09:49:00Z</lastmod>
+  <lastmod>2022-11-20T12:01:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://mnod.github.io/sitemap.xml</loc>
-  <lastmod>2022-10-30T09:49:00Z</lastmod>
+  <lastmod>2022-11-20T12:01:00Z</lastmod>
  </sitemap>
 </sitemapindex>

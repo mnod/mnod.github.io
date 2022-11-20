@@ -57,7 +57,77 @@
 
         </div>
     </header><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220627.html" class="u-url">let's encrrypt</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220807.html" class="u-url">ebs</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="../posts/20220807.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-07T00:00:00Z" itemprop="datePublished" title="2022-08-07 00:00">2022-08-07 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create an EBS volume and attach to an EC2 instance</h3>
+<pre><code>aws ec2 create-volume --availability-zone ap-northeast-1a --volume-type gp3 --size 1 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
+aws ec2 describe-volumes --volume-id vol-xxxx
+aws ec2 attach-volume --device /dev/xvdb --instance-id i-xxxx --volume-id vol-xxxx
+</code></pre>
+<h3>make partition and make filesystem</h3>
+<pre><code>$ lsblk
+$ sudo parted /dev/nvme1n1 print
+$ sudo parted /dev/nvme1n1 mklabel gpt
+$ sudo parted /dev/nvme1n1 mkpart home ext4 1MB 100%
+
+$ sudo mkfs -t ext4 /dev/nvme1n1p1
+$ sudo tune2fs -L homefs /dev/nvme1n1p1
+$ ls -l /dev/disk/by-label/
+</code></pre>
+<h3>edit /etc/fstab and reboot</h3>
+<pre><code>$ sudo mount /dev/nvme1n1p1 /mnt
+$ sudo cp -pri /home/ubuntu /mnt
+$ sudo cp -pri /etc/fstab /etc/fstab.000
+$ sudo vi /etc/fstab
+$ diff /etc/fstab /etc/fstab.000
+3d2
+
+aws ec2 reboot-instances --instance-ids i-xxxx --dry-run
+</code></pre>
+<h3>extend disk size</h3>
+<pre><code>aws ec2 modify-volume --volume-id vol-xxxx --size 2
+</code></pre>
+<p>extend partition and filesystem</p>
+<pre><code>$ lsblk
+$ sudo growpart /dev/nvme1n1 1
+
+$ df -hT /home
+$ sudo resize2fs /dev/nvme1n1p1
+</code></pre>
+<h3>create snapshot</h3>
+<pre><code>aws ec2 describe-snapshots --owner-id xxxx
+aws ec2 create-snapshot --volume-id vol-xxxx --description 'test snapshot of homefs' --tag-specifications 'ResourceType=snapshot,Tags=[{Key=Name,Value=homefs}]'
+aws ec2 describe-snapshots --owner-id xxxx --filters 'Name=volume-id,Values=vol-xxxx'
+</code></pre>
+<h3>create new EBS volume from snapshot</h3>
+<pre><code>aws ec2 create-volume --availability-zone ap-northeast-1a --snapshot-id snap-xxxx --volume-type gp3 --encrypted --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=test_volume}]'
+aws ec2 describe-volumes --volume-id vol-yyyy
+</code></pre>
+<h3>attach new volume and detach old volume</h3>
+<pre><code>aws ec2 attach-volume --device /dev/xvdc --instance-id i-xxxx --volume-id vol-yyyy
+aws ec2 stop-instances --instance-ids i-xxxx
+aws ec2 detach-volume --no-force --instance-id i-xxxx --volume-id vol-xxxx
+aws ec2 start-instances --instance-ids i-xxxx
+</code></pre>
+<h3>delete volume</h3>
+<pre><code>aws ec2 delete-volume --volume-id vol-yyyy
+aws ec2 describe-volumes
+</code></pre>
+<h3>delete snapshot</h3>
+<pre><code>aws ec2 describe-snapshots --owner-id xxxx
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20220627.html" class="u-url">let's encrrypt</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
