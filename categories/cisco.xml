@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about cisco)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/cisco.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Sun, 20 Nov 2022 12:01:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>build a test labo for cisco certificate</title><link>https://mnod.github.io/posts/20221120.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;I like cli environment, so I prefer to use dynagen with dynamips.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tech log (Posts about cisco)</title><link>https://mnod.github.io/</link><description></description><atom:link href="https://mnod.github.io/categories/cisco.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2022 &lt;a href="mailto:mnod@example.com"&gt;mnod&lt;/a&gt; </copyright><lastBuildDate>Wed, 23 Nov 2022 08:33:53 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>build a test labo for cisco certificate</title><link>https://mnod.github.io/posts/20221120.html</link><dc:creator>mnod</dc:creator><description>&lt;p&gt;I like cli environment, so I prefer to use dynagen with dynamips.&lt;/p&gt;
 &lt;p&gt;The last version of debian which offer dynagen deb package is debian10 buster, so I select it.&lt;/p&gt;
 &lt;p&gt;Install related packages.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;version=0.2.22
 sed -i.bak 's/ main$/ main contrib non-free/' /etc/apt/sources.list \
 &amp;amp;&amp;amp; apt update &amp;amp;&amp;amp; apt upgrade -y \
-&amp;amp;&amp;amp; apt install -y  \
+&amp;amp;&amp;amp; DEBIAN_FRONTEND noninteractive apt install -y \
  vpcs \
  openvswitch-switch \
  snmp snmptrapd \
  freeradius \
+ postfix mailutils \
  tcpdump \
  telnet \
  tmux \
-&amp;amp;&amp;amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh  &amp;amp;&amp;amp; \
-wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz &amp;amp;&amp;amp; \
-tar zxf v${version}.tar.gz &amp;amp;&amp;amp; \
-rm v${version}.tar.gz &amp;amp;&amp;amp; \
-cd dynamips-${version} &amp;amp;&amp;amp; \
-apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 &amp;amp;&amp;amp; \
-mkdir -p dynamips-${version}/build &amp;amp;&amp;amp; \
-cd dynamips-${version}/build &amp;amp;&amp;amp; \
-cmake .. &amp;amp;&amp;amp; \
-make &amp;amp;&amp;amp; \
-make install &amp;amp;&amp;amp; \
-rm -rf dynamips-${version} &amp;amp;&amp;amp; \
-apt remove -y gcc cmake make musl-dev linux-headers &amp;amp;&amp;amp; \
-apt autoremove -y \
-apt install -y dynagen
+&amp;amp;&amp;amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh \
+&amp;amp;&amp;amp; wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz \
+&amp;amp;&amp;amp; tar zxf v${version}.tar.gz \
+&amp;amp;&amp;amp; rm v${version}.tar.gz \
+&amp;amp;&amp;amp; cd dynamips-${version} \
+&amp;amp;&amp;amp; apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 \
+&amp;amp;&amp;amp; mkdir -p dynamips-${version}/build \
+&amp;amp;&amp;amp; cd dynamips-${version}/build \
+&amp;amp;&amp;amp; cmake .. \
+&amp;amp;&amp;amp; make \
+&amp;amp;&amp;amp; make install \
+&amp;amp;&amp;amp; rm -rf dynamips-${version} \
+&amp;amp;&amp;amp; apt remove -y gcc cmake make musl-dev linux-headers \
+&amp;amp;&amp;amp; apt autoremove -y \
+&amp;amp;&amp;amp; apt install -y dynagen
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;openvswitch&lt;/h3&gt;
 &lt;p&gt;create openvswitch virtual bridge and tap device.&lt;/p&gt;
@@ -197,7 +198,7 @@ login authentication freeradius
 &lt;p&gt;telnet from server&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;telnet 10.2.1.254
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;netflow&lt;/h3&gt;
+&lt;h3&gt;td-agent&lt;/h3&gt;
 &lt;p&gt;install fluent-plugin-netflow and change configuration &lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo td-agent-gem install fluent-plugin-netflow
 sudo cp -pi /etc/td-agent/td-agent.conf{,.000}
@@ -238,4 +239,57 @@ show ip cache flow
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;after a while confirm td-agent log file&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo tail -f /var/log/td-agent/td-agent.log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;postfix&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo cp -pi /etc/postfix/main.cf{,.000}
+$ sudo vi /etc/postfix/main.cf
+$ diff -u /etc/postfix/main.cf{,.000}
+@@ -37,11 +37,12 @@
+ myhostname = ip-10-0-0-73.ap-northeast-1.compute.internal
+ alias_maps = hash:/etc/aliases
+ alias_database = hash:/etc/aliases
+-myorigin = /etc/mailname
+-mydestination = $myhostname, ip-10-0-0-73.ap-northeast-1.compute.internal, localhost.ap-northeast-1.compute.internal, , localhost
++mydestination = localdomain, $myhostname, ip-10-0-0-73.ap-northeast-1.compute.internal, localhost.ap-northeast-1.compute.internal, localhost
+ relayhost = 
+-mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
++mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 10.2.0.0/16
+ mailbox_size_limit = 0
+ recipient_delimiter = +
+-inet_interfaces = all
++inet_interfaces = 127.0.0.1, [::1], 10.2.0.1
++default_transport = error
++relay_transport = error
+ inet_protocols = all
+
+$ sudo systemctl restart postfix
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat &amp;lt;&amp;lt; END | mail -s 'test subject' admin
+&amp;gt; test body
+&amp;gt; .
+&amp;gt; END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;test from cisco device&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;track 1 interface FastEthernet1/0 line-protocol
+event manager applet eemtest
+event track 1 state down
+action 1.0 cli command "enable"
+action 2.0 cli command "show int fa1/0"
+action 3.0 mail server "10.2.0.1" to "admin" from "labo@example.com" subject "interface down" body "$_cli_result"
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;tcpdump&lt;/h3&gt;
+&lt;p&gt;Of courese, Dynagen has capture function, if you prefer it, try local SPAN on cisco device&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;conf t
+int fa1/0
+no shut
+int fa1/15
+no shut
+exit
+monitor session 1 source interface FastEthernet 1/0
+monitor session 1 destination interface FastEthernet 1/15
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;capture stream and save it to file.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo tcpdump -i br0 -w capture.dump
+sudo tcpdump -r capture.dump -n -e -v -x | less
 &lt;/code&gt;&lt;/pre&gt;</description><category>cisco</category><category>dynamips</category><category>linux</category><guid>https://mnod.github.io/posts/20221120.html</guid><pubDate>Sun, 20 Nov 2022 00:00:00 GMT</pubDate></item></channel></rss>

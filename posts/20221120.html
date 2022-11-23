@@ -78,29 +78,30 @@ version=0.2.2">
 <pre><code>version=0.2.22
 sed -i.bak 's/ main$/ main contrib non-free/' /etc/apt/sources.list \
 &amp;&amp; apt update &amp;&amp; apt upgrade -y \
-&amp;&amp; apt install -y  \
+&amp;&amp; DEBIAN_FRONTEND noninteractive apt install -y \
  vpcs \
  openvswitch-switch \
  snmp snmptrapd \
  freeradius \
+ postfix mailutils \
  tcpdump \
  telnet \
  tmux \
-&amp;&amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh  &amp;&amp; \
-wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz &amp;&amp; \
-tar zxf v${version}.tar.gz &amp;&amp; \
-rm v${version}.tar.gz &amp;&amp; \
-cd dynamips-${version} &amp;&amp; \
-apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 &amp;&amp; \
-mkdir -p dynamips-${version}/build &amp;&amp; \
-cd dynamips-${version}/build &amp;&amp; \
-cmake .. &amp;&amp; \
-make &amp;&amp; \
-make install &amp;&amp; \
-rm -rf dynamips-${version} &amp;&amp; \
-apt remove -y gcc cmake make musl-dev linux-headers &amp;&amp; \
-apt autoremove -y \
-apt install -y dynagen
+&amp;&amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh \
+&amp;&amp; wget https://github.com/GNS3/dynamips/archive/refs/tags/v${version}.tar.gz \
+&amp;&amp; tar zxf v${version}.tar.gz \
+&amp;&amp; rm v${version}.tar.gz \
+&amp;&amp; cd dynamips-${version} \
+&amp;&amp; apt install -y gcc cmake libelf-dev libpcap-dev make musl-dev linux-headers-amd64 \
+&amp;&amp; mkdir -p dynamips-${version}/build \
+&amp;&amp; cd dynamips-${version}/build \
+&amp;&amp; cmake .. \
+&amp;&amp; make \
+&amp;&amp; make install \
+&amp;&amp; rm -rf dynamips-${version} \
+&amp;&amp; apt remove -y gcc cmake make musl-dev linux-headers \
+&amp;&amp; apt autoremove -y \
+&amp;&amp; apt install -y dynagen
 </code></pre>
 <h3>openvswitch</h3>
 <p>create openvswitch virtual bridge and tap device.</p>
@@ -270,7 +271,7 @@ login authentication freeradius
 <p>telnet from server</p>
 <pre><code>telnet 10.2.1.254
 </code></pre>
-<h3>netflow</h3>
+<h3>td-agent</h3>
 <p>install fluent-plugin-netflow and change configuration </p>
 <pre><code>sudo td-agent-gem install fluent-plugin-netflow
 sudo cp -pi /etc/td-agent/td-agent.conf{,.000}
@@ -311,6 +312,59 @@ show ip cache flow
 </code></pre>
 <p>after a while confirm td-agent log file</p>
 <pre><code>sudo tail -f /var/log/td-agent/td-agent.log
+</code></pre>
+<h3>postfix</h3>
+<pre><code>$ sudo cp -pi /etc/postfix/main.cf{,.000}
+$ sudo vi /etc/postfix/main.cf
+$ diff -u /etc/postfix/main.cf{,.000}
+@@ -37,11 +37,12 @@
+ myhostname = ip-10-0-0-73.ap-northeast-1.compute.internal
+ alias_maps = hash:/etc/aliases
+ alias_database = hash:/etc/aliases
+-myorigin = /etc/mailname
+-mydestination = $myhostname, ip-10-0-0-73.ap-northeast-1.compute.internal, localhost.ap-northeast-1.compute.internal, , localhost
++mydestination = localdomain, $myhostname, ip-10-0-0-73.ap-northeast-1.compute.internal, localhost.ap-northeast-1.compute.internal, localhost
+ relayhost = 
+-mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
++mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 10.2.0.0/16
+ mailbox_size_limit = 0
+ recipient_delimiter = +
+-inet_interfaces = all
++inet_interfaces = 127.0.0.1, [::1], 10.2.0.1
++default_transport = error
++relay_transport = error
+ inet_protocols = all
+
+$ sudo systemctl restart postfix
+</code></pre>
+<p>test</p>
+<pre><code>$ cat &lt;&lt; END | mail -s 'test subject' admin
+&gt; test body
+&gt; .
+&gt; END
+</code></pre>
+<p>test from cisco device</p>
+<pre><code>track 1 interface FastEthernet1/0 line-protocol
+event manager applet eemtest
+event track 1 state down
+action 1.0 cli command "enable"
+action 2.0 cli command "show int fa1/0"
+action 3.0 mail server "10.2.0.1" to "admin" from "labo@example.com" subject "interface down" body "$_cli_result"
+</code></pre>
+<h3>tcpdump</h3>
+<p>Of courese, Dynagen has capture function, if you prefer it, try local SPAN on cisco device</p>
+<pre><code>conf t
+int fa1/0
+no shut
+int fa1/15
+no shut
+exit
+monitor session 1 source interface FastEthernet 1/0
+monitor session 1 destination interface FastEthernet 1/15
+</code></pre>
+<p>capture stream and save it to file.</p>
+<pre><code>sudo tcpdump -i br0 -w capture.dump
+sudo tcpdump -r capture.dump -n -e -v -x | less
 </code></pre>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
