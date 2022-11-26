@@ -81,6 +81,7 @@ sed -i.bak 's/ main$/ main contrib non-free/' /etc/apt/sources.list \
  freeradius \
  postfix mailutils \
  tcpdump \
+ tftpd-hpa tftp-hpa \
  telnet \
  tmux \
 &amp;&amp; curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sudo sh \
@@ -361,6 +362,30 @@ monitor session 1 destination interface FastEthernet 1/15
 <p>capture stream and save it to file.</p>
 <pre><code>sudo tcpdump -i br0 -w capture.dump
 sudo tcpdump -r capture.dump -n -e -v -x | less
+</code></pre>
+<h3>tftp</h3>
+<p>get test</p>
+<pre><code>$ echo helloworld | sudo tee -a /srv/tftp/helloworld
+$ tftp 10.2.0.1 -c get helloworld
+</code></pre>
+<p>put test</p>
+<pre><code>$ mv helloworld helloworld.1
+$ sudo touch /srv/tftp/helloworld.1
+$ sudo chmod 766 /srv/tftp/helloworld.1
+$ cat &lt;&lt; END | tftp 10.2.0.1
+&gt; put helloworld.1
+&gt; END
+</code></pre>
+<p>before test on cisco device</p>
+<pre><code>$ sudo touch /srv/tftp/running-config
+$ sudo chmod 766 /srv/tftp/running-config
+</code></pre>
+<p>test</p>
+<pre><code># copy start tftp://10.2.0.1/running-config
+</code></pre>
+<p>confirm</p>
+<pre><code>$ ls -l /srv/tftp/running-config{,.bak}
+$ sudo cp -pi /srv/tftp/running-config{,.bak}
 </code></pre>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/20221119.html" class="u-url">EFS and ECS</a></h1>
