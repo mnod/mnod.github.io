@@ -47,7 +47,40 @@
 
             </div>
     </header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220807.html" class="u-url">ebs</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220808.html" class="u-url">ami</a></h1>
+        <div class="metadata">
+            <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                mnod
+            </span></p> -->
+            <p class="dateline">
+            <a href="posts/20220808.html" rel="bookmark">
+            <time class="published dt-published" datetime="2022-08-08T00:00:00Z" itemprop="datePublished" title="2022-08-08 00:00">2022-08-08 00:00</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <h3>create AMI</h3>
+<pre><code>aws ec2 create-image --description 'backup ami of test server' --instance-id i-xxxx --name 'backup ami of test server' --no-reboot
+aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)]'
+</code></pre>
+<h3>create an instance with AMI</h3>
+<pre><code>aws ec2 run-instances \
+--image-id ami-xxxx \
+--instance-type t4g.nano \
+--key-name testkey \
+--security-group-ids sg-xxxx \
+--subnet-id subnet-xxxx \
+--credit-specification 'CpuCredits=standard' \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=copied_instance}]' \
+--associate-public-ip-address
+</code></pre>
+<h3>delete AMI</h3>
+<pre><code>aws ec2 deregister-image --image-id ami-xxxx 
+aws ec2 describe-snapshots --owner-id xxxx --query 'Snapshots[?contains(Description, `ami-xxxx`)].SnapshotId'
+aws ec2 delete-snapshot --snapshot-id snap-xxxx
+</code></pre>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/20220807.html" class="u-url">ebs</a></h1>
         <div class="metadata">
             <!-- <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 mnod
